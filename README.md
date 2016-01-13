@@ -50,11 +50,11 @@ In main function of your application you need add something like this:
 ## Running Tests
 A single test can be run just using environment variable 'HI_GUI_TEST'.
 For Unix systems:
-```
+```bash
 export HI_GUI_TEST=<suite_name>:<test_name>
 ```
 or for Windows systems:
-```
+```bat
 set HI_GUI_TEST=<suite_name>:<test_name>
 ```
 And then execute you application.
