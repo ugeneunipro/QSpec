@@ -1,4 +1,4 @@
-#Human Imitator (humimit)
+#Human Imitator (humimit) [![Build Status](https://travis-ci.org/ugeneunipro/humimit.svg?branch=master)]	(https://travis-ci.org/ugeneunipro/humimit)
 
 ## Introduction
 `HumImit` is a GUI testing library for Qt desktop applications.
