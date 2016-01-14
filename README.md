@@ -58,3 +58,11 @@ or for Windows systems:
 set HI_GUI_TEST=<suite_name>:<test_name>
 ```
 And then execute you application.
+
+## Requirements
+
+Qt5
+
+## License
+
+This project available under GNU GPL V2.
