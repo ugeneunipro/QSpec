@@ -1,4 +1,8 @@
-include (humimit.pri)
+exists(./custom.pri) {
+    include (custom.pri)
+} else {
+    include (humimit.pri)
+}
 
 # Check the Qt version. If QT_VERSION is not set, it is probably Qt 3.
 isEmpty(QT_VERSION) {
