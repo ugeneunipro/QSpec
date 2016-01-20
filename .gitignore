@@ -5,3 +5,9 @@ Makefile*
 *.so.*
 /html
 custom.pri
+
+# MSVS files
+_tmp
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
