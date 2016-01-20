@@ -142,7 +142,7 @@ void GTMouseDriver::press(GUITestOpStatus &os, Qt::MouseButton button)
 void GTMouseDriver::release(GUITestOpStatus &os, Qt::MouseButton button)
 {
     // TODO: check if this key has been already pressed
-    unsigned int buttons[3] = {MOUSEEVENTF_LEFTUP, MOUSEEVENTF_RIGHTUP, MOUSEEVENTF_MIDDLEUP};
+    //unsigned int buttons[3] = {MOUSEEVENTF_LEFTUP, MOUSEEVENTF_RIGHTUP, MOUSEEVENTF_MIDDLEUP};
     unsigned int btn = button == Qt::LeftButton ? MOUSEEVENTF_LEFTUP :
                        button == Qt::RightButton ? MOUSEEVENTF_RIGHTUP :
                        button == Qt::MidButton ? MOUSEEVENTF_MIDDLEUP : 0;
@@ -163,6 +163,8 @@ void GTMouseDriver::release(GUITestOpStatus &os, Qt::MouseButton button)
 
 void GTMouseDriver::scroll(GUITestOpStatus &os, int value)
 {
+	Q_UNUSED(os);
+
     INPUT event;
     event.type = INPUT_MOUSE;
     event.mi.dx = 0;

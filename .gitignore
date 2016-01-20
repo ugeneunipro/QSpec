@@ -2,11 +2,11 @@
 Makefile*
 
 # VS project files
-# TODO: add sln, vxproj after testing
+humimit.*
+humimitd.*
 *.tmp
 
 # MacOS generated files
-# TODO: recheck
 .DS_Store
 .qmake.stash
 *.xcodeproj/

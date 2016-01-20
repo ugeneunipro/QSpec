@@ -49,11 +49,8 @@ unix {
 }
 
 win32 {
-    QMAKE_CXXFLAGS_WARN_ON = -W3
-    QMAKE_CFLAGS_WARN_ON = -W3
-
+    QMAKE_TARGET_OS = xp
     QMAKE_MSVC_PROJECT_NAME=lib_3rd_humimit
-
     LIBS += User32.lib Gdi32.lib
     LIBS += psapi.lib
     DEFINES += "PSAPI_VERSION=1"
