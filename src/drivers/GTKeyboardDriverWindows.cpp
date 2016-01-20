@@ -375,7 +375,7 @@ INPUT GTKeyboardDriver::getKeyEvent(int key, bool keyUp) {
     event.ki.dwFlags = keyUp ? KEYEVENTF_KEYUP : 0;
     event.ki.time = 0;
     event.ki.dwExtraInfo = 0;
-    event.ki.dwflags |= KEYEVENTF_EXTENDEDKEY;
+    event.ki.dwFlags |= KEYEVENTF_EXTENDEDKEY;
 
     return event;
 }
