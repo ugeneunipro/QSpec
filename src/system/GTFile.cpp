@@ -218,13 +218,21 @@ bool PermissionsSetter::setOnce( const QString &path, QFile::Permissions perm, b
     DWORD allowed = 0;
     DWORD denied = 0;
     qt2WinPermissions( p, allowed, denied );
-
-	DWORD dwRes = AddAceToObjectsSecurityDescriptor(pathString.data(), SE_FILE_OBJECT, (LPTSTR) "CURRENT_USER",
-        TRUSTEE_IS_NAME, allowed, GRANT_ACCESS, NO_INHERITANCE );
-    if ( ERROR_SUCCESS == dwRes ) {
-		dwRes = AddAceToObjectsSecurityDescriptor(pathString.data(), SE_FILE_OBJECT, (LPTSTR) "CURRENT_USER",
-            TRUSTEE_IS_NAME, denied, DENY_ACCESS, NO_INHERITANCE );
-    }
+#ifdef UNICODE
+	DWORD dwRes = AddAceToObjectsSecurityDescriptor(pathString.data(), SE_FILE_OBJECT, L"CURRENT_USER",
+		TRUSTEE_IS_NAME, allowed, GRANT_ACCESS, NO_INHERITANCE);
+	if (ERROR_SUCCESS == dwRes) {
+		dwRes = AddAceToObjectsSecurityDescriptor(pathString.data(), SE_FILE_OBJECT, L"CURRENT_USER",
+			TRUSTEE_IS_NAME, denied, DENY_ACCESS, NO_INHERITANCE);
+	}
+#else
+	DWORD dwRes = AddAceToObjectsSecurityDescriptor(pathString.data(), SE_FILE_OBJECT, (LPTSTR)"CURRENT_USER",
+		TRUSTEE_IS_NAME, allowed, GRANT_ACCESS, NO_INHERITANCE);
+	if (ERROR_SUCCESS == dwRes) {
+		dwRes = AddAceToObjectsSecurityDescriptor(pathString.data(), SE_FILE_OBJECT, (LPTSTR)"CURRENT_USER",
+			TRUSTEE_IS_NAME, denied, DENY_ACCESS, NO_INHERITANCE);
+	}
+#endif // UNICODE
 
     return ERROR_SUCCESS == dwRes;
 #else
