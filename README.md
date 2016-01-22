@@ -63,6 +63,9 @@ And then execute you application.
 
 Qt5
 
+* Linux:
+  * X11 Record extension library (sudo apt-get install libxtst-dev)
+
 ## License
 
 This project available under GNU GPL V2.

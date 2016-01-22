@@ -1,7 +1,24 @@
-*.[oa]
-moc_*
+# Makefiles produced by qmake
 Makefile*
-*.so
-*.so.*
-/html
+
+# VS project files
+humimit.*
+humimitd.*
+*.tmp
+
+# MacOS generated files
+.DS_Store
+.qmake.stash
+*.xcodeproj/
+
+# Build dir
+_build/
+
+# External customization file.
 custom.pri
+
+# For those who use CMake to build the project
+CMakeLists.txt
+
+# Jetbrains tools (CLion, etc..)
+.idea
