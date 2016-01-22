@@ -29,16 +29,29 @@
 
 namespace HI {
 
+class HI_EXPORT HIWebElement{
+public:
+    HIWebElement();
+    HIWebElement(const QWebElement& el);
+    QRect geometry();
+    QString toInnerXml();
+    QString toPlainText();
+private:
+    QRect rect;
+    QString text;
+    QString xml;
+};
+
 class HI_EXPORT GTWebView{
 public:
-    static QWebElement findElement(GUITestOpStatus &os, QWebView *view, const QString &text, const QString &tag = "*", bool exactMatch = false);
+    static HIWebElement findElement(GUITestOpStatus &os, QWebView *view, const QString &text, const QString &tag = "*", bool exactMatch = false);
     static void checkElement(GUITestOpStatus &os, QWebView *view, QString text, QString tag = "*", bool exists = true, bool exactMatch = false);
     static bool doesElementExist(GUITestOpStatus &os, QWebView *view, const QString &text, const QString &tag = "*", bool exactMatch = false);
 
-    static void click(GUITestOpStatus &os, QWebView *view, QWebElement el, Qt::MouseButton button = Qt::LeftButton);
-    static void selectElementText(GUITestOpStatus &os, QWebView *view, QWebElement el);
-    static QWebElement findTreeElement(GUITestOpStatus &os, QWebView *view, QString text);
-    static QWebElement findContextMenuElement(GUITestOpStatus &os, QWebView *view, QString text);
+    static void click(GUITestOpStatus &os, QWebView *view, HIWebElement el, Qt::MouseButton button = Qt::LeftButton);
+    static void selectElementText(GUITestOpStatus &os, QWebView *view, HIWebElement el);
+    static HIWebElement findTreeElement(GUITestOpStatus &os, QWebView *view, QString text);
+    static HIWebElement findContextMenuElement(GUITestOpStatus &os, QWebView *view, QString text);
 
     static void traceAllWebElements(GUITestOpStatus &os, QWebView *view);
 

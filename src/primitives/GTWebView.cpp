@@ -38,13 +38,37 @@ bool compare(QString s1, QString s2, bool exactMatch){
 }
 }
 
+HIWebElement::HIWebElement(){
+    rect = QRect();
+    text = QString();
+    xml = QString();
+}
+
+HIWebElement::HIWebElement(const QWebElement &el){
+    rect = el.geometry();
+    text = el.toPlainText();
+    xml = el.toInnerXml();
+}
+
+QRect HIWebElement::geometry(){
+    return rect;
+}
+
+QString HIWebElement::toInnerXml(){
+    return xml;
+}
+
+QString HIWebElement::toPlainText(){
+    return text;
+}
+
 #define GT_CLASS_NAME "GTWebView"
 
 #define GT_METHOD_NAME "findElement"
-QWebElement GTWebView::findElement(GUITestOpStatus &os, QWebView *view, const QString &text, const QString &tag, bool exactMatch) {
+HIWebElement GTWebView::findElement(GUITestOpStatus &os, QWebView *view, const QString &text, const QString &tag, bool exactMatch) {
     class Scenario : public CustomScenario {
     public:
-        Scenario(QWebView *view, const QString &text, const QString &tag, bool exactMatch, QWebElement &webElement) :
+        Scenario(QWebView *view, const QString &text, const QString &tag, bool exactMatch, HIWebElement &webElement) :
             view(view),
             text(text),
             tag(tag),
@@ -59,7 +83,7 @@ QWebElement GTWebView::findElement(GUITestOpStatus &os, QWebView *view, const QS
                 int width = el.geometry().width();
 
                 if (compare(s, text, exactMatch) && width != 0) {
-                    webElement = el;
+                    webElement = HIWebElement(el);
                     return;
                 }
             }
@@ -71,10 +95,10 @@ QWebElement GTWebView::findElement(GUITestOpStatus &os, QWebView *view, const QS
         const QString text;
         const QString tag;
         bool exactMatch;
-        QWebElement &webElement;
+        HIWebElement &webElement;
     };
 
-    QWebElement webElement;
+    HIWebElement webElement;
     MainThreadRunnable mainThreadRunnable(os, new Scenario(view, text, tag, exactMatch, webElement));
     mainThreadRunnable.doRequest();
     return webElement;
@@ -109,20 +133,20 @@ bool GTWebView::doesElementExist(GUITestOpStatus &os, QWebView *view, const QStr
 }
 #undef GT_METHOD_NAME
 
-QWebElement GTWebView::findTreeElement(GUITestOpStatus &os, QWebView *view, QString text){
+HIWebElement GTWebView::findTreeElement(GUITestOpStatus &os, QWebView *view, QString text){
     return findElement(os, view, text, "SPAN");
 }
 
-QWebElement GTWebView::findContextMenuElement(GUITestOpStatus &os, QWebView *view, QString text){
+HIWebElement GTWebView::findContextMenuElement(GUITestOpStatus &os, QWebView *view, QString text){
     return findElement(os, view, text, "LI");
 }
 
-void GTWebView::click(GUITestOpStatus &os, QWebView *view, QWebElement el, Qt::MouseButton button){
+void GTWebView::click(GUITestOpStatus &os, QWebView *view, HIWebElement el, Qt::MouseButton button){
     GTMouseDriver::moveTo(os, view->mapToGlobal(el.geometry().center()));
     GTMouseDriver::click(os, button);
 }
 
-void GTWebView::selectElementText(GUITestOpStatus &os, QWebView *view, QWebElement el){
+void GTWebView::selectElementText(GUITestOpStatus &os, QWebView *view, HIWebElement el){
     GTMouseDriver::moveTo(os, view->mapToGlobal(el.geometry().topLeft()) + QPoint(5,5));
     GTMouseDriver::press(os);
     GTMouseDriver::moveTo(os, view->mapToGlobal(el.geometry().bottomRight()) - QPoint(5,5));
