@@ -32,17 +32,18 @@ namespace HI {
 
 #ifdef _WIN32
 
+#define GT_CLASS_NAME "GTKeyboardDriver Windows"
 #define GT_METHOD_NAME "keyPress"
 void keyPress(GUITestOpStatus &os, int key, int modifiers) {
 
     GT_CHECK(key != 0, " Error: key = 0 in GTKeyboardDriver::keyPress()");
 
     if (modifiers) {
-        INPUT input = getKeyEvent(modifiers);
+        INPUT input = GTKeyboardDriver::getKeyEvent(modifiers);
         SendInput(1, &input, sizeof(input));
     }
 
-    INPUT input = getKeyEvent(key);
+    INPUT input = GTKeyboardDriver::getKeyEvent(key);
     SendInput(1, &input, sizeof(input));
 }
 #undef GT_METHOD_NAME
@@ -53,17 +54,15 @@ void keyRelease(GUITestOpStatus &os, int key, int modifiers)
     GT_CHECK(key != 0, " Error: key = 0 in GTKeyboardDriver::keyRelease()");
 
     if (modifiers) {
-        INPUT input = getKeyEvent(modifiers, true);
+        INPUT input = GTKeyboardDriver::getKeyEvent(modifiers, true);
         SendInput(1, &input, sizeof(input));
     }
 
-    INPUT input = getKeyEvent(key, true);
+    INPUT input = GTKeyboardDriver::getKeyEvent(key, true);
     SendInput(1, &input, sizeof(input));
 }
 #undef GT_METHOD_NAME
 
-
-#define GT_CLASS_NAME "GTKeyboardDriver Windows"
 
 void GTKeyboardDriver::keyPress(GUITestOpStatus &os, char key, int modifiers)
 {
