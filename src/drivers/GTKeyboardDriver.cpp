@@ -42,6 +42,27 @@ void GTKeyboardDriver::keyClick(GUITestOpStatus &os, int key, int modifiers)
 }
 #undef GT_METHOD_NAME
 
+void GTKeyboardDriver::keyClick(GUITestOpStatus &os, int key, QList<int> modifiers){
+    switch (modifiers.size()) {
+    case 0:
+        keyClick(os, key);
+        break;
+    case 1:
+        keyClick(os, key, modifiers.first());
+        break;
+    default:
+        int modifier = modifiers.takeLast();
+        foreach (int mod, modifiers) {
+            keyPress(os, mod);
+        }
+        keyClick(os, key, modifier);
+        foreach (int mod, modifiers) {
+            keyRelease(os, mod);
+        }
+        break;
+    }
+}
+
 void GTKeyboardDriver::keySequence(GUITestOpStatus &os, const QString &str, int modifiers)
 {
     if (modifiers) {
