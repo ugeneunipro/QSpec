@@ -46,18 +46,10 @@ void GTKeyboardDriver::keyPress(GUITestOpStatus &os, char key, int modifiers) {
 
         CGEventPost(kCGSessionEventTap, event);
         CFRelease(event);
+        GTGlobals::sleep(1);
     } else {
         key = asciiToVirtual(key);
     }
-
-    GTGlobals::sleep(1);
-    keyPress(os, (int)key, modifiers);
-}
-#undef GT_METHOD_NAME
-
-#define GT_METHOD_NAME "keyPress_int"
-void GTKeyboardDriver::keyPress(GUITestOpStatus &os, int key, int modifiers)
-{
     if (key==GTKeyboardDriver::key["ctrl"])
         key=GTKeyboardDriver::key["cmd"];
 
@@ -92,16 +84,8 @@ void GTKeyboardDriver::keyRelease(GUITestOpStatus &os, char key, int modifiers) 
 
         CGEventPost(kCGSessionEventTap, event);
         CFRelease(event);
+        GTGlobals::sleep(1);
     }
-
-    GTGlobals::sleep(1);
-    keyRelease(os, (int) key, modifiers);
-}
-#undef GT_METHOD_NAME
-
-#define GT_METHOD_NAME "keyRelease_int"
-void GTKeyboardDriver::keyRelease(GUITestOpStatus &os, int key, int modifiers)
-{
     if (key==GTKeyboardDriver::key["ctrl"])
         key=GTKeyboardDriver::key["cmd"];
 
