@@ -355,38 +355,6 @@ void GTKeyboardDriver::keyRelease(GUITestOpStatus &os, char key, int modifiers)
     }
 }
 
-#define GT_METHOD_NAME "keyClick"
-void GTKeyboardDriver::keyClick(GUITestOpStatus &os, char key, int modifiers)
-{
-    GT_CHECK(key != 0, "key = 0");
-
-    keyPress(os, key, modifiers);
-    keyRelease(os, key, modifiers);
-    GTGlobals::sleep(10);
-}
-#undef GT_METHOD_NAME
-
-void GTKeyboardDriver::keyClick(GUITestOpStatus &os, char key, QList<int> modifiers){
-    switch (modifiers.size()) {
-    case 0:
-        keyClick(os, key);
-        break;
-    case 1:
-        keyClick(os, key, modifiers.first());
-        break;
-    default:
-        int modifier = modifiers.takeLast();
-        foreach (int mod, modifiers) {
-            keyPress(os, mod);
-        }
-        keyClick(os, key, modifier);
-        foreach (int mod, modifiers) {
-            keyRelease(os, mod);
-        }
-        break;
-    }
-}
-
 INPUT GTKeyboardDriver::getKeyEvent(int key, bool keyUp) {
 
     INPUT event;

@@ -160,38 +160,6 @@ GTKeyboardDriver::keys::keys()
 // macro kVK_* defined in Carbon.framework/Frameworks/HIToolbox.framework/Headers/Events.h
 }
 
-#define GT_METHOD_NAME "keyClick"
-void GTKeyboardDriver::keyClick(GUITestOpStatus &os, char key, int modifiers)
-{
-    GT_CHECK(key != 0, "key = 0");
-    if (modifiers==GTKeyboardDriver::key["ctrl"])
-        modifiers=GTKeyboardDriver::key["cmd"];
-    keyPress(os, key, modifiers);
-    keyRelease(os, key, modifiers);
-}
-#undef GT_METHOD_NAME
-
-void GTKeyboardDriver::keyClick(GUITestOpStatus &os, char key, QList<int> modifiers){
-    switch (modifiers.size()) {
-    case 0:
-        keyClick(os, key);
-        break;
-    case 1:
-        keyClick(os, key, modifiers.first());
-        break;
-    default:
-        int modifier = modifiers.takeLast();
-        foreach (int mod, modifiers) {
-            keyPress(os, mod);
-        }
-        keyClick(os, key, modifier);
-        foreach (int mod, modifiers) {
-            keyRelease(os, mod);
-        }
-        break;
-    }
-}
-
 #undef GT_CLASS_NAME
 
 int asciiToVirtual(int key)
