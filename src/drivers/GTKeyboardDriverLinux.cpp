@@ -36,7 +36,7 @@ namespace HI {
 #define GT_CLASS_NAME "GTKeyboardDriverLinux"
 
 #define GT_METHOD_NAME "keyPress"
-void GTKeyboardDriver::keyPress(GUITestOpStatus &os, char key, int modifiers)
+void GTKeyboardDriver::keyPress(GUITestOpStatus &os, int key, int modifiers)
 {
     GT_CHECK_NO_MESSAGE(key != 0, "key = 0");
 
@@ -104,7 +104,7 @@ void GTKeyboardDriver::keyPress(GUITestOpStatus &os, char key, int modifiers)
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "keyRelease"
-void GTKeyboardDriver::keyRelease(GUITestOpStatus &os, char key, int modifiers)
+void GTKeyboardDriver::keyRelease(GUITestOpStatus &os, int key, int modifiers)
 {
     GT_CHECK_NO_MESSAGE(key != 0, "key = ");
 

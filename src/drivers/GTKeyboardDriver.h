@@ -51,18 +51,26 @@ namespace HI {
 class HI_EXPORT GTKeyboardDriver {
 public:
     //
-#if defined Q_OS_WIN
-    static INPUT getKeyEvent(int key, bool keyUp = false);
-#endif
-    // fails if key == 0
-    // Linux: fails if there is an opening X display error
-
+#if defined Q_OS_WIN || defined Q_OS_MAC
     static void keyClick(GUITestOpStatus &os, char key, int modifiers = 0);
     static void keyClick(GUITestOpStatus &os, char key, QList<int> modifiers);
-    static void keySequence(GUITestOpStatus &os, const QString &str, int modifiers = 0);
 
     static void keyPress(GUITestOpStatus &os, char key, int modifiers = 0);
     static void keyRelease(GUITestOpStatus &os, char key, int modifiers = 0);
+#if defined Q_OS_WIN
+    static INPUT getKeyEvent(int key, bool keyUp = false);
+#endif
+#endif
+
+    // fails if key == 0
+    // Linux: fails if there is an opening X display error
+
+    static void keyClick(GUITestOpStatus &os, int key, int modifiers = 0);
+    static void keyClick(GUITestOpStatus &os, int key, QList<int> modifiers);
+    static void keySequence(GUITestOpStatus &os, const QString &str, int modifiers = 0);
+
+    static void keyPress(GUITestOpStatus &os, int key, int modifiers = 0);
+    static void keyRelease(GUITestOpStatus &os, int key, int modifiers = 0);
 
 	class HI_EXPORT keys : private QMap<QString, int> {
     public:

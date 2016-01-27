@@ -46,10 +46,18 @@ void GTKeyboardDriver::keyPress(GUITestOpStatus &os, char key, int modifiers) {
 
         CGEventPost(kCGSessionEventTap, event);
         CFRelease(event);
-        GTGlobals::sleep(1);
     } else {
         key = asciiToVirtual(key);
     }
+
+    GTGlobals::sleep(1);
+    keyPress(os, (int)key, modifiers);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "keyPress_int"
+void GTKeyboardDriver::keyPress(GUITestOpStatus &os, int key, int modifiers)
+{
     if (key==GTKeyboardDriver::key["ctrl"])
         key=GTKeyboardDriver::key["cmd"];
 
@@ -84,8 +92,16 @@ void GTKeyboardDriver::keyRelease(GUITestOpStatus &os, char key, int modifiers) 
 
         CGEventPost(kCGSessionEventTap, event);
         CFRelease(event);
-        GTGlobals::sleep(1);
     }
+
+    GTGlobals::sleep(1);
+    keyRelease(os, (int) key, modifiers);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "keyRelease_int"
+void GTKeyboardDriver::keyRelease(GUITestOpStatus &os, int key, int modifiers)
+{
     if (key==GTKeyboardDriver::key["ctrl"])
         key=GTKeyboardDriver::key["cmd"];
 
@@ -142,6 +158,38 @@ GTKeyboardDriver::keys::keys()
 
 // feel free to add other keys
 // macro kVK_* defined in Carbon.framework/Frameworks/HIToolbox.framework/Headers/Events.h
+}
+
+#define GT_METHOD_NAME "keyClick"
+void GTKeyboardDriver::keyClick(GUITestOpStatus &os, char key, int modifiers)
+{
+    GT_CHECK(key != 0, "key = 0");
+    if (modifiers==GTKeyboardDriver::key["ctrl"])
+        modifiers=GTKeyboardDriver::key["cmd"];
+    keyPress(os, key, modifiers);
+    keyRelease(os, key, modifiers);
+}
+#undef GT_METHOD_NAME
+
+void GTKeyboardDriver::keyClick(GUITestOpStatus &os, char key, QList<int> modifiers){
+    switch (modifiers.size()) {
+    case 0:
+        keyClick(os, key);
+        break;
+    case 1:
+        keyClick(os, key, modifiers.first());
+        break;
+    default:
+        int modifier = modifiers.takeLast();
+        foreach (int mod, modifiers) {
+            keyPress(os, mod);
+        }
+        keyClick(os, key, modifier);
+        foreach (int mod, modifiers) {
+            keyRelease(os, mod);
+        }
+        break;
+    }
 }
 
 #undef GT_CLASS_NAME

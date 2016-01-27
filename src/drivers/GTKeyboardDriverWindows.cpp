@@ -33,36 +33,6 @@ namespace HI {
 #ifdef _WIN32
 
 #define GT_CLASS_NAME "GTKeyboardDriver Windows"
-#define GT_METHOD_NAME "keyPress"
-void keyPress(GUITestOpStatus &os, int key, int modifiers) {
-
-    GT_CHECK(key != 0, " Error: key = 0 in GTKeyboardDriver::keyPress()");
-
-    if (modifiers) {
-        INPUT input = GTKeyboardDriver::getKeyEvent(modifiers);
-        SendInput(1, &input, sizeof(input));
-    }
-
-    INPUT input = GTKeyboardDriver::getKeyEvent(key);
-    SendInput(1, &input, sizeof(input));
-}
-#undef GT_METHOD_NAME
-
-#define GT_METHOD_NAME "keyRelease"
-void keyRelease(GUITestOpStatus &os, int key, int modifiers)
-{
-    GT_CHECK(key != 0, " Error: key = 0 in GTKeyboardDriver::keyRelease()");
-
-    if (modifiers) {
-        INPUT input = GTKeyboardDriver::getKeyEvent(modifiers, true);
-        SendInput(1, &input, sizeof(input));
-    }
-
-    INPUT input = GTKeyboardDriver::getKeyEvent(key, true);
-    SendInput(1, &input, sizeof(input));
-}
-#undef GT_METHOD_NAME
-
 
 void GTKeyboardDriver::keyPress(GUITestOpStatus &os, char key, int modifiers)
 {
@@ -385,6 +355,38 @@ void GTKeyboardDriver::keyRelease(GUITestOpStatus &os, char key, int modifiers)
     }
 }
 
+#define GT_METHOD_NAME "keyClick"
+void GTKeyboardDriver::keyClick(GUITestOpStatus &os, char key, int modifiers)
+{
+    GT_CHECK(key != 0, "key = 0");
+
+    keyPress(os, key, modifiers);
+    keyRelease(os, key, modifiers);
+    GTGlobals::sleep(10);
+}
+#undef GT_METHOD_NAME
+
+void GTKeyboardDriver::keyClick(GUITestOpStatus &os, char key, QList<int> modifiers){
+    switch (modifiers.size()) {
+    case 0:
+        keyClick(os, key);
+        break;
+    case 1:
+        keyClick(os, key, modifiers.first());
+        break;
+    default:
+        int modifier = modifiers.takeLast();
+        foreach (int mod, modifiers) {
+            keyPress(os, mod);
+        }
+        keyClick(os, key, modifier);
+        foreach (int mod, modifiers) {
+            keyRelease(os, mod);
+        }
+        break;
+    }
+}
+
 INPUT GTKeyboardDriver::getKeyEvent(int key, bool keyUp) {
 
     INPUT event;
@@ -398,6 +400,36 @@ INPUT GTKeyboardDriver::getKeyEvent(int key, bool keyUp) {
 
     return event;
 }
+
+#define GT_METHOD_NAME "keyPress"
+void GTKeyboardDriver::keyPress(GUITestOpStatus &os, int key, int modifiers) {
+
+    GT_CHECK(key != 0, " Error: key = 0 in GTKeyboardDriver::keyPress()");
+
+    if (modifiers) {
+        INPUT input = getKeyEvent(modifiers);
+        SendInput(1, &input, sizeof(input));
+    }
+
+    INPUT input = getKeyEvent(key);
+    SendInput(1, &input, sizeof(input));
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "keyRelease"
+void GTKeyboardDriver::keyRelease(GUITestOpStatus &os, int key, int modifiers)
+{
+    GT_CHECK(key != 0, " Error: key = 0 in GTKeyboardDriver::keyRelease()");
+
+    if (modifiers) {
+        INPUT input = getKeyEvent(modifiers, true);
+        SendInput(1, &input, sizeof(input));
+    }
+
+    INPUT input = getKeyEvent(key, true);
+    SendInput(1, &input, sizeof(input));
+}
+#undef GT_METHOD_NAME
 
 GTKeyboardDriver::keys::keys()
 {
