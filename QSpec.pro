@@ -1,16 +1,16 @@
 exists(./custom.pri) {
     include (custom.pri)
 } else {
-    include (humimit.pri)
+    include (QSpec.pri)
 }
 
 # Check the Qt version. If QT_VERSION is not set, it is probably Qt 3.
 isEmpty(QT_VERSION) {
-    error("QT_VERSION not defined. Unipro UGENE does not work with Qt 3.")
+    error("QT_VERSION not defined. QScore does not work with Qt 3.")
 }
 
 !minQtVersion(5, 0, 0) {
-    message("Cannot build Unipro UGENE with Qt version $${QT_VERSION}")
+    message("Cannot build QScore with Qt version $${QT_VERSION}")
     error("Use at least Qt 5.0.0.")
 }
 

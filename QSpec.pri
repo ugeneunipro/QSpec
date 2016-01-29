@@ -1,6 +1,6 @@
-# include (humimit.pri)
+# include (qscore.pri)
 
-TARGET = humimit
+TARGET = qscore
 TEMPLATE = lib
 CONFIG += debug_and_release
 CONFIG += warn_on
@@ -17,7 +17,7 @@ CONFIG(debug, debug|release) {
 }
 
 CONFIG(release, debug|release) {
-    TARGET = humimit
+    TARGET = qscore
     DEFINES+=NDEBUG
     FLAVOR = release
 }
@@ -50,7 +50,7 @@ unix {
 
 win32 {
     QMAKE_TARGET_OS = xp
-    QMAKE_MSVC_PROJECT_NAME=lib_3rd_humimit
+    QMAKE_MSVC_PROJECT_NAME=lib_3rd_qscore
     LIBS += User32.lib Gdi32.lib
     LIBS += psapi.lib
     DEFINES += "PSAPI_VERSION=1"
