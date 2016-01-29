@@ -6,5 +6,5 @@ install:
   - sudo apt-get install libxtst-dev
 
 script:
-  - qmake humimit.pro
+  - qmake QSpec.pro
   - make
