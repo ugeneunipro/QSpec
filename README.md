@@ -1,7 +1,7 @@
-#Human Imitator (humimit) [![Build Status](https://travis-ci.org/ugeneunipro/humimit.svg?branch=master)]	(https://travis-ci.org/ugeneunipro/humimit)
+#QSpec [![Build Status](https://travis-ci.org/ugeneunipro/QSpec.svg?branch=master)]	(https://travis-ci.org/ugeneunipro/QSpec)
 
 ## Introduction
-`HumImit` is a GUI testing library for Qt desktop applications.
+`QSpec` is a GUI testing library for Qt desktop applications.
 
 ## Writing Tests
 You need create declarations for tests like follow:
