@@ -1,6 +1,6 @@
-# include (qscore.pri)
+# include (qspec.pri)
 
-TARGET = qscore
+TARGET = qspec
 TEMPLATE = lib
 CONFIG += debug_and_release
 CONFIG += warn_on
@@ -17,7 +17,7 @@ CONFIG(debug, debug|release) {
 }
 
 CONFIG(release, debug|release) {
-    TARGET = qscore
+    TARGET = $${TARGET}
     DEFINES+=NDEBUG
     FLAVOR = release
 }

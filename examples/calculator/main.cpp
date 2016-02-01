@@ -41,11 +41,19 @@
 #include <QApplication>
 
 #include "calculator.h"
+#include "calcguitests.h"
 
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
     Calculator calc;
+
+    QString runGuiTest = qgetenv("HI_GUI_TEST");
+    if (!runGuiTest.isEmpty()) {
+        CalcGUITestsLauncher* tests = new CalcGUITestsLauncher();
+        tests->connect(&calc,SIGNAL(si_calculatorShowed()),tests,SLOT(sl_runTest()));
+    }
     calc.show();
+
     return app.exec();
 }

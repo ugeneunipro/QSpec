@@ -55,6 +55,8 @@ class Calculator : public QWidget
 
 public:
     Calculator(QWidget *parent = 0);
+signals:
+    void si_calculatorShowed();
 
 private slots:
     void digitClicked();
@@ -101,6 +103,8 @@ private:
 
     enum { NumDigitButtons = 10 };
     Button *digitButtons[NumDigitButtons];
+
+    virtual void showEvent(QShowEvent *);
 };
 //! [10]
 

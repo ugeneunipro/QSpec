@@ -57,6 +57,7 @@ Calculator::Calculator(QWidget *parent)
 
 //! [1]
     display = new QLineEdit("0");
+    display->setObjectName("display");
 //! [1] //! [2]
     display->setReadOnly(true);
     display->setAlignment(Qt::AlignRight);
@@ -88,11 +89,13 @@ Calculator::Calculator(QWidget *parent)
     Button *timesButton = createButton(tr("\303\227"), SLOT(multiplicativeOperatorClicked()));
     Button *minusButton = createButton(tr("-"), SLOT(additiveOperatorClicked()));
     Button *plusButton = createButton(tr("+"), SLOT(additiveOperatorClicked()));
+    plusButton->setObjectName("plus");
 
     Button *squareRootButton = createButton(tr("Sqrt"), SLOT(unaryOperatorClicked()));
     Button *powerButton = createButton(tr("x\302\262"), SLOT(unaryOperatorClicked()));
     Button *reciprocalButton = createButton(tr("1/x"), SLOT(unaryOperatorClicked()));
     Button *equalButton = createButton(tr("="), SLOT(equalClicked()));
+    equalButton->setObjectName("equal");
 //! [4]
 
 //! [5]
@@ -394,3 +397,8 @@ bool Calculator::calculate(double rightOperand, const QString &pendingOperator)
     return true;
 }
 //! [38]
+
+void Calculator::showEvent(QShowEvent *)
+{
+    emit si_calculatorShowed();
+}
