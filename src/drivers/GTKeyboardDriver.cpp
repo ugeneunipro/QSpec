@@ -85,6 +85,7 @@ void GTKeyboardDriver::keySequence(GUITestOpStatus &os, const QString &str, int 
     if (modifiers) {
         keyRelease(os, modifiers);
     }
+    GTThread::waitForMainThread(os);
 }
 
 /******************************************************************************/

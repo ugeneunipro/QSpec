@@ -23,6 +23,7 @@
 #define _HI_GUI_GTKEYBOARDDRIVER_H_
 
 #include <QMap>
+#include <QTest>
 #include "GTGlobals.h"
 
 #ifdef _WIN32
@@ -67,6 +68,7 @@ public:
 
     static void keyClick(GUITestOpStatus &os, int key, int modifiers = 0);
     static void keyClick(GUITestOpStatus &os, int key, QList<int> modifiers);
+    static void keyClick(GUITestOpStatus &os, Qt::Key, Qt::Modifier);
     static void keySequence(GUITestOpStatus &os, const QString &str, int modifiers = 0);
 
     static void keyPress(GUITestOpStatus &os, int key, int modifiers = 0);
