@@ -25,14 +25,14 @@ TEST_CLASS_DEFINITION(Test2){
 After this you need implement `GUITestsLauncher`:
 ```cpp
 #include <core/GUITestsLauncher.h>
-class MyGUITestsLauncher: public GUITestsLauncher
+class MyGUITestsLauncher: public HI:GUITestsLauncher
 {
 public:
     MyGUITestsLauncher();
 };
 ```
 ```cpp
-MyGUITestsLauncher::MyGUITestsLauncher(): GUITestsLauncher()
+MyGUITestsLauncher::MyGUITestsLauncher(): HI:GUITestsLauncher()
 {
     guiTestBase.registerTest(new Test1());
     guiTestBase.registerTest(new Test2());
