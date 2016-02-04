@@ -13,6 +13,10 @@ moc_*
 # VS project files
 humimit.*
 humimitd.*
+*.sdf
+*.opensdf
+*.suo
+*.vcxproj*
 *.tmp
 
 # MacOS generated files
