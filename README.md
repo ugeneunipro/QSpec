@@ -7,6 +7,7 @@
 You need create declarations for tests like follow:
 ```cpp
 #include <core/GUITest.h>
+using namespace HI;
 #define GUI_TEST_SUITE "My_base_tests"
     TEST_CLASS_DECLARATION(Test1)
     TEST_CLASS_DECLARATION(Test2)
@@ -25,6 +26,7 @@ TEST_CLASS_DEFINITION(Test2){
 After this you need implement `GUITestsLauncher`:
 ```cpp
 #include <core/GUITestsLauncher.h>
+using namespace HI;
 class MyGUITestsLauncher: public GUITestsLauncher
 {
 public:
