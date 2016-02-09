@@ -48,7 +48,7 @@ void GTScrollBar::pageUp(GUITestOpStatus &os, QScrollBar *scrollbar, GTGlobals::
         case GTGlobals::UseKey:
             GTMouseDriver::moveTo(os, GTScrollBar::getSliderPosition(os, scrollbar));
             GTMouseDriver::click(os);
-            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["pageUp"]);
+            GTKeyboardDriver::keyClick(os, Qt::Key_PageUp);
             break;
 
         default:
@@ -69,7 +69,7 @@ void GTScrollBar::pageDown(GUITestOpStatus &os, QScrollBar *scrollbar, GTGlobals
         case GTGlobals::UseKey:
             GTMouseDriver::moveTo(os, GTScrollBar::getSliderPosition(os, scrollbar));
             GTMouseDriver::click(os);
-            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["pageDown"]);
+            GTKeyboardDriver::keyClick(os, Qt::Key_PageDown);
             break;
 
         default:
@@ -90,7 +90,7 @@ void GTScrollBar::lineUp(GUITestOpStatus &os, QScrollBar *scrollbar, GTGlobals::
         case GTGlobals::UseKey:
             GTMouseDriver::moveTo(os, GTScrollBar::getSliderPosition(os, scrollbar));
             GTMouseDriver::click(os);
-            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["up"]);
+            GTKeyboardDriver::keyClick(os, Qt::Key_Up);
             break;
 
         default:
@@ -111,7 +111,7 @@ void GTScrollBar::lineDown(GUITestOpStatus &os, QScrollBar *scrollbar, GTGlobals
         case GTGlobals::UseKey:
             GTMouseDriver::moveTo(os, GTScrollBar::getSliderPosition(os, scrollbar));
             GTMouseDriver::click(os);
-            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["down"]);
+            GTKeyboardDriver::keyClick(os, Qt::Key_Down);
             break;
 
         default:

@@ -26,9 +26,9 @@ namespace HI {
 void GTKeyboardUtils::selectAll(GUITestOpStatus &os)
 {
 #ifndef Q_OS_MAC
-    int modifiers = GTKeyboardDriver::key["ctrl"];
+    Qt::KeyboardModifier modifiers = Qt::ControlModifier;
 #else
-    int modifiers = GTKeyboardDriver::key["cmd"];
+    Qt::KeyboardModifier = GTKeyboardDriver::key["cmd"];
 #endif
 
     GTKeyboardDriver::keyClick(os, 'a', modifiers);
@@ -37,9 +37,9 @@ void GTKeyboardUtils::selectAll(GUITestOpStatus &os)
 void GTKeyboardUtils::copy(GUITestOpStatus &os)
 {
 #ifndef Q_OS_MAC
-    int modifiers = GTKeyboardDriver::key["ctrl"];
+    Qt::KeyboardModifier modifiers = Qt::ControlModifier;
 #else
-    int modifiers = GTKeyboardDriver::key["cmd"];
+    Qt::KeyboardModifier modifiers = GTKeyboardDriver::key["cmd"];
 #endif
 
     GTKeyboardDriver::keyClick(os, 'c', modifiers);
@@ -48,9 +48,9 @@ void GTKeyboardUtils::copy(GUITestOpStatus &os)
 void GTKeyboardUtils::paste(GUITestOpStatus &os)
 {
 #ifndef Q_OS_MAC
-    int modifiers = GTKeyboardDriver::key["ctrl"];
+    Qt::KeyboardModifier modifiers = Qt::ControlModifier;
 #else
-    int modifiers = GTKeyboardDriver::key["cmd"];
+    Qt::KeyboardModifier modifiers = GTKeyboardDriver::key["cmd"];
 #endif
 
     GTKeyboardDriver::keyClick(os, 'v', modifiers);
@@ -59,9 +59,9 @@ void GTKeyboardUtils::paste(GUITestOpStatus &os)
 void GTKeyboardUtils::cut(GUITestOpStatus &os)
 {
 #ifndef Q_OS_MAC
-    int modifiers = GTKeyboardDriver::key["ctrl"];
+    Qt::KeyboardModifier modifiers = Qt::ControlModifier;
 #else
-    int modifiers = GTKeyboardDriver::key["cmd"];
+    Qt::KeyboardModifier modifiers = GTKeyboardDriver::key["cmd"];
 #endif
 
     GTKeyboardDriver::keyClick(os, 'x', modifiers);

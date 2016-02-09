@@ -46,6 +46,7 @@ public:
     static void release(GUITestOpStatus &os, Qt::MouseButton = Qt::LeftButton); //release method should check if this key has been already pressed. Do nothing otherwise
 
     static void dragAndDrop(GUITestOpStatus &os, const QPoint& start, const QPoint& end);
+    static void selectArea(GUITestOpStatus &os, const QPoint& start, const QPoint& end);
 
     // Linux: fails if there is an opening X display error
     static void scroll(GUITestOpStatus &os, int value); //positive values for scrolling up, negative for scrolling down

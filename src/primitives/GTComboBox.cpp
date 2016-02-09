@@ -57,14 +57,15 @@ void GTComboBox::setCurrentIndex(GUITestOpStatus& os, QComboBox *comboBox, int i
     case GTGlobals::UseKeyBoard:
     case GTGlobals::UseKey:{
             int currIndex = comboBox->currentIndex() == -1 ? 0 : comboBox->currentIndex();
-        QString directionKey = index > currIndex ? "down" : "up";
+        Qt::Key directionKey = index > currIndex ? Qt::Key_Down : Qt::Key_Up;
 
         int pressCount = qAbs(index-currIndex);
         for (int i=0; i<pressCount; i++) {
-            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key[directionKey]);
+            GTKeyboardDriver::keyClick(os, directionKey);
             GTGlobals::sleep(100);
         }
-        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+        GTKeyboardDriver::keyClick(os, Qt::Key_Enter);
+
         GTThread::waitForMainThread(os);
         GTGlobals::sleep(500);
 

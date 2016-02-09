@@ -113,7 +113,7 @@ void GTMenuPrivate::showMainMenu(GUITestOpStatus &os, const QString &menuName, G
         key_pos = menuText.indexOf('&');
         key = (menuText.at(key_pos + 1)).toLatin1();
 
-        GTKeyboardDriver::keyClick(os, key, GTKeyboardDriver::key["alt"]);
+        GTKeyboardDriver::keyClick(os, key, Qt::AltModifier);
         break;
 
     default:

@@ -9,7 +9,8 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    MainWindow w;
+    MainWindow* w = MainWindow::getInstance();
+    w->show();
 
     QString runGuiTest = qgetenv("HI_GUI_TEST");
     if (!runGuiTest.isEmpty()) {
@@ -18,6 +19,6 @@ int main(int argc, char *argv[])
         QTimer::singleShot(1000, launcher, SLOT(sl_runTest()));
     }
 
-    w.show();
+
     return a.exec();
 }

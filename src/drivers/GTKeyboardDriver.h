@@ -23,7 +23,6 @@
 #define _HI_GUI_GTKEYBOARDDRIVER_H_
 
 #include <QMap>
-#include <QTest>
 #include "GTGlobals.h"
 
 #ifdef _WIN32
@@ -66,24 +65,28 @@ public:
     // fails if key == 0
     // Linux: fails if there is an opening X display error
 
-    static void keyClick(GUITestOpStatus &os, int key, int modifiers = 0);
-    static void keyClick(GUITestOpStatus &os, int key, QList<int> modifiers);
-    static void keyClick(GUITestOpStatus &os, Qt::Key, Qt::Modifier);
-    static void keySequence(GUITestOpStatus &os, const QString &str, int modifiers = 0);
+    static void keyClick(GUITestOpStatus &os, char key, Qt::KeyboardModifier = Qt::NoModifier);
+    static void keyClick(GUITestOpStatus &os, Qt::Key, Qt::KeyboardModifier = Qt::NoModifier);
+    static void keySequence(GUITestOpStatus &os, const QString &str, Qt::KeyboardModifier = Qt::NoModifier);
 
-    static void keyPress(GUITestOpStatus &os, int key, int modifiers = 0);
-    static void keyRelease(GUITestOpStatus &os, int key, int modifiers = 0);
+    static void keyPress(GUITestOpStatus &os, char key, Qt::KeyboardModifier = Qt::NoModifier);
+    static void keyRelease(GUITestOpStatus &os, char key, Qt::KeyboardModifier = Qt::NoModifier);
+    static void keyPress(GUITestOpStatus &os, Qt::Key, Qt::KeyboardModifier = Qt::NoModifier);
+    static void keyRelease(GUITestOpStatus &os, Qt::Key, Qt::KeyboardModifier = Qt::NoModifier);
 
-	class HI_EXPORT keys : private QMap<QString, int> {
+
+
+
+    class HI_EXPORT keys : private QMap<Qt::Key, int> {
     public:
         keys();
-        const QStringList mapKeys() const {
-            return QMap<QString, int>::keys();
-        }
-        int operator [] (const QString&) const;
+        int operator [] (const Qt::Key &key) const;
     };
 
     static keys key;
+
+private:
+    static QList<Qt::Key> modifiersToKeys(Qt::KeyboardModifiers m);
 
 
 };

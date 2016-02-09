@@ -74,7 +74,7 @@ QMenu* GTMenu::showMainMenu(GUITestOpStatus &os, const QString &menuName, GTGlob
         key_pos = menuText.indexOf('&');
         key = (menuText.at(key_pos + 1)).toLatin1();
 
-        GTKeyboardDriver::keyClick(os, key, GTKeyboardDriver::key["alt"]);
+        GTKeyboardDriver::keyClick(os, key, Qt::AltModifier);
         break;
 
     default:
@@ -154,7 +154,7 @@ QMenu* GTMenu::showContextMenu(GUITestOpStatus &os, QWidget *ground, GTGlobals::
         break;
 
     case GTGlobals::UseKey:
-        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["context_menu"]);
+
         break;
     default:
         break;
@@ -259,11 +259,12 @@ QAction* GTMenu::clickMenuItem(GUITestOpStatus &os, const QMenu *menu, const QSt
     }
     case GTGlobals::UseKey:
         while(action != menu->activeAction()) {
-            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["down"]);
+            GTKeyboardDriver::keyClick(os, Qt::Key_Down);
             GTGlobals::sleep(200);
         }
 
-        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+        GTKeyboardDriver::keyClick(os, Qt::Key_Enter);
+
         GTGlobals::sleep(200);
         break;
     default:

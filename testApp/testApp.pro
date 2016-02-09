@@ -8,10 +8,14 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    driversGuiTests.cpp
+    driversGuiTests.cpp \
+    EventRecorderWidget.cpp \
+    EventFilter.cpp
 
 HEADERS  += mainwindow.h \
-    driversGuiTests.h
+    driversGuiTests.h \
+    EventRecorderWidget.h \
+    EventFilter.h
 
 INCLUDEPATH +=../src/
 

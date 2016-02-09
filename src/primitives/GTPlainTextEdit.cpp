@@ -54,7 +54,7 @@ void GTPlainTextEdit::setPlainText(GUITestOpStatus& os, QPlainTextEdit* plainTex
 //
 //    GTKeyboardUtils::selectAll(os);
 //    GTGlobals::sleep(100);
-//    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+//    GTKeyboardDriver::keyClick(os, Qt::Key_Delete);
 //    GTGlobals::sleep(1000);
 //
 //    QString s = plainTextEdit->toPlainText();

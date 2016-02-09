@@ -74,7 +74,7 @@ void GTTreeWidget::checkItem(GUITestOpStatus &os, QTreeWidgetItem *item, int col
         const QPoint cellCenterOffset(tree->columnWidth(column) / 2, itemRect.height() / 2);
         GTMouseDriver::moveTo(os, itemStartPos + itemLevelOffset + columnOffset + cellCenterOffset);
         GTMouseDriver::click(os);
-        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
+        GTKeyboardDriver::keyClick(os, Qt::Key_Space);
         break;
     }
     case GTGlobals::UseMouse: {

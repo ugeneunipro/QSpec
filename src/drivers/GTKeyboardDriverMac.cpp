@@ -58,7 +58,7 @@ void GTKeyboardDriver::keyPress(GUITestOpStatus &os, char key, int modifiers) {
 #define GT_METHOD_NAME "keyPress_int"
 void GTKeyboardDriver::keyPress(GUITestOpStatus &os, int key, int modifiers)
 {
-    if (key==GTKeyboardDriver::key["ctrl"])
+    if (key==Qt::ControlModifier)
         key=GTKeyboardDriver::key["cmd"];
 
     if (modifiers) {
@@ -102,7 +102,7 @@ void GTKeyboardDriver::keyRelease(GUITestOpStatus &os, char key, int modifiers) 
 #define GT_METHOD_NAME "keyRelease_int"
 void GTKeyboardDriver::keyRelease(GUITestOpStatus &os, int key, int modifiers)
 {
-    if (key==GTKeyboardDriver::key["ctrl"])
+    if (key==Qt::ControlModifier)
         key=GTKeyboardDriver::key["cmd"];
 
     CGEventRef event = CGEventCreateKeyboardEvent(NULL, key, false);
@@ -164,7 +164,7 @@ GTKeyboardDriver::keys::keys()
 void GTKeyboardDriver::keyClick(GUITestOpStatus &os, char key, int modifiers)
 {
     GT_CHECK(key != 0, "key = 0");
-    if (modifiers==GTKeyboardDriver::key["ctrl"])
+    if (modifiers==Qt::ControlModifier)
         modifiers=GTKeyboardDriver::key["cmd"];
     keyPress(os, key, modifiers);
     keyRelease(os, key, modifiers);
