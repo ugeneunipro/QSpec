@@ -27,27 +27,11 @@
 
 namespace HI {
 
-class HI_EXPORT PermissionsSetter {
-    // If UGENE crash in the test, permissions won't be restored.
-public:
-    PermissionsSetter();
-    ~PermissionsSetter();
-
-
-    static void setReadWrite(GUITestOpStatus &os, const QString& path);
-    void setReadOnly(GUITestOpStatus &os, const QString& path);
-
-    void setReadOnlyFlag(GUITestOpStatus &os, const QString& path);
-private:
-    bool setPermissions(const QString& path, QFile::Permissions perm, bool recursive = true);
-    bool setRecursive(const QString& path, QFile::Permissions perm);
-    bool setOnce(const QString& path, QFile::Permissions perm, bool savePreviousState = true);
-
-    QMap<QString, QFile::Permissions> previousState;
-};
-
 class HI_EXPORT GTFile {
 public:
+    static void setReadWrite(GUITestOpStatus &os, const QString& path, bool recursive = false);
+    static void setReadOnly(GUITestOpStatus &os, const QString& path, bool recursive = false);
+
     static bool equals(GUITestOpStatus &os, const QString&, const QString&);
 
     static qint64 getSize(GUITestOpStatus &os, const QString&);

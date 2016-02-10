@@ -224,9 +224,6 @@ QAction* GTMenu::clickMenuItem(GUITestOpStatus &os, const QMenu *menu, const QSt
     GT_CHECK_RESULT(action != NULL, "action not found for item " + itemName, NULL);
     GT_CHECK_RESULT(action->isEnabled() == true, "action <" + itemName + "> is not enabled", NULL);
 
-    QMenu* actionMenu = action->menu();
-    bool clickingSubMenu = actionMenu ? true : false;
-
     QPoint currentCursorPosition = GTMouseDriver::getMousePosition();
     QPoint menuCorner = menu->mapToGlobal(QPoint(0, 0));
 
