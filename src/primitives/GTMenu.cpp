@@ -248,6 +248,8 @@ QAction* GTMenu::clickMenuItem(GUITestOpStatus &os, const QMenu *menu, const QSt
 #ifdef Q_OS_WIN
         GTMouseDriver::click(os);
 #else
+        QMenu* actionMenu = action->menu();
+        bool clickingSubMenu = actionMenu ? true : false;
         if (!clickingSubMenu) {
             GTMouseDriver::click(os);
         }

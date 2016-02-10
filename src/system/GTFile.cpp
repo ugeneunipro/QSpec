@@ -46,9 +46,9 @@ static DWORD SetFileWriteACL (
     TRUSTEE_FORM TrusteeForm = TRUSTEE_IS_NAME;    // format of trustee structure
 
 #ifdef UNICODE
-    LPTSTR pszTrustee = L"CURRENT_USER"; // trustee for new ACE
+    LPWSTR pszTrustee = const_cast<LPWSTR>( L"CURRENT_USER" ); // trustee for new ACE
 #else
-    LPTSTR pszTrustee = (LPTSTR)"CURRENT_USER";
+    LPSTR pszTrustee = const_cast<LPSTR>( "CURRENT_USER" );
 #endif
 
     if ( NULL == pszObjName ) {
