@@ -52,7 +52,7 @@ win32 {
     QMAKE_TARGET_OS = xp
     QMAKE_MSVC_PROJECT_NAME=lib_3rd_qscore
     LIBS += User32.lib Gdi32.lib
-    LIBS += psapi.lib
+    LIBS += psapi.lib Advapi32.lib
     DEFINES += "PSAPI_VERSION=1"
 }
 
