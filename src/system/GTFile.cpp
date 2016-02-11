@@ -21,6 +21,7 @@
 
 #include "system/GTFile.h"
 #include <QDir>
+#include<QDebug>
 
 #ifdef Q_OS_WIN
 
@@ -29,55 +30,64 @@
 
 #include <Aclapi.h>
 
-DWORD AddAceToObjectsSecurityDescriptor (
+// Sets NTFS security rights of the current user for the specified file or directory,
+// either to allow or deny writing to the file or creating files/subfolders in the directory.
+// In case of a directory, rights to delete files/subfolders are not affected.
+// NB: Only works for NTFS, has no effect on FAT objects.
+static DWORD SetFileWriteACL (
     LPTSTR pszObjName,          // name of object
-    SE_OBJECT_TYPE ObjectType,  // type of object
-    LPTSTR pszTrustee,          // trustee for new ACE
-    TRUSTEE_FORM TrusteeForm,   // format of trustee structure
-    DWORD dwAccessRights,       // access mask for new ACE
-    ACCESS_MODE AccessMode,     // type of ACE
-    DWORD dwInheritance         // inheritance flags for new ACE
+    BOOL allowWrite             // zero to deny file modification
     )
 {
     DWORD dwRes = 0;
-    PACL pOldDACL = NULL;
     PACL pNewDACL = NULL;
-    PSECURITY_DESCRIPTOR pSD = NULL;
-    EXPLICIT_ACCESS ea;
+    EXPLICIT_ACCESS ea[2];
+    SE_OBJECT_TYPE ObjectType = SE_FILE_OBJECT; // type of object
+    TRUSTEE_FORM TrusteeForm = TRUSTEE_IS_NAME;    // format of trustee structure
+
+#ifdef UNICODE
+    LPWSTR pszTrustee = const_cast<LPWSTR>( L"CURRENT_USER" ); // trustee for new ACE
+#else
+    LPSTR pszTrustee = const_cast<LPSTR>( "CURRENT_USER" );
+#endif
 
     if ( NULL == pszObjName ) {
         return ERROR_INVALID_PARAMETER;
     }
 
-    // Get a pointer to the existing DACL.
-
-    dwRes = GetNamedSecurityInfo( pszObjName, ObjectType, DACL_SECURITY_INFORMATION, NULL, NULL,
-        &pOldDACL, NULL, &pSD );
-    if ( ERROR_SUCCESS != dwRes ) {
-        printf( "GetNamedSecurityInfo Error %u\n", dwRes );
-        goto Cleanup;
-    }
-
     // Initialize an EXPLICIT_ACCESS structure for the new ACE.
 
-    ZeroMemory( &ea, sizeof( EXPLICIT_ACCESS ) );
-    ea.grfAccessPermissions = dwAccessRights;
-    ea.grfAccessMode = AccessMode;
-    ea.grfInheritance= dwInheritance;
-    ea.Trustee.TrusteeForm = TrusteeForm;
-    ea.Trustee.ptstrName = pszTrustee;
+    ZeroMemory( &ea, 2 * sizeof( EXPLICIT_ACCESS ) );
+    ea[0].grfAccessMode = GRANT_ACCESS;
+    ea[0].grfInheritance= NO_INHERITANCE;
+    ea[0].Trustee.TrusteeForm = TrusteeForm;
+    ea[0].Trustee.ptstrName = pszTrustee;
 
-    // Create a new ACL that merges the new ACE
-    // into the existing DACL.
+    ULONG aclCount;
+    if ( allowWrite )
+    {
+        aclCount = 1;
+        ea[0].grfAccessPermissions = FILE_ALL_ACCESS;
+    } else {
+        aclCount = 2;
+        ea[0].grfAccessPermissions = ( FILE_GENERIC_READ | GENERIC_EXECUTE );
 
-    dwRes = SetEntriesInAcl( 1, &ea, pOldDACL, &pNewDACL );
+        // All generic rights have common bits (READ_CONTROL etc) and we do not want to deny them
+        ea[1].grfAccessPermissions = (FILE_GENERIC_WRITE & ~FILE_GENERIC_READ);
+        ea[1].grfAccessMode = DENY_ACCESS;
+        ea[1].grfInheritance= NO_INHERITANCE;
+        ea[1].Trustee.TrusteeForm = TrusteeForm;
+        ea[1].Trustee.ptstrName = pszTrustee;
+    }
+
+    // Create a new ACL
+    dwRes = SetEntriesInAcl( aclCount, ea, NULL, &pNewDACL );
     if ( ERROR_SUCCESS != dwRes ) {
         printf( "SetEntriesInAcl Error %u\n", dwRes );
         goto Cleanup;
     }
 
     // Attach the new ACL as the object's DACL.
-
     dwRes = SetNamedSecurityInfo( pszObjName, ObjectType, DACL_SECURITY_INFORMATION, NULL, NULL,
         pNewDACL, NULL );
     if ( ERROR_SUCCESS != dwRes ) {
@@ -87,9 +97,6 @@ DWORD AddAceToObjectsSecurityDescriptor (
 
 Cleanup:
 
-    if ( pSD != NULL ) {
-        LocalFree( static_cast<HLOCAL>( pSD ) );
-    }
     if (pNewDACL != NULL) {
         LocalFree( static_cast<HLOCAL>( pNewDACL ) );
     }
@@ -97,72 +104,19 @@ Cleanup:
     return dwRes;
 }
 
-static void qt2WinPermissions( QFile::Permissions p, DWORD &allowedPermissions, DWORD &deniedPermissions )
-{
-    if ( 0 != ( p & ( QFile::ReadOwner | QFile::ReadUser | QFile::ReadOther | QFile::ReadGroup ) ) ) {
-        allowedPermissions |= FILE_GENERIC_READ;
-    } else {
-        deniedPermissions |= FILE_GENERIC_READ;
-    }
-    if ( 0 != ( p & ( QFile::WriteOwner | QFile::WriteUser | QFile::WriteOther | QFile::WriteGroup ) ) ) {
-        allowedPermissions |= FILE_GENERIC_WRITE;
-    } else {
-        deniedPermissions |= FILE_GENERIC_WRITE;
-    }
-    if ( 0 != ( p & ( QFile::ExeOwner | QFile::ExeUser | QFile::ExeOther | QFile::ExeGroup ) ) ) {
-        allowedPermissions |= FILE_GENERIC_EXECUTE;
-    } else {
-        deniedPermissions |= FILE_GENERIC_EXECUTE;
-    }
-}
-
 #endif
 
 namespace HI {
 
-#define GT_CLASS_NAME "PermissionsSetter"
+static const QFile::Permissions GenericReadPermissions = QFile::ReadOwner | QFile::ExeOwner |
+        QFile::ReadUser | QFile::ExeUser | QFile::ReadGroup | QFile::ExeGroup |
+        QFile::ReadOther | QFile::ExeOther;
 
-PermissionsSetter::PermissionsSetter() {
-}
+static const QFile::Permissions GenericWritePermissions = QFile::WriteOwner |
+        QFile::WriteUser | QFile::WriteGroup | QFile::WriteOther;
 
-PermissionsSetter::~PermissionsSetter() {
-    foreach (const QString& path, previousState.keys()) {
-        QFile file(path);
-        QFile::Permissions p = file.permissions();
-
-        p = previousState.value(path, p);
-        setOnce( path, p, false );
-    }
-}
-
-bool PermissionsSetter::setPermissions(const QString& path, QFile::Permissions perm, bool recursive) {
-    if (recursive) {
-        return setRecursive(path, perm);
-    } else {
-        return setOnce(path, perm);
-    }
-}
-
-#define GT_METHOD_NAME "setReadWrite"
-void PermissionsSetter::setReadWrite(GUITestOpStatus &os, const QString &path){
-    QFile::Permissions p = QFile::ReadOwner | QFile::WriteOwner | QFile::ExeOwner | QFile::ReadUser | QFile::WriteUser |
-            QFile::ExeUser | QFile::ReadGroup | QFile::WriteGroup | QFile::ExeGroup | QFile::ReadOther | QFile::ExeOther;
-    PermissionsSetter setter;
-    bool set = setter.setPermissions(path, p);
-    GT_CHECK(set, "read-only permission could not be set")
-}
-#undef GT_METHOD_NAME
-
-#define GT_METHOD_NAME "setReadOnly"
-void PermissionsSetter::setReadOnly(GUITestOpStatus &os, const QString &path){
-    QFile::Permissions p = QFile::ReadOwner | QFile::ExeOwner | QFile::ReadUser |
-            QFile::ExeUser | QFile::ReadGroup | QFile::ExeGroup | QFile::ReadOther | QFile::ExeOther;
-    bool set = setPermissions(path, p);
-    GT_CHECK(set, "read-write permission could not be set")
-}
-#undef GT_METHOD_NAME
-
-bool PermissionsSetter::setRecursive(const QString& path, QFile::Permissions perm) {
+static bool setFilePermissions(const QString &path, bool allowWrite, bool recursive)
+{
     QFileInfo fileInfo(path);
     if (!(fileInfo.exists())) {
         return false;
@@ -171,39 +125,26 @@ bool PermissionsSetter::setRecursive(const QString& path, QFile::Permissions per
         return false;
     }
 
-    if (fileInfo.isDir()) {
+    bool res = true;
+    if (recursive && fileInfo.isDir()) {
         QDir dir(path);
         foreach (const QString& entryPath, dir.entryList(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot | QDir::NoSymLinks)) {
-            setOnce(path + "/" + entryPath, perm);
-            bool res = setRecursive(path + "/" + entryPath, perm);
-            if(!res){
-                return res;
-            }
+            res &= setFilePermissions(path + "/" + entryPath, allowWrite, recursive);
         }
     }
 
-    bool res = setOnce(path, perm);
-
-    return res;
-}
-
-bool PermissionsSetter::setOnce( const QString &path, QFile::Permissions perm, bool savePreviousState ) {
-    QFileInfo fileInfo( path );
-    if (!(fileInfo.exists())) {
-        return false;
+    QFile::Permissions perm = GenericReadPermissions;
+    if ( allowWrite ) {
+        perm |= GenericWritePermissions;
     }
-    if (fileInfo.isSymLink()) {
-        return false;
-    }
-
-    QFile file( path );
-    QFile::Permissions p = file.permissions( );
-    if ( savePreviousState ) {
-        previousState.insert( path, p );
-    }
-    p = perm;
+    // On Windows, Qt permissions partially work (e.g. FAT respects read-only attribute for ordinary files),
+    // so try it anyway.
+    // And the case of FAT folders is hopeless, there's no way to control access to a folder content.
+    bool qtRes = QFile( path ).setPermissions( perm );
 
 #ifdef Q_OS_WIN
+    // Probably, could skip this NTFS-specific branch if the qtRes is OK, assuming it worked nicely on FAT
+    // But Qt did not really documented this, so let's go for the most guarantee
     if ( fileInfo.isRelative( ) && !fileInfo.makeAbsolute( ) ) {
         return false;
     }
@@ -215,44 +156,36 @@ bool PermissionsSetter::setOnce( const QString &path, QFile::Permissions perm, b
     windowsPath.toWCharArray( pathString.data( ) );
     pathString[pathLength] = '\0';
 
-    DWORD allowed = 0;
-    DWORD denied = 0;
-    qt2WinPermissions( p, allowed, denied );
-#ifdef UNICODE
-	DWORD dwRes = AddAceToObjectsSecurityDescriptor(pathString.data(), SE_FILE_OBJECT, L"CURRENT_USER",
-		TRUSTEE_IS_NAME, allowed, GRANT_ACCESS, NO_INHERITANCE);
-	if (ERROR_SUCCESS == dwRes) {
-		dwRes = AddAceToObjectsSecurityDescriptor(pathString.data(), SE_FILE_OBJECT, L"CURRENT_USER",
-			TRUSTEE_IS_NAME, denied, DENY_ACCESS, NO_INHERITANCE);
-	}
-#else
-	DWORD dwRes = AddAceToObjectsSecurityDescriptor(pathString.data(), SE_FILE_OBJECT, (LPTSTR)"CURRENT_USER",
-		TRUSTEE_IS_NAME, allowed, GRANT_ACCESS, NO_INHERITANCE);
-	if (ERROR_SUCCESS == dwRes) {
-		dwRes = AddAceToObjectsSecurityDescriptor(pathString.data(), SE_FILE_OBJECT, (LPTSTR)"CURRENT_USER",
-			TRUSTEE_IS_NAME, denied, DENY_ACCESS, NO_INHERITANCE);
-	}
-#endif // UNICODE
+    DWORD dwRes = SetFileWriteACL( pathString.data(), allowWrite );
+    if ( allowWrite )
+    {
+        // workaround Qt's quirk on NTFS, force clearing RO attr
+        SetFileAttributesW(/*reinterpret_cast<LPCWSTR>*/(pathString.data()), FILE_ATTRIBUTE_NORMAL );
+    }
 
-    return ERROR_SUCCESS == dwRes;
-#else
-    return file.setPermissions( p );
+    qtRes = ( ERROR_SUCCESS == dwRes );
 #endif
-}
 
-#define GT_METHOD_NAME "setReadOnlyFlag"
-void PermissionsSetter::setReadOnlyFlag(GUITestOpStatus &os, const QString& path) {
-#ifdef Q_OS_WIN
-    GT_CHECK(SetFileAttributesW(reinterpret_cast<LPCWSTR>(path.utf16()), FILE_ATTRIBUTE_READONLY), 
-        "Read flag could not be set");
-#else
-    setReadOnly(os, path);
-#endif
+    return res & qtRes;
 }
-#undef GT_METHOD_NAME
-#undef GT_CLASS_NAME
 
 #define GT_CLASS_NAME "GTFile"
+
+#define GT_METHOD_NAME "setReadWrite"
+void GTFile::setReadWrite(GUITestOpStatus &os, const QString &path, bool recursive)
+{
+    bool set = setFilePermissions(path, true, recursive);
+    GT_CHECK(set, "read-write permission could not be set")
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "setReadOnly"
+void GTFile::setReadOnly(GUITestOpStatus &os, const QString &path, bool recursive)
+{
+    bool set = setFilePermissions(path, false, recursive);
+    GT_CHECK(set, "read-only permission could not be set")
+}
+#undef GT_METHOD_NAME
 
 const QString GTFile::backupPostfix = "_GT_backup";
 
@@ -450,7 +383,7 @@ void GTFile::create(GUITestOpStatus &os, const QString &filePath) {
 QByteArray GTFile::readAll(GUITestOpStatus &os, const QString &filePath) {
     Q_UNUSED(os);
     QFile file(filePath);
-    const bool opened = file.open(QFile::ReadOnly);
+    bool opened = file.open(QFile::ReadOnly);
     GT_CHECK_RESULT(opened, "Can't open file for read", "");
 
     return file.readAll();
