@@ -59,6 +59,9 @@ QString GUITestBase::getNextTestName() {
 GUITest *GUITestBase::findTest(const QString &name) {
     return tests.value(name);
 }
+bool GUITestBase::containsTest(const QString &name) {
+    return tests.contains(name);
+}
 
 GUITest *GUITestBase::getTest(const QString &suite, const QString &name) {
 
