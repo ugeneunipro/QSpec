@@ -1,6 +1,6 @@
-# include (qscore.pri)
+# include (qspec.pri)
 
-TARGET = qscore
+TARGET = qspec
 TEMPLATE = lib
 CONFIG += debug_and_release
 CONFIG += warn_on
@@ -17,7 +17,7 @@ CONFIG(debug, debug|release) {
 }
 
 CONFIG(release, debug|release) {
-    TARGET = qscore
+    TARGET = $${TARGET}
     DEFINES+=NDEBUG
     FLAVOR = release
 }
@@ -52,7 +52,7 @@ win32 {
     QMAKE_TARGET_OS = xp
     QMAKE_MSVC_PROJECT_NAME=lib_3rd_qscore
     LIBS += User32.lib Gdi32.lib
-    LIBS += psapi.lib
+    LIBS += psapi.lib Advapi32.lib
     DEFINES += "PSAPI_VERSION=1"
 }
 
