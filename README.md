@@ -68,6 +68,10 @@ Qt5
 * Linux:
   * X11 Record extension library (sudo apt-get install libxtst-dev)
 
+## Development and contributions
+
+See more info [here](https://github.com/ugeneunipro/QSpec/wiki).
+
 ## License
 
 This project available under GNU GPL V2.
