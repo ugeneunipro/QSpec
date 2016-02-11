@@ -15,8 +15,9 @@ public:
 public slots:
     virtual void sl_runTest();
     virtual void sl_onTestFinished();
-private:
+protected:
     GUITestBase guiTestBase;
+private:
     GUITestOpStatus os;
 
 };

@@ -1,9 +1,22 @@
 # Makefiles produced by qmake
 Makefile*
+moc_*
+
+# Linux generated files
+*.[oa]
+*.so
+*.so.*
+
+# Doxygen generated files
+/html
 
 # VS project files
 humimit.*
 humimitd.*
+*.sdf
+*.opensdf
+*.suo
+*.vcxproj*
 *.tmp
 
 # MacOS generated files

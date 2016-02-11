@@ -21,6 +21,7 @@ public:
     GUITests takeTests(); // removes items from GUITestBase
 
     GUITest *findTest(const QString &name);
+    bool containsTest(const QString &name);
 
     static const QString unnamedTestsPrefix;
 
