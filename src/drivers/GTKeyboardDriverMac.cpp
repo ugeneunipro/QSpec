@@ -41,7 +41,7 @@ void GTKeyboardDriver::keyPress(GUITestOpStatus &os, char key, int modifiers) {
 
     const bool isChanged = extractShiftModifier(key);
     if (isChanged) {
-        CGEventRef event = CGEventCreateKeyboardEvent(NULL, GTKeyboardDriver::key["shift"], true);
+        CGEventRef event = CGEventCreateKeyboardEvent(NULL, GTKeyboardDriver::key[Qt::Key_Shift], true);
         GT_CHECK(event != NULL, "Can't create event");
 
         CGEventPost(kCGSessionEventTap, event);
@@ -87,7 +87,7 @@ void GTKeyboardDriver::keyRelease(GUITestOpStatus &os, char key, int modifiers) 
     if (!isChanged) {
         key = asciiToVirtual(key);
     } else {
-        CGEventRef event = CGEventCreateKeyboardEvent(NULL, GTKeyboardDriver::key["shift"], false);
+        CGEventRef event = CGEventCreateKeyboardEvent(NULL, GTKeyboardDriver::key[Qt::Key_Shift], false);
         GT_CHECK(event != NULL, "Can't create event");
 
         CGEventPost(kCGSessionEventTap, event);
@@ -128,7 +128,7 @@ GTKeyboardDriver::keys::keys()
     ADD_KEY("cmd", kVK_Command);
     ADD_KEY("tab", kVK_Tab);
     ADD_KEY("enter", kVK_Return);
-    ADD_KEY("shift", kVK_Shift);
+    ADD_KEY(Qt::Key_Shift, kVK_Shift);
     ADD_KEY("ctrl", kVK_Control);
     ADD_KEY("alt", kVK_Option);
     ADD_KEY("esc", kVK_Escape);

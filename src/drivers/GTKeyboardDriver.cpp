@@ -38,14 +38,14 @@ QList<Qt::Key> GTKeyboardDriver::modifiersToKeys(Qt::KeyboardModifiers mod){
     return result;
 }
 
-void GTKeyboardDriver::keyClick(GUITestOpStatus &os, char key, Qt::KeyboardModifier modifiers)
+void GTKeyboardDriver::keyClick(GUITestOpStatus &os, char key, Qt::KeyboardModifiers modifiers)
 {
     GT_CHECK(key != 0, "key = 0");
     keyPress(os, key, modifiers);
     keyRelease(os, key, modifiers);
 }
 
-void GTKeyboardDriver::keyClick(GUITestOpStatus &os, Qt::Key key, Qt::KeyboardModifier modifiers)
+void GTKeyboardDriver::keyClick(GUITestOpStatus &os, Qt::Key key, Qt::KeyboardModifiers modifiers)
 {
     GT_CHECK(key != 0, "key = 0");
     keyPress(os, key, modifiers);
@@ -53,7 +53,7 @@ void GTKeyboardDriver::keyClick(GUITestOpStatus &os, Qt::Key key, Qt::KeyboardMo
 }
 #undef GT_METHOD_NAME
 
-void GTKeyboardDriver::keySequence(GUITestOpStatus &os, const QString &str, Qt::KeyboardModifier modifiers)
+void GTKeyboardDriver::keySequence(GUITestOpStatus &os, const QString &str, Qt::KeyboardModifiers modifiers)
 {
     QList<Qt::Key> modifierKeys = modifiersToKeys(modifiers);
     foreach (Qt::Key mod, modifierKeys) {

@@ -23,7 +23,8 @@ TEST_CLASS_DEFINITION(Test1){
     GTWidget::click(os, line);
     GTGlobals::sleep();
     GTKeyboardDriver::keySequence(os, "abcdefghigklmnopqrstuvwxy z");
-    CHECK_SET_ERR(line->text() == "abcdefghigklmnopqrstuvwxy z", "expected: abcdefghigklmnopqrstuvwxy z, actual: " + line->text())
+	CHECK_SET_ERR(line->text() == "abcdefghigklmnopqrstuvwxy z", "expected: abcdefghigklmnopqrstuvwxy z, actual: " + line->text())
+	GTGlobals::sleep(500);
 }
 
 TEST_CLASS_DEFINITION(Test2){
@@ -32,6 +33,7 @@ TEST_CLASS_DEFINITION(Test2){
     //GTGlobals::sleep();
     GTKeyboardDriver::keySequence(os, "0123456789,<.>!@#$%^&*()-_=+[{]};:\'\"/\\|");
     CHECK_SET_ERR(line->text() == "0123456789,<.>!@#$%^&*()-_=+[{]};:\'\"/\\|", "expected: 0123456789,<.>!@#$%^&*()-_=+[{]};:\'\"/\\|, actual: " + line->text())
+	GTGlobals::sleep(500);
 }
 
 TEST_CLASS_DEFINITION(Test3){
@@ -57,6 +59,10 @@ TEST_CLASS_DEFINITION(Test4){
 
     QList<KeyEvent> list = MainWindow::getInstance()->eventFilter->keyEvents;
     int i = list.size();
+
+	foreach(KeyEvent k, list){
+		GTGlobals::sleep(10);
+	}
 
     CHECK_SET_ERR(i == 4, QString("unexpected number of key events: %1").arg(i));
 
