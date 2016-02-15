@@ -33,163 +33,106 @@ namespace HI {
 
 int asciiToVirtual(int);
 bool extractShiftModifier(char &key);
+void keyPressMac(GUITestOpStatus &os, int key);
+void keyReleaseMac(GUITestOpStatus &os, int key);
 
 #define GT_CLASS_NAME "GTKeyboardDriverMac"
 #define GT_METHOD_NAME "keyPress_char"
-void GTKeyboardDriver::keyPress(GUITestOpStatus &os, char key, int modifiers) {
+void GTKeyboardDriver::keyPress(GUITestOpStatus &os, char key, Qt::KeyboardModifiers modifiers) {
     GT_CHECK(key != 0, "key = 0");
 
     const bool isChanged = extractShiftModifier(key);
     if (isChanged) {
-        CGEventRef event = CGEventCreateKeyboardEvent(NULL, GTKeyboardDriver::key[Qt::Key_Shift], true);
-        GT_CHECK(event != NULL, "Can't create event");
-
-        CGEventPost(kCGSessionEventTap, event);
-        CFRelease(event);
+        keyPressMac(os, GTKeyboardDriver::key[Qt::Key_Shift]);
     } else {
         key = asciiToVirtual(key);
     }
 
     GTGlobals::sleep(1);
-    keyPress(os, (int)key, modifiers);
-}
-#undef GT_METHOD_NAME
-
-#define GT_METHOD_NAME "keyPress_int"
-void GTKeyboardDriver::keyPress(GUITestOpStatus &os, int key, int modifiers)
-{
-    if (key==Qt::ControlModifier)
-        key=GTKeyboardDriver::key["cmd"];
-
-    if (modifiers) {
-        CGEventRef event = CGEventCreateKeyboardEvent(NULL, modifiers, true);
-        GT_CHECK(event != NULL, "Can't create event");
-
-        CGEventPost(kCGSessionEventTap, event);
-        CFRelease(event);
-        GTGlobals::sleep(1);
+    QList<Qt::Key> modKeys = modifiersToKeys(modifiers);
+    foreach (Qt::Key mod, modKeys) {
+        keyPressMac(os, GTKeyboardDriver::key[mod]);
     }
 
-    CGEventRef event = CGEventCreateKeyboardEvent(NULL, key, true);
-    GT_CHECK(event != NULL, "Can't create event");
-
-    CGEventPost(kCGSessionEventTap, event);
-    CFRelease(event);
-    GTGlobals::sleep(1);
+    keyPressMac(os, (int)key);
 }
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "keyRelease_char"
-void GTKeyboardDriver::keyRelease(GUITestOpStatus &os, char key, int modifiers) {
+void GTKeyboardDriver::keyRelease(GUITestOpStatus &os, char key, Qt::KeyboardModifiers modifiers) {
     GT_CHECK(key != 0, "key = 0");
 
     const bool isChanged = extractShiftModifier(key);
     if (!isChanged) {
         key = asciiToVirtual(key);
     } else {
-        CGEventRef event = CGEventCreateKeyboardEvent(NULL, GTKeyboardDriver::key[Qt::Key_Shift], false);
-        GT_CHECK(event != NULL, "Can't create event");
-
-        CGEventPost(kCGSessionEventTap, event);
-        CFRelease(event);
+        keyReleaseMac(os, GTKeyboardDriver::key[Qt::Key_Shift]);
     }
 
     GTGlobals::sleep(1);
-    keyRelease(os, (int) key, modifiers);
-}
-#undef GT_METHOD_NAME
-
-#define GT_METHOD_NAME "keyRelease_int"
-void GTKeyboardDriver::keyRelease(GUITestOpStatus &os, int key, int modifiers)
-{
-    if (key==Qt::ControlModifier)
-        key=GTKeyboardDriver::key["cmd"];
-
-    CGEventRef event = CGEventCreateKeyboardEvent(NULL, key, false);
-    GT_CHECK(event != NULL, "Can't create event");
-
-    CGEventPost(kCGSessionEventTap, event);
-    CFRelease(event);
+    keyReleaseMac(os, (int)key);
     GTGlobals::sleep(1);
 
-    if (modifiers) {
-        CGEventRef event = CGEventCreateKeyboardEvent(NULL, modifiers, false);
-        GT_CHECK(event != NULL, "Can't create event");
-
-        CGEventPost(kCGSessionEventTap, event);
-        CFRelease(event);
+    QList<Qt::Key> modKeys = modifiersToKeys(modifiers);
+    foreach (Qt::Key mod, modKeys) {
+        keyReleaseMac(os, GTKeyboardDriver::key[mod]);
     }
     GTGlobals::sleep(1);
 }
 #undef GT_METHOD_NAME
+
+void GTKeyboardDriver::keyPress(GUITestOpStatus &os, Qt::Key key, Qt::KeyboardModifiers modifiers){
+    QList<Qt::Key> modKeys = modifiersToKeys(modifiers);
+    foreach (Qt::Key mod, modKeys) {
+        keyPressMac(os, GTKeyboardDriver::key[mod]);
+    }
+    keyPressMac(os, GTKeyboardDriver::key[key]);
+}
+
+void GTKeyboardDriver::keyRelease(GUITestOpStatus &os, Qt::Key key, Qt::KeyboardModifiers modifiers){
+    keyReleaseMac(os, GTKeyboardDriver::key[key]);
+
+    QList<Qt::Key> modKeys = modifiersToKeys(modifiers);
+    foreach (Qt::Key mod, modKeys) {
+        keyReleaseMac(os, GTKeyboardDriver::key[mod]);
+    }
+}
 
 GTKeyboardDriver::keys::keys()
 {
-    ADD_KEY("cmd", kVK_Command);
-    ADD_KEY("tab", kVK_Tab);
-    ADD_KEY("enter", kVK_Return);
+    ADD_KEY(Qt::Key_Control, kVK_Command);
+    ADD_KEY(Qt::Key_Tab, kVK_Tab);
+    ADD_KEY(Qt::Key_Enter, kVK_Return);
     ADD_KEY(Qt::Key_Shift, kVK_Shift);
-    ADD_KEY("ctrl", kVK_Control);
-    ADD_KEY("alt", kVK_Option);
-    ADD_KEY("esc", kVK_Escape);
-    ADD_KEY("space", kVK_Space);
-    ADD_KEY("left", kVK_LeftArrow);
-    ADD_KEY("up", kVK_UpArrow);
-    ADD_KEY("right", kVK_RightArrow);
-    ADD_KEY("down", kVK_DownArrow);
-    ADD_KEY("delete", kVK_ForwardDelete);
-    ADD_KEY("back", kVK_Delete);
-    ADD_KEY("help", kVK_Help);
-    ADD_KEY("f1", kVK_F1);
-    ADD_KEY("f2", kVK_F2);
-    ADD_KEY("f3", kVK_F3);
-    ADD_KEY("f4", kVK_F4);
-    ADD_KEY("f5", kVK_F5);
-    ADD_KEY("f6", kVK_F6);
-    ADD_KEY("f7", kVK_F7);
-    ADD_KEY("f8", kVK_F8);
-    ADD_KEY("f9", kVK_F9);
-    ADD_KEY("f10", kVK_F10);
-    ADD_KEY("f12", kVK_F12);
-    ADD_KEY("home", kVK_Home);
-    ADD_KEY("end", kVK_End);
-    ADD_KEY("pageup", kVK_PageUp);
-    ADD_KEY("pagedown", kVK_PageDown);
+    ADD_KEY(Qt::Key_Meta, kVK_Control);
+    ADD_KEY(Qt::Key_Alt, kVK_Option);
+    ADD_KEY(Qt::Key_Escape, kVK_Escape);
+    ADD_KEY(Qt::Key_Space, kVK_Space);
+    ADD_KEY(Qt::Key_Left, kVK_LeftArrow);
+    ADD_KEY(Qt::Key_Up, kVK_UpArrow);
+    ADD_KEY(Qt::Key_Right, kVK_RightArrow);
+    ADD_KEY(Qt::Key_Down, kVK_DownArrow);
+    ADD_KEY(Qt::Key_Delete, kVK_ForwardDelete);
+    ADD_KEY(Qt::Key_Backspace, kVK_Delete);
+    ADD_KEY(Qt::Key_Help, kVK_Help);
+    ADD_KEY(Qt::Key_F1, kVK_F1);
+    ADD_KEY(Qt::Key_F2, kVK_F2);
+    ADD_KEY(Qt::Key_F3, kVK_F3);
+    ADD_KEY(Qt::Key_F4, kVK_F4);
+    ADD_KEY(Qt::Key_F5, kVK_F5);
+    ADD_KEY(Qt::Key_F6, kVK_F6);
+    ADD_KEY(Qt::Key_F7, kVK_F7);
+    ADD_KEY(Qt::Key_F8, kVK_F8);
+    ADD_KEY(Qt::Key_F9, kVK_F9);
+    ADD_KEY(Qt::Key_F10, kVK_F10);
+    ADD_KEY(Qt::Key_F12, kVK_F12);
+    ADD_KEY(Qt::Key_Home, kVK_Home);
+    ADD_KEY(Qt::Key_End, kVK_End);
+    ADD_KEY(Qt::Key_PageUp, kVK_PageUp);
+    ADD_KEY(Qt::Key_PageDown, kVK_PageDown);
 
 // feel free to add other keys
 // macro kVK_* defined in Carbon.framework/Frameworks/HIToolbox.framework/Headers/Events.h
-}
-
-#define GT_METHOD_NAME "keyClick"
-void GTKeyboardDriver::keyClick(GUITestOpStatus &os, char key, int modifiers)
-{
-    GT_CHECK(key != 0, "key = 0");
-    if (modifiers==Qt::ControlModifier)
-        modifiers=GTKeyboardDriver::key["cmd"];
-    keyPress(os, key, modifiers);
-    keyRelease(os, key, modifiers);
-}
-#undef GT_METHOD_NAME
-
-void GTKeyboardDriver::keyClick(GUITestOpStatus &os, char key, QList<int> modifiers){
-    switch (modifiers.size()) {
-    case 0:
-        keyClick(os, key);
-        break;
-    case 1:
-        keyClick(os, key, modifiers.first());
-        break;
-    default:
-        int modifier = modifiers.takeLast();
-        foreach (int mod, modifiers) {
-            keyPress(os, mod);
-        }
-        keyClick(os, key, modifier);
-        foreach (int mod, modifiers) {
-            keyRelease(os, mod);
-        }
-        break;
-    }
 }
 
 #undef GT_CLASS_NAME
@@ -355,32 +298,53 @@ bool extractShiftModifier(char &key) {
     case '_':
         key = asciiToVirtual('-');
         return true;
+    case '+':
+        key = asciiToVirtual('=');
+        return true;
     case '<':
         key = asciiToVirtual(',');
         return true;
     case '>':
         key = asciiToVirtual('.');
         return true;
-    case '(':
-        key = asciiToVirtual('9');
-        return true;
     case ')':
         key = asciiToVirtual('0');
         return true;
-    case '$':
-        key = asciiToVirtual('4');
+    case '!':
+        key = asciiToVirtual('1');
+        return true;
+    case '@':
+        key = asciiToVirtual('2');
         return true;
     case '#':
         key = asciiToVirtual('3');
         return true;
-    case '\"':
-        key = asciiToVirtual('\'');
+    case '$':
+        key = asciiToVirtual('4');
         return true;
-    case ':':
-        key = asciiToVirtual(';');
+    case '%':
+        key = asciiToVirtual('5');
+        return true;
+    case '^':
+        key = asciiToVirtual('6');
+        return true;
+    case '&':
+        key = asciiToVirtual('7');
         return true;
     case '*':
         key = asciiToVirtual('8');
+        return true;
+    case '(':
+        key = asciiToVirtual('9');
+        return true;
+    case '\"':
+        key = asciiToVirtual('\'');
+        return true;
+    case '|':
+        key = asciiToVirtual('\\');
+        return true;
+    case ':':
+        key = asciiToVirtual(';');
         return true;
     case '{':
         key = asciiToVirtual('[');
@@ -391,6 +355,24 @@ bool extractShiftModifier(char &key) {
     }
 
     return false;
+}
+
+void keyPressMac(GUITestOpStatus &os, int key){
+    CGEventRef event = CGEventCreateKeyboardEvent(NULL, key, true);
+    //GT_CHECK(event != NULL, "Can't create event");
+
+    CGEventPost(kCGSessionEventTap, event);
+    CFRelease(event);
+    GTGlobals::sleep(1);
+}
+
+void keyReleaseMac(GUITestOpStatus &os, int key){
+    CGEventRef event = CGEventCreateKeyboardEvent(NULL, key, false);
+    //GT_CHECK(event != NULL, "Can't create event");
+
+    CGEventPost(kCGSessionEventTap, event);
+    CFRelease(event);
+    GTGlobals::sleep(1);
 }
 
 #endif

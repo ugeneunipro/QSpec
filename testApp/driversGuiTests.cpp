@@ -60,10 +60,6 @@ TEST_CLASS_DEFINITION(Test4){
     QList<KeyEvent> list = MainWindow::getInstance()->eventFilter->keyEvents;
     int i = list.size();
 
-	foreach(KeyEvent k, list){
-		GTGlobals::sleep(10);
-	}
-
     CHECK_SET_ERR(i == 4, QString("unexpected number of key events: %1").arg(i));
 
     CHECK_SET_ERR(list[0].getKey() == Qt::Key_Control, QString("unexpected 1 key: %1").arg(list[0].getKey()));
