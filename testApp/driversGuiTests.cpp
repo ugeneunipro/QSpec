@@ -1,6 +1,7 @@
 #include "driversGuiTests.h"
 #include "mainwindow.h"
 #include "EventFilter.h"
+#include "systemTests.h"
 
 #include <primitives/GTWidget.h>
 #include <drivers/GTKeyboardDriver.h>
@@ -9,6 +10,7 @@
 #include <QLineEdit>
 #include <primitives/GTLineEdit.h>
 
+
 using namespace HI;
 driversGuiTestsLauncher::driversGuiTestsLauncher(): GUITestsLauncher()
 {
@@ -16,6 +18,8 @@ driversGuiTestsLauncher::driversGuiTestsLauncher(): GUITestsLauncher()
     guiTestBase.registerTest(new Test2());
     guiTestBase.registerTest(new Test3());
     guiTestBase.registerTest(new Test4());
+    guiTestBase.registerTest(new FilePermissionTest());
+    guiTestBase.registerTest(new DirPermissionTest());
 }
 
 TEST_CLASS_DEFINITION(Test1){

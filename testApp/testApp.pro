@@ -1,4 +1,4 @@
-QT       += core gui
+QT       += core gui testlib
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -9,11 +9,13 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     driversGuiTests.cpp \
+    systemTests.cpp \
     EventRecorderWidget.cpp \
     EventFilter.cpp
 
 HEADERS  += mainwindow.h \
     driversGuiTests.h \
+    systemTests.h \
     EventRecorderWidget.h \
     EventFilter.h
 
