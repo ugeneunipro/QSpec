@@ -1,4 +1,5 @@
 #include "EventFilter.h"
+#include <QDebug>
 
 KeyEvent::KeyEvent(){
     key = Qt::Key_unknown;

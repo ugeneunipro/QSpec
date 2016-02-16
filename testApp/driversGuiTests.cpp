@@ -1,6 +1,7 @@
 #include "driversGuiTests.h"
 #include "mainwindow.h"
 #include "EventFilter.h"
+#include "systemTests.h"
 
 #include <primitives/GTWidget.h>
 #include <drivers/GTKeyboardDriver.h>
@@ -9,6 +10,7 @@
 #include <QLineEdit>
 #include <primitives/GTLineEdit.h>
 
+
 using namespace HI;
 driversGuiTestsLauncher::driversGuiTestsLauncher(): GUITestsLauncher()
 {
@@ -16,6 +18,8 @@ driversGuiTestsLauncher::driversGuiTestsLauncher(): GUITestsLauncher()
     guiTestBase.registerTest(new Test2());
     guiTestBase.registerTest(new Test3());
     guiTestBase.registerTest(new Test4());
+    guiTestBase.registerTest(new FilePermissionTest());
+    guiTestBase.registerTest(new DirPermissionTest());
 }
 
 TEST_CLASS_DEFINITION(Test1){
@@ -23,7 +27,8 @@ TEST_CLASS_DEFINITION(Test1){
     GTWidget::click(os, line);
     GTGlobals::sleep();
     GTKeyboardDriver::keySequence(os, "abcdefghigklmnopqrstuvwxy z");
-    CHECK_SET_ERR(line->text() == "abcdefghigklmnopqrstuvwxy z", "expected: abcdefghigklmnopqrstuvwxy z, actual: " + line->text())
+	CHECK_SET_ERR(line->text() == "abcdefghigklmnopqrstuvwxy z", "expected: abcdefghigklmnopqrstuvwxy z, actual: " + line->text())
+	GTGlobals::sleep(500);
 }
 
 TEST_CLASS_DEFINITION(Test2){
@@ -32,6 +37,7 @@ TEST_CLASS_DEFINITION(Test2){
     //GTGlobals::sleep();
     GTKeyboardDriver::keySequence(os, "0123456789,<.>!@#$%^&*()-_=+[{]};:\'\"/\\|");
     CHECK_SET_ERR(line->text() == "0123456789,<.>!@#$%^&*()-_=+[{]};:\'\"/\\|", "expected: 0123456789,<.>!@#$%^&*()-_=+[{]};:\'\"/\\|, actual: " + line->text())
+	GTGlobals::sleep(500);
 }
 
 TEST_CLASS_DEFINITION(Test3){
