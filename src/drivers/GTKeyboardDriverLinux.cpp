@@ -36,7 +36,7 @@ namespace HI {
 #define GT_CLASS_NAME "GTKeyboardDriverLinux"
 
 #define GT_METHOD_NAME "keyPress"
-void GTKeyboardDriver::keyPress(GUITestOpStatus &os, char key, Qt::KeyboardModifier modifiers)
+void GTKeyboardDriver::keyPress(GUITestOpStatus &os, char key, Qt::KeyboardModifiers modifiers)
 {
     GT_CHECK_NO_MESSAGE(key != 0, "key = 0");
 
@@ -141,7 +141,7 @@ void GTKeyboardDriver::keyPress(GUITestOpStatus &os, char key, Qt::KeyboardModif
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "keyRelease"
-void GTKeyboardDriver::keyRelease(GUITestOpStatus &os, char key, Qt::KeyboardModifier modifiers)
+void GTKeyboardDriver::keyRelease(GUITestOpStatus &os, char key, Qt::KeyboardModifiers modifiers)
 {
     GT_CHECK_NO_MESSAGE(key != 0, "key = ");
 
@@ -274,7 +274,7 @@ void GTKeyboardDriver::keyRelease(GUITestOpStatus &os, char key, Qt::KeyboardMod
 }
 #undef GT_METHOD_NAME
 
-void GTKeyboardDriver::keyPress(GUITestOpStatus &os, Qt::Key key, Qt::KeyboardModifier modifiers){
+void GTKeyboardDriver::keyPress(GUITestOpStatus &os, Qt::Key key, Qt::KeyboardModifiers modifiers){
     modifiersToKeys(modifiers);
     QByteArray display_name = qgetenv("DISPLAY");
     //GT_CHECK_NO_MESSAGE(!display_name.isEmpty(), "Environment variable \"DISPLAY\" not found");
@@ -293,7 +293,7 @@ void GTKeyboardDriver::keyPress(GUITestOpStatus &os, Qt::Key key, Qt::KeyboardMo
     XCloseDisplay(display);
 }
 
-void GTKeyboardDriver::keyRelease(GUITestOpStatus &os, Qt::Key key, Qt::KeyboardModifier modifiers){
+void GTKeyboardDriver::keyRelease(GUITestOpStatus &os, Qt::Key key, Qt::KeyboardModifiers modifiers){
     QByteArray display_name = qgetenv("DISPLAY");
     //GT_CHECK_NO_MESSAGE(!display_name.isEmpty(), "Environment variable \"DISPLAY\" not found");
 

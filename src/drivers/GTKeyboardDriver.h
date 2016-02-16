@@ -65,14 +65,14 @@ public:
     // fails if key == 0
     // Linux: fails if there is an opening X display error
 
-    static void keyClick(GUITestOpStatus &os, char key, Qt::KeyboardModifier = Qt::NoModifier);
-    static void keyClick(GUITestOpStatus &os, Qt::Key, Qt::KeyboardModifier = Qt::NoModifier);
-    static void keySequence(GUITestOpStatus &os, const QString &str, Qt::KeyboardModifier = Qt::NoModifier);
+    static void keyClick(GUITestOpStatus &os, char key, Qt::KeyboardModifiers = Qt::NoModifier);
+    static void keyClick(GUITestOpStatus &os, Qt::Key, Qt::KeyboardModifiers = Qt::NoModifier);
+    static void keySequence(GUITestOpStatus &os, const QString &str, Qt::KeyboardModifiers = Qt::NoModifier);
 
-    static void keyPress(GUITestOpStatus &os, char key, Qt::KeyboardModifier = Qt::NoModifier);
-    static void keyRelease(GUITestOpStatus &os, char key, Qt::KeyboardModifier = Qt::NoModifier);
-    static void keyPress(GUITestOpStatus &os, Qt::Key, Qt::KeyboardModifier = Qt::NoModifier);
-    static void keyRelease(GUITestOpStatus &os, Qt::Key, Qt::KeyboardModifier = Qt::NoModifier);
+    static void keyPress(GUITestOpStatus &os, char key, Qt::KeyboardModifiers = Qt::NoModifier);
+    static void keyRelease(GUITestOpStatus &os, char key, Qt::KeyboardModifiers= Qt::NoModifier);
+    static void keyPress(GUITestOpStatus &os, Qt::Key, Qt::KeyboardModifiers = Qt::NoModifier);
+    static void keyRelease(GUITestOpStatus &os, Qt::Key, Qt::KeyboardModifiers = Qt::NoModifier);
 
 
 
