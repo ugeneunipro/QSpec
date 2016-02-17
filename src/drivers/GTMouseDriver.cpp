@@ -45,8 +45,8 @@ bool isFarEnoughToStartDnd(const QPoint &start, const QPoint &end) {
 
 void GTMouseDriver::dragAndDrop(GUITestOpStatus &os, const QPoint& start, const QPoint& end) {
     moveTo(os, start);
-    GTDragger d(os, end);
-    Q_UNUSED(d);
+    //GTDragger d(os, end);
+    //Q_UNUSED(d);
 
     press(os);
 
@@ -55,7 +55,14 @@ void GTMouseDriver::dragAndDrop(GUITestOpStatus &os, const QPoint& start, const 
                                  QPoint(0, 0));
     GTMouseDriver::moveTo(os, farPoint);
 
+    GTMouseDriver::moveTo(os, end);
+    GTMouseDriver::release(os);
+
     GTThread::waitForMainThread(os);
+}
+
+void GTMouseDriver::selectArea(GUITestOpStatus &os, const QPoint &start, const QPoint &end){
+    dragAndDrop(os, start, end);
 }
 
 #ifndef Q_OS_MAC
@@ -71,32 +78,32 @@ void GTMouseDriver::doubleClick(GUITestOpStatus &os)
 }
 #endif
 
-GTDragger::GTDragger(GUITestOpStatus &_os, const QPoint& _to) :
-    QObject(),
-    os(_os),
-    to(_to),
-    done(false)
-{
-    QTimer::singleShot(2000, this, SLOT(sl_execDrag()));
-    GTGlobals::sleep(500);
-}
+//GTDragger::GTDragger(GUITestOpStatus &_os, const QPoint& _to) :
+//    QObject(),
+//    os(_os),
+//    to(_to),
+//    done(false)
+//{
+//    QTimer::singleShot(2000, this, SLOT(sl_execDrag()));
+//    GTGlobals::sleep(500);
+//}
 
-GTDragger::~GTDragger() {
-    if (!done) {
-        sl_execDrag();
-    }
-}
+//GTDragger::~GTDragger() {
+//    if (!done) {
+//        sl_execDrag();
+//    }
+//}
 
-void GTDragger::sl_execDrag(){
-    GTMouseDriver::moveTo(os, to);
-#ifndef Q_OS_LINUX
-    GTMouseDriver::release(os);
-    GTThread::waitForMainThread(os);
-#else
-    GTMouseDriver::click(os);
-    GTGlobals::sleep();
-#endif
-    done = true;
-}
+//void GTDragger::sl_execDrag(){
+//    GTMouseDriver::moveTo(os, to);
+//#ifndef Q_OS_LINUX
+//    GTMouseDriver::release(os);
+//    GTThread::waitForMainThread(os);
+//#else
+//    GTMouseDriver::click(os);
+//    GTGlobals::sleep();
+//#endif
+//    done = true;
+//}
 
 } //namespace

@@ -34,8 +34,10 @@ namespace HI {
 QPoint GTMouseDriver::mousePos = QPoint(-1, -1);
 
 #define GT_METHOD_NAME "moveToP"
-void GTMouseDriver::moveToP(GUITestOpStatus &os, const int x, const int y)
+void GTMouseDriver::moveTo(GUITestOpStatus &os, const QPoint& p)
 {
+    int x = p.x();
+    int y = p.y();
     QByteArray display_name = qgetenv("DISPLAY");
     GT_CHECK(!display_name.isEmpty(), "Environment variable \"DISPLAY\" not found");
 

@@ -33,7 +33,7 @@ class HI_EXPORT GTMouseDriver {
 public:
     // fails if given coordinates are not in the screen's rect
     // Linux: fails if there is an opening X display error
-    static void moveTo(GUITestOpStatus &os, const QPoint& p) {mousePos = p; moveToP(os, p.x(), p.y()); }
+    static void moveTo(GUITestOpStatus &os, const QPoint& p);// {mousePos = p; moveToP(os, p.x(), p.y()); } TODO: remove when all works fine
 
     // fails if press or release fails
     // Linux: fails if there is an opening X display error
@@ -56,24 +56,24 @@ private:
     static QPoint mousePos;
     static Qt::MouseButtons bp;
 
-    static void moveToP(GUITestOpStatus &os, const int x, const int y); // platform-depended realization of moveTo
-    static void selectArea(GUITestOpStatus &os, const int x, const int y);
+    //static void moveToP(GUITestOpStatus &os, const int x, const int y); // platform-depended realization of moveTo TODO: remove when all works fine
+    //static void selectArea(GUITestOpStatus &os, const int x, const int y);
 };
 
-class HI_EXPORT GTDragger : public QObject{
-    Q_OBJECT
-public:
-    GTDragger(GUITestOpStatus &_os, const QPoint& _to);
-    ~GTDragger();
+//class HI_EXPORT GTDragger : public QObject{
+//    Q_OBJECT
+//public:
+//    GTDragger(GUITestOpStatus &_os, const QPoint& _to);
+//    ~GTDragger();
 
-public slots:
-    void sl_execDrag();
+//public slots:
+//    void sl_execDrag();
 
-private:
-    GUITestOpStatus& os;
-    QPoint to;
-    bool done;
-};
+//private:
+//    GUITestOpStatus& os;
+//    QPoint to;
+//    bool done;
+//};
 
 } //namespace
 
