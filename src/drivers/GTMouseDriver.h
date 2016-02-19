@@ -51,7 +51,7 @@ public:
     // Linux: fails if there is an opening X display error
     static void scroll(GUITestOpStatus &os, int value); //positive values for scrolling up, negative for scrolling down
 
-    static QPoint getMousePosition() { return mousePos; }
+    static QPoint getMousePosition();// { return mousePos; }
 private:
     static QPoint mousePos;
     static Qt::MouseButtons bp;

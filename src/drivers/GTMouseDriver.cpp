@@ -78,6 +78,10 @@ void GTMouseDriver::doubleClick(GUITestOpStatus &os)
 }
 #endif
 
+QPoint GTMouseDriver::getMousePosition(){
+    return QCursor::pos();
+}
+
 //GTDragger::GTDragger(GUITestOpStatus &_os, const QPoint& _to) :
 //    QObject(),
 //    os(_os),

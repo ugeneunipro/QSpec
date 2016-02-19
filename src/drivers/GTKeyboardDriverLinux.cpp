@@ -330,6 +330,18 @@ GTKeyboardDriver::keys::keys()
     ADD_KEY(Qt::Key_End, XK_End);
     ADD_KEY(Qt::Key_PageUp, XK_Page_Up);
     ADD_KEY(Qt::Key_PageDown, XK_Page_Down);
+    ADD_KEY(Qt::Key_F1, XK_F1);
+    ADD_KEY(Qt::Key_F2, XK_F2);
+    ADD_KEY(Qt::Key_F3, XK_F3);
+    ADD_KEY(Qt::Key_F4, XK_F4);
+    ADD_KEY(Qt::Key_F5, XK_F5);
+    ADD_KEY(Qt::Key_F6, XK_F6);
+    ADD_KEY(Qt::Key_F7, XK_F7);
+    ADD_KEY(Qt::Key_F8, XK_F8);
+    ADD_KEY(Qt::Key_F9, XK_F9);
+    ADD_KEY(Qt::Key_F10, XK_F10);
+    ADD_KEY(Qt::Key_F11, XK_F11);
+    ADD_KEY(Qt::Key_F12, XK_F12);
 
 // feel free to add other keys
 // macro XK_* defined in X11/keysymdef.h
