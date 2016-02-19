@@ -87,7 +87,7 @@ void GTKeyboardDriver::keyPress(GUITestOpStatus &os, char key, Qt::KeyboardModif
 
 	QList<Qt::Key> modKeys = modifiersToKeys(modifiers);
 	foreach(Qt::Key mod, modKeys){
-		keyPressWindows(os, mod);
+ 		keyPressWindows(os, GTKeyboardDriver::key[mod]);
 	}
 
     switch (key) {
@@ -288,13 +288,13 @@ void GTKeyboardDriver::keyRelease(GUITestOpStatus &os, char key, Qt::KeyboardMod
 			break;
         default:
 			keyReleaseWindows(os, (int)key);
-            break;
-
-		QList<Qt::Key> modKeys = modifiersToKeys(modifiers);
-		foreach(Qt::Key mod, modKeys){
-			keyReleaseWindows(os, mod);
-		}
+			break;
     }
+
+	QList<Qt::Key> modKeys = modifiersToKeys(modifiers);
+	foreach(Qt::Key mod, modKeys){
+		keyReleaseWindows(os, GTKeyboardDriver::key[mod]);
+	}
 }
 
 void GTKeyboardDriver::keyPress(GUITestOpStatus &os, Qt::Key key, Qt::KeyboardModifiers modifiers){
@@ -321,7 +321,7 @@ GTKeyboardDriver::keys::keys()
     //ADD_KEY("clear", VK_CLEAR);
     ADD_KEY(Qt::Key_Enter, VK_RETURN);
     ADD_KEY(Qt::Key_Shift, VK_SHIFT);
-    ADD_KEY(Qt::Key_Shift, VK_RSHIFT);
+    //ADD_KEY(Qt::Key_Shift, VK_RSHIFT);
     //ADD_KEY("lshift", VK_LSHIFT);
 	ADD_KEY(Qt::Key_Control, VK_LCONTROL);
     //ADD_KEY("rctrl", VK_RCONTROL);

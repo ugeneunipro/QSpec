@@ -67,6 +67,7 @@ void GTKeyboardDriver::keySequence(GUITestOpStatus &os, const QString &str, Qt::
         } else {
             keyClick(os, asciiChar);
         }
+		GTGlobals::sleep(10);
 #ifdef  Q_OS_MAC
         GTGlobals::sleep(1); // need for MacOS
 #endif
