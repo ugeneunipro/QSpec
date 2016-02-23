@@ -30,8 +30,5 @@ _build/
 # External customization file.
 custom.pri
 
-# For those who use CMake to build the project
-CMakeLists.txt
-
 # Jetbrains tools (CLion, etc..)
 .idea
