@@ -62,7 +62,7 @@ void GTListWidget::checkItem(GUITestOpStatus &os, QListWidget *listWidget, const
     GT_CHECK(NULL != listWidget, "List widget is NULL");
     if (newState != isItemChecked(os, listWidget, text)) {
         click(os, listWidget, text);
-        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
+        GTKeyboardDriver::keyClick(os, Qt::Key_Space);
     }
 }
 #undef GT_METHOD_NAME

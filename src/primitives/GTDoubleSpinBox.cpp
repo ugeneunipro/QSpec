@@ -74,11 +74,11 @@ void GTDoubleSpinbox::setValue(GUITestOpStatus& os, QDoubleSpinBox *spinBox, dou
             break;
 
         case GTGlobals::UseKey: {
-            int key = 0;
+            Qt::Key key;
             if (v > spinBox->value()) {
-                key = GTKeyboardDriver::key["up"];
+                key = Qt::Key_Up;
             } else {
-                key = GTKeyboardDriver::key["down"];
+                key = Qt::Key_Down;
             }
 
             GTWidget::setFocus(os, spinBox);
@@ -93,9 +93,9 @@ void GTDoubleSpinbox::setValue(GUITestOpStatus& os, QDoubleSpinBox *spinBox, dou
             GTWidget::setFocus(os, spinBox);
 
             GTGlobals::sleep(100);
-            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["up"]);
+            GTKeyboardDriver::keyClick(os, Qt::Key_Up);
             GTGlobals::sleep(100);
-            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["down"]);
+            GTKeyboardDriver::keyClick(os, Qt::Key_Down);
             GTKeyboardDriver::keySequence(os,s);
             GTGlobals::sleep(100);
 

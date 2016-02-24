@@ -51,7 +51,7 @@ void PopupChooser::commonScenario() {
 
 #define GT_METHOD_NAME "clickEsc"
 void PopupChooser::clickEsc(GUITestOpStatus &os) {
-    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
+    GTKeyboardDriver::keyClick(os, Qt::Key_Escape);
 }
 #undef GT_METHOD_NAME
 

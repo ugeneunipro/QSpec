@@ -19,6 +19,12 @@ humimitd.*
 *.vcxproj*
 *.tmp
 
+# QtCreator files
+*.pro.user
+
+# testApp executable
+testApp/testApp
+
 # MacOS generated files
 .DS_Store
 .qmake.stash

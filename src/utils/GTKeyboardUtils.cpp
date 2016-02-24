@@ -25,46 +25,23 @@ namespace HI {
 
 void GTKeyboardUtils::selectAll(GUITestOpStatus &os)
 {
-#ifndef Q_OS_MAC
-    int modifiers = GTKeyboardDriver::key["ctrl"];
-#else
-    int modifiers = GTKeyboardDriver::key["cmd"];
-#endif
-
-    GTKeyboardDriver::keyClick(os, 'a', modifiers);
+    GTKeyboardDriver::keyClick(os, 'a', Qt::ControlModifier);
 }
 
 void GTKeyboardUtils::copy(GUITestOpStatus &os)
 {
-#ifndef Q_OS_MAC
-    int modifiers = GTKeyboardDriver::key["ctrl"];
-#else
-    int modifiers = GTKeyboardDriver::key["cmd"];
-#endif
-
-    GTKeyboardDriver::keyClick(os, 'c', modifiers);
+    GTKeyboardDriver::keyClick(os, 'c', Qt::ControlModifier);
 }
 
 void GTKeyboardUtils::paste(GUITestOpStatus &os)
 {
-#ifndef Q_OS_MAC
-    int modifiers = GTKeyboardDriver::key["ctrl"];
-#else
-    int modifiers = GTKeyboardDriver::key["cmd"];
-#endif
-
-    GTKeyboardDriver::keyClick(os, 'v', modifiers);
+    GTKeyboardDriver::keyClick(os, 'v', Qt::ControlModifier);
 }
 
 void GTKeyboardUtils::cut(GUITestOpStatus &os)
 {
-#ifndef Q_OS_MAC
-    int modifiers = GTKeyboardDriver::key["ctrl"];
-#else
-    int modifiers = GTKeyboardDriver::key["cmd"];
-#endif
 
-    GTKeyboardDriver::keyClick(os, 'x', modifiers);
+    GTKeyboardDriver::keyClick(os, 'x', Qt::ControlModifier);
 }
 
 } // namespace
