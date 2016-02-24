@@ -63,9 +63,6 @@ public:
     static void keyPress(GUITestOpStatus &os, Qt::Key, Qt::KeyboardModifiers = Qt::NoModifier);
     static void keyRelease(GUITestOpStatus &os, Qt::Key, Qt::KeyboardModifiers = Qt::NoModifier);
 
-
-
-
     class HI_EXPORT keys : private QMap<Qt::Key, int> {
     public:
         keys();
@@ -76,7 +73,6 @@ public:
 
 private:
     static QList<Qt::Key> modifiersToKeys(Qt::KeyboardModifiers m);
-
 
 };
 
