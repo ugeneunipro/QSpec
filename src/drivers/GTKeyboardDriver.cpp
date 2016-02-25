@@ -78,10 +78,10 @@ void GTKeyboardDriver::keySequence(GUITestOpStatus &os, const QString &str, int 
         }
 #ifdef  Q_OS_MAC
         GTGlobals::sleep(10); // need for MacOS
-        GTThread::waitForMainThread(os);
+
 #endif
     }
-
+    GTThread::waitForMainThread(os);
     if (modifiers) {
         keyRelease(os, modifiers);
     }
