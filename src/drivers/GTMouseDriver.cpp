@@ -32,7 +32,8 @@ void GTMouseDriver::click(GUITestOpStatus &os, Qt::MouseButton button)
     press(os, button);
     release(os, button);
 
-    GTGlobals::sleep(500);
+    GTGlobals::sleep(200);
+    GTThread::waitForMainThread(os);
 }
 
 namespace {
@@ -45,16 +46,26 @@ bool isFarEnoughToStartDnd(const QPoint &start, const QPoint &end) {
 
 void GTMouseDriver::dragAndDrop(GUITestOpStatus &os, const QPoint& start, const QPoint& end) {
     moveTo(os, start);
-    GTDragger d(os, end);
-    Q_UNUSED(d);
+    //GTDragger d(os, end);
+   // Q_UNUSED(d);
 
     press(os);
+    GTGlobals::sleep(100);
+
+    if(QApplication::mouseButtons().testFlag(Qt::LeftButton)){
+        GTGlobals::sleep(100);
+    }
 
     const QPoint farPoint = (isFarEnoughToStartDnd(start, (end + start) / 2) ?
                                  (end + start) / 2 :
                                  QPoint(0, 0));
     GTMouseDriver::moveTo(os, farPoint);
 
+    GTThread::waitForMainThread(os);
+
+    GTMouseDriver::moveTo(os, end);
+
+    GTMouseDriver::release(os);
     GTThread::waitForMainThread(os);
 }
 
