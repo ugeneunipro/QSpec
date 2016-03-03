@@ -73,6 +73,8 @@ void GTKeyboardDriver::keyPress(GUITestOpStatus &os, int key, int modifiers)
     CGEventRef event = CGEventCreateKeyboardEvent(NULL, key, true);
     GT_CHECK(event != NULL, "Can't create event");
 
+    CGEventSetFlags(event, CGEventGetFlags(event) & ~kCGEventFlagMaskNumericPad);
+
     CGEventPost(kCGSessionEventTap, event);
     CFRelease(event);
     GTGlobals::sleep(1);
@@ -107,6 +109,8 @@ void GTKeyboardDriver::keyRelease(GUITestOpStatus &os, int key, int modifiers)
 
     CGEventRef event = CGEventCreateKeyboardEvent(NULL, key, false);
     GT_CHECK(event != NULL, "Can't create event");
+
+    CGEventSetFlags(event, CGEventGetFlags(event) & ~kCGEventFlagMaskNumericPad);
 
     CGEventPost(kCGSessionEventTap, event);
     CFRelease(event);
