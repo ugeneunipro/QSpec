@@ -360,6 +360,7 @@ bool extractShiftModifier(char &key) {
 void keyPressMac(GUITestOpStatus &os, int key){
     CGEventRef event = CGEventCreateKeyboardEvent(NULL, key, true);
     //GT_CHECK(event != NULL, "Can't create event");
+    CGEventSetFlags(event, CGEventGetFlags(event) & ~kCGEventFlagMaskNumericPad);
 
     CGEventPost(kCGSessionEventTap, event);
     CFRelease(event);
@@ -369,6 +370,7 @@ void keyPressMac(GUITestOpStatus &os, int key){
 void keyReleaseMac(GUITestOpStatus &os, int key){
     CGEventRef event = CGEventCreateKeyboardEvent(NULL, key, false);
     //GT_CHECK(event != NULL, "Can't create event");
+    CGEventSetFlags(event, CGEventGetFlags(event) & ~kCGEventFlagMaskNumericPad);
 
     CGEventPost(kCGSessionEventTap, event);
     CFRelease(event);
