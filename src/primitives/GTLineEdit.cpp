@@ -47,9 +47,9 @@ void GTLineEdit::setText(GUITestOpStatus& os, QLineEdit* lineEdit, const QString
 
     if(useCopyPaste){
         GTClipboard::setText(os, str);
-        GTKeyboardDriver::keyClick(os, 'v', Qt::ControlModifier);
+        GTKeyboardDriver::keyClick( 'v', Qt::ControlModifier);
     }else{
-        GTKeyboardDriver::keySequence(os, str);
+        GTKeyboardDriver::keySequence(str);
     }
     GTGlobals::sleep(500);
 
@@ -83,7 +83,7 @@ void GTLineEdit::clear(GUITestOpStatus& os, QLineEdit* lineEdit) {
 
     GTKeyboardUtils::selectAll(os);
     GTGlobals::sleep(100);
-    GTKeyboardDriver::keyClick(os, Qt::Key_Delete);
+    GTKeyboardDriver::keyClick( Qt::Key_Delete);
     GTGlobals::sleep(100);
 
     QString s = lineEdit->text();
@@ -153,7 +153,7 @@ bool GTLineEdit::tryToSetText(GUITestOpStatus &os, QLineEdit *lineEdit, const QS
         clear(os, lineEdit);
     }
 
-    GTKeyboardDriver::keySequence(os, str);
+    GTKeyboardDriver::keySequence(str);
     GTGlobals::sleep(500);
 
     QString s = lineEdit->text();

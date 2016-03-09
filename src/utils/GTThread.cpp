@@ -30,8 +30,8 @@ namespace HI {
 #define GT_CLASS_NAME "ThreadWaiter"
 const qint64 TIMER_INTERVAL = 100;
 
-ThreadWaiter::ThreadWaiter(GUITestOpStatus &os) :
-    os(os),
+ThreadWaiter::ThreadWaiter() :
+    //os(os),
     startValue(0),
     endValue(0)
 {
@@ -53,8 +53,8 @@ void ThreadWaiter::wait() {
 #define GT_CLASS_NAME "GTThread"
 
 #define GT_METHOD_NAME "waitForMainThread"
-void GTThread::waitForMainThread(GUITestOpStatus &os) {
-    ThreadWaiter waiter(os);
+void GTThread::waitForMainThread() {
+    ThreadWaiter waiter;
     waiter.wait();
 }
 #undef GT_METHOD_NAME

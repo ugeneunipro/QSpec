@@ -40,7 +40,7 @@ void GTTextEdit::setText(GUITestOpStatus& os, QTextEdit* textEdit, const QString
     clear(os, textEdit);
     GTWidget::setFocus(os, textEdit);
 
-    GTKeyboardDriver::keySequence(os, text);
+    GTKeyboardDriver::keySequence(text);
     GTGlobals::sleep(500);
 }
 #undef GT_METHOD_NAME
@@ -69,7 +69,7 @@ void GTTextEdit::clear(GUITestOpStatus& os, QTextEdit* textEdit) {
 
     GTKeyboardUtils::selectAll(os);
     GTGlobals::sleep(100);
-    GTKeyboardDriver::keyClick(os, Qt::Key_Delete);
+    GTKeyboardDriver::keyClick( Qt::Key_Delete);
     GTGlobals::sleep(1000);
 
     QString s = textEdit->toPlainText();

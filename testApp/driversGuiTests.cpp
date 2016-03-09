@@ -39,30 +39,30 @@ driversGuiTestsLauncher::driversGuiTestsLauncher(): GUITestsLauncher()
 
 TEST_CLASS_DEFINITION(Test1){
     QLineEdit* line = getTestLine();
-    GTMouseDriver::moveTo(os, getWidgetCenter(line));
-    GTMouseDriver::click(os);
+    GTMouseDriver::moveTo(getWidgetCenter(line));
+    GTMouseDriver::click();
     GTGlobals::sleep();
-    GTKeyboardDriver::keySequence(os, "abcdefghigklmnopqrstuvwxy z");
+    GTKeyboardDriver::keySequence("abcdefghigklmnopqrstuvwxy z");
 	CHECK_SET_ERR(line->text() == "abcdefghigklmnopqrstuvwxy z", "expected: abcdefghigklmnopqrstuvwxy z, actual: " + line->text())
 	GTGlobals::sleep(500);
 }
 
 TEST_CLASS_DEFINITION(Test2){
     QLineEdit* line = getTestLine();
-    GTMouseDriver::moveTo(os, getWidgetCenter(line));
-    GTMouseDriver::click(os);
+    GTMouseDriver::moveTo(getWidgetCenter(line));
+    GTMouseDriver::click();
     //GTGlobals::sleep();
-    GTKeyboardDriver::keySequence(os, "0123456789,<.>!@#$%^&*()-_=+[{]};:\'\"/\\|");
+    GTKeyboardDriver::keySequence("0123456789,<.>!@#$%^&*()-_=+[{]};:\'\"/\\|");
     CHECK_SET_ERR(line->text() == "0123456789,<.>!@#$%^&*()-_=+[{]};:\'\"/\\|", "expected: 0123456789,<.>!@#$%^&*()-_=+[{]};:\'\"/\\|, actual: " + line->text())
 	GTGlobals::sleep(500);
 }
 
 TEST_CLASS_DEFINITION(Test3){
     QWidget* recorder = getRecorder();
-    GTMouseDriver::moveTo(os, getWidgetCenter(recorder));
-    GTMouseDriver::click(os);
+    GTMouseDriver::moveTo(getWidgetCenter(recorder));
+    GTMouseDriver::click();
 
-    GTKeyboardDriver::keyClick(os, Qt::Key_Up);
+    GTKeyboardDriver::keyClick( Qt::Key_Up);
     GTGlobals::sleep(500);
 
     QList<KeyEvent> list = MainWindow::getInstance()->eventFilter->keyEvents;
@@ -76,9 +76,9 @@ TEST_CLASS_DEFINITION(Test3){
 
 TEST_CLASS_DEFINITION(Test4){
     QWidget* recorder = getRecorder();
-    GTMouseDriver::moveTo(os, getWidgetCenter(recorder));
-    GTMouseDriver::click(os);
-    GTKeyboardDriver::keyClick(os, Qt::Key_Enter, Qt::ControlModifier);
+    GTMouseDriver::moveTo(getWidgetCenter(recorder));
+    GTMouseDriver::click();
+    GTKeyboardDriver::keyClick( Qt::Key_Enter, Qt::ControlModifier);
     GTGlobals::sleep(500);
 
     QList<KeyEvent> list = MainWindow::getInstance()->eventFilter->keyEvents;
@@ -101,8 +101,8 @@ TEST_CLASS_DEFINITION(Test4){
 
 TEST_CLASS_DEFINITION(Test5){
     QWidget* recorder = getRecorder();
-    GTMouseDriver::moveTo(os, getWidgetCenter(recorder));
-    GTMouseDriver::click(os);
+    GTMouseDriver::moveTo(getWidgetCenter(recorder));
+    GTMouseDriver::click();
     GTGlobals::sleep(500);
 
     QList<MouseEvent> list = MainWindow::getInstance()->eventFilter->mouseEvents;
@@ -119,8 +119,8 @@ TEST_CLASS_DEFINITION(Test5){
 
 TEST_CLASS_DEFINITION(Test6){
     QWidget* recorder = getRecorder();
-    GTMouseDriver::moveTo(os, getWidgetCenter(recorder));
-    GTMouseDriver::click(os, Qt::RightButton);
+    GTMouseDriver::moveTo(getWidgetCenter(recorder));
+    GTMouseDriver::click(Qt::RightButton);
     GTGlobals::sleep(500);
 
     QList<MouseEvent> list = MainWindow::getInstance()->eventFilter->mouseEvents;
@@ -137,7 +137,7 @@ TEST_CLASS_DEFINITION(Test6){
 
 TEST_CLASS_DEFINITION(Test7){
     QWidget* recorder = getRecorder();
-    GTMouseDriver::moveTo(os, getWidgetCenter(recorder));
+    GTMouseDriver::moveTo(getWidgetCenter(recorder));
     GTMouseDriver::doubleClick(os);
     GTGlobals::sleep(500);
 

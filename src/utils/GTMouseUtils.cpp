@@ -32,7 +32,7 @@ namespace HI {
 void GTMouseUtils::moveCursorToWidget(GUITestOpStatus &os, QWidget *widget) {
     GT_CHECK(widget != NULL, "Provided widget is null");
     QPoint widgetCenter = widget->rect().center();
-    GTMouseDriver::moveTo(os, widgetCenter);
+    GTMouseDriver::moveTo(widgetCenter);
 }
 #undef GT_METHOD_NAME
 
@@ -42,7 +42,7 @@ void GTMouseUtils::moveCursorOutOfWidget(GUITestOpStatus &os, QWidget *widget) {
     QPoint currentPosition = QCursor::pos();
     GT_CHECK(widget->rect().contains(currentPosition, false), "Cursor not over widget");
     QPoint finalPosition = widget->rect().topLeft() + QPoint(1, 1); //top left + offset
-    GTMouseDriver::moveTo(os, finalPosition);
+    GTMouseDriver::moveTo(finalPosition);
 }
 #undef GT_METHOD_NAME
 

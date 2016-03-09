@@ -36,15 +36,15 @@ namespace HI {
 #define GT_CLASS_NAME "GTKeyboardDriverLinux"
 
 #define GT_METHOD_NAME "keyPress"
-void GTKeyboardDriver::keyPress(GUITestOpStatus &os, char key, Qt::KeyboardModifiers modifiers)
+bool GTKeyboardDriver::keyPress(char key, Qt::KeyboardModifiers modifiers)
 {
-    GT_CHECK_NO_MESSAGE(key != 0, "key = 0");
+    DRIVER_CHECK(key != 0, "key = 0");
 
     QByteArray display_name = qgetenv("DISPLAY");
-    GT_CHECK_NO_MESSAGE(!display_name.isEmpty(), "Environment variable \"DISPLAY\" not found");
+    DRIVER_CHECK(!display_name.isEmpty(), "Environment variable \"DISPLAY\" not found");
 
     Display *display = XOpenDisplay(display_name.constData());
-    GT_CHECK_NO_MESSAGE(display != 0, "display is NULL");
+    DRIVER_CHECK(display != 0, "display is NULL");
 
     QList<Qt::Key> modifierKeys = modifiersToKeys(modifiers);
     foreach (Qt::Key mod, modifierKeys) {
@@ -137,19 +137,21 @@ void GTKeyboardDriver::keyPress(GUITestOpStatus &os, char key, Qt::KeyboardModif
     XFlush(display);
 
     XCloseDisplay(display);
+
+    return true;
 }
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "keyRelease"
-void GTKeyboardDriver::keyRelease(GUITestOpStatus &os, char key, Qt::KeyboardModifiers modifiers)
+bool GTKeyboardDriver::keyRelease(char key, Qt::KeyboardModifiers modifiers)
 {
-    GT_CHECK_NO_MESSAGE(key != 0, "key = ");
+    DRIVER_CHECK(key != 0, "key = ");
 
     QByteArray display_name = qgetenv("DISPLAY");
-    GT_CHECK_NO_MESSAGE(!display_name.isEmpty(), "Environment variable \"DISPLAY\" not found");
+    DRIVER_CHECK(!display_name.isEmpty(), "Environment variable \"DISPLAY\" not found");
 
     Display *display = XOpenDisplay(display_name.constData());
-    GT_CHECK_NO_MESSAGE(display != 0, "display is NULL");
+    DRIVER_CHECK(display != 0, "display is NULL");
 
     switch(key) {
     case '\n':
@@ -271,16 +273,18 @@ void GTKeyboardDriver::keyRelease(GUITestOpStatus &os, char key, Qt::KeyboardMod
     XFlush(display);
 
     XCloseDisplay(display);
+
+    return true;
 }
 #undef GT_METHOD_NAME
 
-void GTKeyboardDriver::keyPress(GUITestOpStatus &os, Qt::Key key, Qt::KeyboardModifiers modifiers){
+bool GTKeyboardDriver::keyPress(Qt::Key key, Qt::KeyboardModifiers modifiers){
     modifiersToKeys(modifiers);
     QByteArray display_name = qgetenv("DISPLAY");
-    //GT_CHECK_NO_MESSAGE(!display_name.isEmpty(), "Environment variable \"DISPLAY\" not found");
+    DRIVER_CHECK(!display_name.isEmpty(), "Environment variable \"DISPLAY\" not found");
 
     Display *display = XOpenDisplay(display_name.constData());
-    //GT_CHECK_NO_MESSAGE(display != 0, "display is NULL");
+    DRIVER_CHECK(display != 0, "display is NULL");
 
     QList<Qt::Key> modifierKeys = modifiersToKeys(modifiers);
     foreach (Qt::Key mod, modifierKeys) {
@@ -291,14 +295,16 @@ void GTKeyboardDriver::keyPress(GUITestOpStatus &os, Qt::Key key, Qt::KeyboardMo
     XFlush(display);
 
     XCloseDisplay(display);
+
+    return true;
 }
 
-void GTKeyboardDriver::keyRelease(GUITestOpStatus &os, Qt::Key key, Qt::KeyboardModifiers modifiers){
+bool GTKeyboardDriver::keyRelease(Qt::Key key, Qt::KeyboardModifiers modifiers){
     QByteArray display_name = qgetenv("DISPLAY");
-    //GT_CHECK_NO_MESSAGE(!display_name.isEmpty(), "Environment variable \"DISPLAY\" not found");
+    DRIVER_CHECK(!display_name.isEmpty(), "Environment variable \"DISPLAY\" not found");
 
     Display *display = XOpenDisplay(display_name.constData());
-    //GT_CHECK_NO_MESSAGE(display != 0, "display is NULL");
+    DRIVER_CHECK(display != 0, "display is NULL");
 
     XTestFakeKeyEvent(display, XKeysymToKeycode(display, GTKeyboardDriver::key[key]), 0, 0);
     QList<Qt::Key> modifierKeys = modifiersToKeys(modifiers);
@@ -308,6 +314,8 @@ void GTKeyboardDriver::keyRelease(GUITestOpStatus &os, Qt::Key key, Qt::Keyboard
     XFlush(display);
 
     XCloseDisplay(display);
+
+    return true;
 }
 
 GTKeyboardDriver::keys::keys()
