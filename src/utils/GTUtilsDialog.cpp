@@ -358,18 +358,18 @@ void Filler::run() {
     } else {
         scenario->run(os);
     }
-    GTThread::waitForMainThread(os);
+    GTThread::waitForMainThread();
 }
 
 void Filler::releaseMouseButtons() {
     Qt::MouseButtons buttons = QGuiApplication::mouseButtons();
 
     if (buttons | Qt::LeftButton) {
-        GTMouseDriver::release(os, Qt::LeftButton);
+        GTMouseDriver::release(Qt::LeftButton);
     }
 
     if (buttons | Qt::RightButton) {
-        GTMouseDriver::release(os, Qt::RightButton);
+        GTMouseDriver::release(Qt::RightButton);
     }
 }
 

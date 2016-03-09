@@ -33,7 +33,7 @@ namespace HI {
 #define GT_METHOD_NAME "run"
 void PopupChooser::commonScenario() {
     GTGlobals::sleep(1000);
-    GTMouseDriver::release(os);
+    GTMouseDriver::release();
     QMenu* activePopupMenu = qobject_cast<QMenu*>(QApplication::activePopupWidget());
     GT_CHECK(NULL != activePopupMenu, "Active popup menu is NULL");
 
@@ -51,7 +51,7 @@ void PopupChooser::commonScenario() {
 
 #define GT_METHOD_NAME "clickEsc"
 void PopupChooser::clickEsc(GUITestOpStatus &os) {
-    GTKeyboardDriver::keyClick(os, Qt::Key_Escape);
+    GTKeyboardDriver::keyClick( Qt::Key_Escape);
 }
 #undef GT_METHOD_NAME
 
@@ -60,7 +60,7 @@ void PopupChooser::clickEsc(GUITestOpStatus &os) {
 void PopupChooserByText::commonScenario()
 {
     GTGlobals::sleep(1000);
-    GTMouseDriver::release(os);
+    GTMouseDriver::release();
     QMenu* activePopupMenu = qobject_cast<QMenu*>(QApplication::activePopupWidget());
     GTMenu::clickMenuItemByText(os, activePopupMenu, namePath, useMethod, matchFlag);
 }
@@ -76,7 +76,7 @@ PopupChecker::PopupChecker(GUITestOpStatus &os, CustomScenario *scenario) :
 
 void PopupChecker::commonScenario() {
     GTGlobals::sleep(1000);
-    GTMouseDriver::release(os);
+    GTMouseDriver::release();
     QMenu* activePopupMenu = qobject_cast<QMenu*>(QApplication::activePopupWidget());
     GT_CHECK(NULL != activePopupMenu, "Active popup menu is NULL");
 
@@ -167,7 +167,7 @@ PopupCheckerByText::PopupCheckerByText(GUITestOpStatus &os,
 
 void PopupCheckerByText::commonScenario() {
     GTGlobals::sleep(1000);
-    GTMouseDriver::release(os);
+    GTMouseDriver::release();
     QMenu* activePopupMenu = qobject_cast<QMenu*>(QApplication::activePopupWidget());
     GT_CHECK(NULL != activePopupMenu, "Active popup menu is NULL");
 

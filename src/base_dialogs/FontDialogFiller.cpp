@@ -35,7 +35,7 @@ void FontDialogFiller::commonScenario() {
     GT_CHECK(dialog != NULL, "dialog is NULL");
     GTGlobals::sleep();
 
-    GTKeyboardDriver::keyClick(os, Qt::Key_Enter);
+    GTKeyboardDriver::keyClick( Qt::Key_Enter);
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME

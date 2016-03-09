@@ -61,12 +61,12 @@ void GTComboBox::setCurrentIndex(GUITestOpStatus& os, QComboBox *comboBox, int i
 
         int pressCount = qAbs(index-currIndex);
         for (int i=0; i<pressCount; i++) {
-            GTKeyboardDriver::keyClick(os, directionKey);
+            GTKeyboardDriver::keyClick( directionKey);
             GTGlobals::sleep(100);
         }
-        GTKeyboardDriver::keyClick(os, Qt::Key_Enter);
+        GTKeyboardDriver::keyClick( Qt::Key_Enter);
 
-        GTThread::waitForMainThread(os);
+        GTThread::waitForMainThread();
         GTGlobals::sleep(500);
 
         if(checkVal){
@@ -83,8 +83,8 @@ void GTComboBox::setCurrentIndex(GUITestOpStatus& os, QComboBox *comboBox, int i
         view->scrollTo(modelIndex);
         GTGlobals::sleep(500);
         qDebug("GT_DEBUG_MESSAGE moving to list item");
-        GTMouseDriver::moveTo(os, view->viewport()->mapToGlobal(view->visualRect(modelIndex).center()));
-        GTMouseDriver::click(os);
+        GTMouseDriver::moveTo(view->viewport()->mapToGlobal(view->visualRect(modelIndex).center()));
+        GTMouseDriver::click();
         GTGlobals::sleep(500);
         break;
     }
@@ -140,8 +140,8 @@ void GTComboBox::checkValues(GUITestOpStatus& os, QComboBox *comboBox, const QSt
                 GTGlobals::sleep(500);
                 QRect itemRect = view->visualRect(modelIndex);
                 QPoint checkPoint(itemRect.left() + 10, itemRect.center().y());
-                GTMouseDriver::moveTo(os, view->viewport()->mapToGlobal(checkPoint));
-                GTMouseDriver::click(os);
+                GTMouseDriver::moveTo(view->viewport()->mapToGlobal(checkPoint));
+                GTMouseDriver::click();
                 GTGlobals::sleep(500);
                 GT_CHECK(item->checkState() == Qt::Checked, "Item is not checked: " + item->data().toString());
             }
@@ -152,8 +152,8 @@ void GTComboBox::checkValues(GUITestOpStatus& os, QComboBox *comboBox, const QSt
                 GTGlobals::sleep(500);
                 QRect itemRect = view->visualRect(modelIndex);
                 QPoint checkPoint(itemRect.left() + 10, itemRect.center().y());
-                GTMouseDriver::moveTo(os, view->viewport()->mapToGlobal(checkPoint));
-                GTMouseDriver::click(os);
+                GTMouseDriver::moveTo(view->viewport()->mapToGlobal(checkPoint));
+                GTMouseDriver::click();
                 GTGlobals::sleep(500);
                 GT_CHECK(item->checkState() != Qt::Checked, "Item is checked: " + item->data().toString());
             }

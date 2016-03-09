@@ -66,9 +66,9 @@ void GTDoubleSpinbox::setValue(GUITestOpStatus& os, QDoubleSpinBox *spinBox, dou
                 arrowPos = QPoint(spinBoxRect.right() - 5, spinBoxRect.height() * 3 / 4);
             }
 
-            GTMouseDriver::moveTo(os, spinBox->mapToGlobal(arrowPos));
+            GTMouseDriver::moveTo(spinBox->mapToGlobal(arrowPos));
             while (QString().setNum(spinBox->value()) != QString().setNum(v)) {
-                GTMouseDriver::click(os);
+                GTMouseDriver::click();
                 GTGlobals::sleep(100);
             }
             break;
@@ -83,7 +83,7 @@ void GTDoubleSpinbox::setValue(GUITestOpStatus& os, QDoubleSpinBox *spinBox, dou
 
             GTWidget::setFocus(os, spinBox);
             while (QString().setNum(spinBox->value()) != QString().setNum(v)) {
-                GTKeyboardDriver::keyClick(os, key);
+                GTKeyboardDriver::keyClick( key);
                 GTGlobals::sleep(100);
             }
             break;
@@ -93,16 +93,16 @@ void GTDoubleSpinbox::setValue(GUITestOpStatus& os, QDoubleSpinBox *spinBox, dou
             GTWidget::setFocus(os, spinBox);
 
             GTGlobals::sleep(100);
-            GTKeyboardDriver::keyClick(os, Qt::Key_Up);
+            GTKeyboardDriver::keyClick( Qt::Key_Up);
             GTGlobals::sleep(100);
-            GTKeyboardDriver::keyClick(os, Qt::Key_Down);
-            GTKeyboardDriver::keySequence(os,s);
+            GTKeyboardDriver::keyClick( Qt::Key_Down);
+            GTKeyboardDriver::keySequence(s);
             GTGlobals::sleep(100);
 
         }
     }
 
-    GTThread::waitForMainThread(os);
+    GTThread::waitForMainThread();
     double currIndex = spinBox->value();
     GT_CHECK(QString().setNum(currIndex) == QString().setNum(v), "Expected: " + QString().setNum(v) + " Found: " + QString().setNum(currIndex));
 }

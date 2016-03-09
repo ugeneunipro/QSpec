@@ -31,19 +31,19 @@ namespace HI {
 class HI_EXPORT ThreadWaiter : public QObject {
     Q_OBJECT
 public:
-    ThreadWaiter(GUITestOpStatus &os);
+    ThreadWaiter();
 
     void wait();
 
 private:
-    GUITestOpStatus &os;
+    //GUITestOpStatus &os;
     qint64 startValue;
     qint64 endValue;
 };
 
 class HI_EXPORT GTThread {
 public:
-    static void waitForMainThread(GUITestOpStatus &os);
+    static void waitForMainThread();
     static void runInMainThread(GUITestOpStatus &os, CustomScenario *scenario);
 };
 

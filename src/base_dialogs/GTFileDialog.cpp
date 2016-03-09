@@ -113,7 +113,7 @@ void GTFileDialogUtils::commonScenario()
     selectFile();
     GTGlobals::sleep(300);
     if(method == GTGlobals::UseKey){
-        GTKeyboardDriver::keyClick(os, Qt::Key_Enter);
+        GTKeyboardDriver::keyClick( Qt::Key_Enter);
 
     }else{
         clickButton(button);
@@ -150,7 +150,7 @@ void GTFileDialogUtils_list::commonScenario() {
     setNameList(os, filePaths);
     GTGlobals::sleep(200);
 
-    GTKeyboardDriver::keyClick(os, Qt::Key_Enter);
+    GTKeyboardDriver::keyClick( Qt::Key_Enter);
 }
 #undef GT_METHOD_NAME
 
@@ -169,12 +169,12 @@ void GTFileDialogUtils_list::setNameList(GUITestOpStatus &os, const QStringList 
 #undef GT_METHOD_NAME
 
 void GTFileDialogUtils_list::selectFile(){
-    GTKeyboardDriver::keyPress(os, Qt::Key_Control);
+    GTKeyboardDriver::keyPress(Qt::Key_Control);
     foreach(QString name, fileNamesList){
         GTFileDialogUtils::fileName = name;
         GTFileDialogUtils::selectFile();
     }
-    GTKeyboardDriver::keyRelease(os, Qt::Key_Control);
+    GTKeyboardDriver::keyRelease(Qt::Key_Control);
 }
 
 void GTFileDialogUtils::openFileDialog() {
@@ -183,7 +183,7 @@ void GTFileDialogUtils::openFileDialog() {
         GTMenu::clickMainMenuItem(os, QStringList() << "File" << "Open...");
         break;
     case GTGlobals::UseKey:
-        GTKeyboardDriver::keyClick(os, 'O', Qt::ControlModifier);
+        GTKeyboardDriver::keyClick( 'O', Qt::ControlModifier);
         break;
     default:
         break;
@@ -248,8 +248,8 @@ void GTFileDialogUtils::selectFile()
         indexCenter = w->visualRect(index).center();
         indexCenter.setY(indexCenter.y() + w->header()->rect().height());
         indexCenter.setX(indexCenter.x()+1);
-        GTMouseDriver::moveTo(os, w->mapToGlobal(indexCenter));
-        GTMouseDriver::click(os);
+        GTMouseDriver::moveTo(w->mapToGlobal(indexCenter));
+        GTMouseDriver::click();
         break;
     default:
         break;
@@ -280,10 +280,10 @@ void GTFileDialogUtils::clickButton(Button btn)
     switch(method) {
     case GTGlobals::UseKey:
         while (! button_to_click->hasFocus()) {
-            GTKeyboardDriver::keyClick(os, Qt::Key_Tab);
+            GTKeyboardDriver::keyClick( Qt::Key_Tab);
             GTGlobals::sleep(100);
         }
-        GTKeyboardDriver::keyClick(os, Qt::Key_Enter);
+        GTKeyboardDriver::keyClick( Qt::Key_Enter);
         break;
 
     case GTGlobals::UseMouse:
@@ -314,10 +314,10 @@ void GTFileDialogUtils::setViewMode(ViewMode v)
 
     case GTGlobals::UseKey:
         while (! w->hasFocus()) {
-            GTKeyboardDriver::keyClick(os, Qt::Key_Tab);
+            GTKeyboardDriver::keyClick( Qt::Key_Tab);
             GTGlobals::sleep(100);
         }
-        GTKeyboardDriver::keyClick(os, Qt::Key_Space);
+        GTKeyboardDriver::keyClick( Qt::Key_Space);
         break;
 
     default:
@@ -336,7 +336,7 @@ void GTFileDialog::openFile(GUITestOpStatus &os, const QString &path, const QStr
     GTUtilsDialog::waitForDialog(os, ob);
 
     ob->openFileDialog();
-    GTThread::waitForMainThread(os);
+    GTThread::waitForMainThread();
     GTGlobals::sleep(100);
 }
 #undef GT_METHOD_NAME

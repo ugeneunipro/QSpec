@@ -25,23 +25,23 @@ namespace HI {
 
 void GTKeyboardUtils::selectAll(GUITestOpStatus &os)
 {
-    GTKeyboardDriver::keyClick(os, 'a', Qt::ControlModifier);
+    GTKeyboardDriver::keyClick( 'a', Qt::ControlModifier);
 }
 
 void GTKeyboardUtils::copy(GUITestOpStatus &os)
 {
-    GTKeyboardDriver::keyClick(os, 'c', Qt::ControlModifier);
+    GTKeyboardDriver::keyClick( 'c', Qt::ControlModifier);
 }
 
 void GTKeyboardUtils::paste(GUITestOpStatus &os)
 {
-    GTKeyboardDriver::keyClick(os, 'v', Qt::ControlModifier);
+    GTKeyboardDriver::keyClick( 'v', Qt::ControlModifier);
 }
 
 void GTKeyboardUtils::cut(GUITestOpStatus &os)
 {
 
-    GTKeyboardDriver::keyClick(os, 'x', Qt::ControlModifier);
+    GTKeyboardDriver::keyClick( 'x', Qt::ControlModifier);
 }
 
 } // namespace

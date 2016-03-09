@@ -142,15 +142,15 @@ HIWebElement GTWebView::findContextMenuElement(GUITestOpStatus &os, QWebView *vi
 }
 
 void GTWebView::click(GUITestOpStatus &os, QWebView *view, HIWebElement el, Qt::MouseButton button){
-    GTMouseDriver::moveTo(os, view->mapToGlobal(el.geometry().center()));
-    GTMouseDriver::click(os, button);
+    GTMouseDriver::moveTo(view->mapToGlobal(el.geometry().center()));
+    GTMouseDriver::click(button);
 }
 
 void GTWebView::selectElementText(GUITestOpStatus &os, QWebView *view, HIWebElement el){
-    GTMouseDriver::moveTo(os, view->mapToGlobal(el.geometry().topLeft()) + QPoint(5,5));
-    GTMouseDriver::press(os);
-    GTMouseDriver::moveTo(os, view->mapToGlobal(el.geometry().bottomRight()) - QPoint(5,5));
-    GTMouseDriver::release(os);
+    GTMouseDriver::moveTo(view->mapToGlobal(el.geometry().topLeft()) + QPoint(5,5));
+    GTMouseDriver::press();
+    GTMouseDriver::moveTo(view->mapToGlobal(el.geometry().bottomRight()) - QPoint(5,5));
+    GTMouseDriver::release();
 }
 
 void GTWebView::traceAllWebElements(GUITestOpStatus &os, QWebView *view){

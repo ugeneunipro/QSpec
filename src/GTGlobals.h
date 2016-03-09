@@ -127,6 +127,12 @@ public:
 #define GT_CHECK_OP_RESULT(os, errorMessage, result) \
     GT_CHECK_RESULT(!os.isCoR(), errorMessage, result)
 
+#define DRIVER_CHECK(condition, errorMessage) \
+    if(!condition){ \
+        qCritical("Driver error: '%s'",QString(errorMessage).toLocal8Bit().constData()); \
+        return false; \
+    } \
+
 } //namespace
 
 #endif

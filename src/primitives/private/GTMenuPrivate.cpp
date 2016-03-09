@@ -104,8 +104,8 @@ void GTMenuPrivate::showMainMenu(GUITestOpStatus &os, const QString &menuName, G
         pos = mainWindow->menuBar()->actionGeometry(menu).center();
         gPos = mainWindow->menuBar()->mapToGlobal(pos);
 
-        GTMouseDriver::moveTo(os, gPos);
-        GTMouseDriver::click(os);
+        GTMouseDriver::moveTo(gPos);
+        GTMouseDriver::click();
         break;
 
     case GTGlobals::UseKey:
@@ -113,7 +113,7 @@ void GTMenuPrivate::showMainMenu(GUITestOpStatus &os, const QString &menuName, G
         key_pos = menuText.indexOf('&');
         key = (menuText.at(key_pos + 1)).toLatin1();
 
-        GTKeyboardDriver::keyClick(os, key, Qt::AltModifier);
+        GTKeyboardDriver::keyClick( key, Qt::AltModifier);
         break;
 
     default:
