@@ -58,6 +58,10 @@ void GTKeyboardDriver::keyPress(GUITestOpStatus &os, int key, int modifiers)
         key = '-';
         XTestFakeKeyEvent(display, XKeysymToKeycode(display, GTKeyboardDriver::key["shift"]), 1, 0);
         break;
+    case '~':
+        key = '`';
+        XTestFakeKeyEvent(display, XKeysymToKeycode(display, GTKeyboardDriver::key["shift"]), 1, 0);
+        break;
     case '<':
         key = ',';
         XTestFakeKeyEvent(display, XKeysymToKeycode(display, GTKeyboardDriver::key["shift"]), 1, 0);
@@ -120,6 +124,12 @@ void GTKeyboardDriver::keyRelease(GUITestOpStatus &os, int key, int modifiers)
         break;
     case '_':
         key = '-';
+        XTestFakeKeyEvent(display, XKeysymToKeycode(display, key), 0, 0);
+        XTestFakeKeyEvent(display, XKeysymToKeycode(display, GTKeyboardDriver::key["shift"]), 0, 0);
+        break;
+
+    case '~':
+        key = '`';
         XTestFakeKeyEvent(display, XKeysymToKeycode(display, key), 0, 0);
         XTestFakeKeyEvent(display, XKeysymToKeycode(display, GTKeyboardDriver::key["shift"]), 0, 0);
         break;
