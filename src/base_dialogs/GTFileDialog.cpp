@@ -194,7 +194,7 @@ void GTFileDialogUtils::openFileDialog() {
 bool GTFileDialogUtils::setPath()
 {
     QComboBox* comboBox = fileDialog->findChild<QComboBox*>(CURRENT_FODLER_COMBO_BOX);
-    if (NULL != comboBox && comboBox->currentText() + QDir::separator() == path) {
+    if (NULL != comboBox && QDir::toNativeSeparators(comboBox->currentText()) + QDir::separator() == QDir::toNativeSeparators(path)) {
         // already there
         return false;
     }
