@@ -65,7 +65,7 @@ bool GTMouseDriver::selectArea(const QPoint &start, const QPoint &end){
 }
 
 #ifndef Q_OS_MAC
-bool GTMouseDriver::doubleClick(GUITestOpStatus &os)
+bool GTMouseDriver::doubleClick()
 {
     DRIVER_CHECK(press(Qt::LeftButton), "Left button could not be pressed on first click");
     DRIVER_CHECK(release(Qt::LeftButton), "Left button could not be released on first click");;

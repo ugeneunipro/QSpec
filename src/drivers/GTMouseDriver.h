@@ -38,7 +38,7 @@ public:
     // fails if press or release fails
     // Linux: fails if there is an opening X display error
     static bool click(Qt::MouseButton = Qt::LeftButton); //all click methods work with the current position of the cursor
-    static bool doubleClick(GUITestOpStatus &os);
+    static bool doubleClick();
 
     // fails if the given button is not Qt::LeftButton, Qt::RightButton or Qt::MiddleButton
     // Linux: fails if there is an opening X display error
