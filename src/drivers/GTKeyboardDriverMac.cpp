@@ -54,7 +54,18 @@ void GTKeyboardDriver::keyPress(GUITestOpStatus &os, char key, Qt::KeyboardModif
         keyPressMac(os, GTKeyboardDriver::key[mod]);
     }
 
+<<<<<<< HEAD
     keyPressMac(os, (int)key);
+=======
+    CGEventRef event = CGEventCreateKeyboardEvent(NULL, key, true);
+    GT_CHECK(event != NULL, "Can't create event");
+
+    CGEventSetFlags(event, CGEventGetFlags(event) & ~kCGEventFlagMaskNumericPad);
+
+    CGEventPost(kCGSessionEventTap, event);
+    CFRelease(event);
+    GTGlobals::sleep(1);
+>>>>>>> ugene
 }
 #undef GT_METHOD_NAME
 
@@ -81,6 +92,7 @@ void GTKeyboardDriver::keyRelease(GUITestOpStatus &os, char key, Qt::KeyboardMod
 }
 #undef GT_METHOD_NAME
 
+<<<<<<< HEAD
 void GTKeyboardDriver::keyPress(GUITestOpStatus &os, Qt::Key key, Qt::KeyboardModifiers modifiers){
     QList<Qt::Key> modKeys = modifiersToKeys(modifiers);
     foreach (Qt::Key mod, modKeys) {
@@ -88,6 +100,22 @@ void GTKeyboardDriver::keyPress(GUITestOpStatus &os, Qt::Key key, Qt::KeyboardMo
     }
     keyPressMac(os, GTKeyboardDriver::key[key]);
 }
+=======
+#define GT_METHOD_NAME "keyRelease_int"
+void GTKeyboardDriver::keyRelease(GUITestOpStatus &os, int key, int modifiers)
+{
+    if (key==GTKeyboardDriver::key["ctrl"])
+        key=GTKeyboardDriver::key["cmd"];
+
+    CGEventRef event = CGEventCreateKeyboardEvent(NULL, key, false);
+    GT_CHECK(event != NULL, "Can't create event");
+
+    CGEventSetFlags(event, CGEventGetFlags(event) & ~kCGEventFlagMaskNumericPad);
+
+    CGEventPost(kCGSessionEventTap, event);
+    CFRelease(event);
+    GTGlobals::sleep(1);
+>>>>>>> ugene
 
 void GTKeyboardDriver::keyRelease(GUITestOpStatus &os, Qt::Key key, Qt::KeyboardModifiers modifiers){
     keyReleaseMac(os, GTKeyboardDriver::key[key]);

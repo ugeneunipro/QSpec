@@ -45,7 +45,7 @@ bool isFarEnoughToStartDnd(const QPoint &start, const QPoint &end) {
 bool GTMouseDriver::dragAndDrop(const QPoint& start, const QPoint& end) {
     DRIVER_CHECK(moveTo(start), QString("Mouse could not be moved to point (%1, %2)").arg(start.x()).arg(start.y()));
 
-    DRIVER_CHECK(press(), "Left button could not be pressed");;
+    DRIVER_CHECK(press(), "Left button could not be pressed");
 
     const QPoint farPoint = (isFarEnoughToStartDnd(start, (end + start) / 2) ?
                                  (end + start) / 2 :

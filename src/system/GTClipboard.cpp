@@ -69,7 +69,7 @@ QString GTClipboard::text(GUITestOpStatus &os) {
 void GTClipboard::setText(GUITestOpStatus &os, QString text ){
     class Scenario : public CustomScenario {
     public:
-        Scenario(const QString &_text) : text(_text){}
+        Scenario(QString _text) : text(_text){}
         void run(GUITestOpStatus &os) {
             Q_UNUSED(os);
             QClipboard *clipboard = QApplication::clipboard();

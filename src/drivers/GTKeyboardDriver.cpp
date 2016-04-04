@@ -69,10 +69,7 @@ bool GTKeyboardDriver::keySequence(const QString &str, Qt::KeyboardModifiers mod
         } else {
             DRIVER_CHECK(keyClick( asciiChar), QString("%1 char could not be clicked").arg(asciiChar));
         }
-		GTGlobals::sleep(10);
-#ifdef  Q_OS_MAC
-        GTGlobals::sleep(1); // need for MacOS
-#endif
+        GTGlobals::sleep(10);
     }
 
     foreach (Qt::Key mod, modifierKeys) {

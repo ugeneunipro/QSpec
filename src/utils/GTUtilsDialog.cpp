@@ -107,6 +107,7 @@ void GUIDialogWaiter::checkDialog() {
         qDebug("-------------------------");
 
         try {
+            GTThread::waitForMainThread();
             runnable->run();
             hadRun = true;
         } catch(GUITestOpStatus *) {
