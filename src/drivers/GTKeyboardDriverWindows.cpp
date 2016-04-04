@@ -50,8 +50,8 @@ INPUT getKeyEvent(int key, bool keyUp = false, bool extended = false) {
 	return event;
 }
 
-void keyPressWindows(GUITestOpStatus &os, int key, int modifiers = 0, bool extended = false) {
-	GT_CHECK(key != 0, " Error: key = 0 in GTKeyboardDriver::keyPress()");
+bool keyPressWindows(int key, int modifiers = 0, bool extended = false) {
+	DRIVER_CHECK(key != 0, " Error: key = 0 in GTKeyboardDriver::keyPress()");
 
 	if (modifiers) {
 		INPUT input = getKeyEvent(modifiers);
@@ -60,13 +60,15 @@ void keyPressWindows(GUITestOpStatus &os, int key, int modifiers = 0, bool exten
 
 	INPUT input = getKeyEvent(key, false, extended);
 	SendInput(1, &input, sizeof(input));
+
+	return true;
 }
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "keyRelease"
-void keyReleaseWindows(GUITestOpStatus &os, int key, int modifiers = 0, bool extended = false)
+bool keyReleaseWindows(int key, int modifiers = 0, bool extended = false)
 {
-	GT_CHECK(key != 0, " Error: key = 0 in GTKeyboardDriver::keyRelease()");
+	DRIVER_CHECK(key != 0, " Error: key = 0 in GTKeyboardDriver::keyRelease()");
 
 	if (modifiers) {
 		INPUT input = getKeyEvent(modifiers, true);
@@ -75,11 +77,13 @@ void keyReleaseWindows(GUITestOpStatus &os, int key, int modifiers = 0, bool ext
 
 	INPUT input = getKeyEvent(key, true, extended);
 	SendInput(1, &input, sizeof(input));
+
+	return true;
 }
 #undef GT_METHOD_NAME
 }
 
-void GTKeyboardDriver::keyPress(GUITestOpStatus &os, char key, Qt::KeyboardModifiers modifiers)
+bool GTKeyboardDriver::keyPress(char key, Qt::KeyboardModifiers modifiers)
 {
     if (isalpha(key)) {
         key = toupper(key);
@@ -87,109 +91,111 @@ void GTKeyboardDriver::keyPress(GUITestOpStatus &os, char key, Qt::KeyboardModif
 
 	QList<Qt::Key> modKeys = modifiersToKeys(modifiers);
 	foreach(Qt::Key mod, modKeys){
- 		keyPressWindows(os, GTKeyboardDriver::key[mod]);
+ 		keyPressWindows(GTKeyboardDriver::key[mod]);
 	}
 
     switch (key) {
         case '-':
-			keyPressWindows(os, VK_OEM_MINUS);
+			keyPressWindows(VK_OEM_MINUS);
             break;
         case '_':
-            keyPressWindows(os, VK_OEM_MINUS, GTKeyboardDriver::key[Qt::Key_Shift]);
+            keyPressWindows(VK_OEM_MINUS, GTKeyboardDriver::key[Qt::Key_Shift]);
             break;
         case '=':
-            keyPressWindows(os, VK_OEM_PLUS);
+            keyPressWindows(VK_OEM_PLUS);
             break;
         case '.':
-			keyPressWindows(os, VK_DECIMAL);
+			keyPressWindows(VK_DECIMAL);
             break;
         case ',':
-			keyPressWindows(os, VK_OEM_COMMA);
+			keyPressWindows(VK_OEM_COMMA);
             break;
         case ']':
-			keyPressWindows(os, VK_OEM_6);
+			keyPressWindows(VK_OEM_6);
             break;
         case '\\':
-			keyPressWindows(os, VK_OEM_5);
+			keyPressWindows(VK_OEM_5);
             break;
         case '[':
-			keyPressWindows(os, VK_OEM_4);
+			keyPressWindows(VK_OEM_4);
             break;
         case '/':
-			keyPressWindows(os, VK_DIVIDE);
+			keyPressWindows(VK_DIVIDE);
             break;
         case '\n':
-			keyPressWindows(os, GTKeyboardDriver::key[Qt::Key_Enter]);
+			keyPressWindows(GTKeyboardDriver::key[Qt::Key_Enter]);
             break;
         case ':':
-			keyPressWindows(os, VK_OEM_1, GTKeyboardDriver::key[Qt::Key_Shift]);
+			keyPressWindows(VK_OEM_1, GTKeyboardDriver::key[Qt::Key_Shift]);
             break;
         case ';':
-			keyPressWindows(os, VK_OEM_1);
+			keyPressWindows(VK_OEM_1);
             break;
         case '<':
-			keyPressWindows(os, VK_OEM_COMMA, GTKeyboardDriver::key[Qt::Key_Shift]);
+			keyPressWindows(VK_OEM_COMMA, GTKeyboardDriver::key[Qt::Key_Shift]);
             break;
         case '>':
-			keyPressWindows(os, VK_OEM_PERIOD, GTKeyboardDriver::key[Qt::Key_Shift]);
+			keyPressWindows(VK_OEM_PERIOD, GTKeyboardDriver::key[Qt::Key_Shift]);
             break;
         case '(':
-			keyPressWindows(os, '9', GTKeyboardDriver::key[Qt::Key_Shift]);
+			keyPressWindows('9', GTKeyboardDriver::key[Qt::Key_Shift]);
             break;
         case ')':
-			keyPressWindows(os, '0', GTKeyboardDriver::key[Qt::Key_Shift]);
+			keyPressWindows('0', GTKeyboardDriver::key[Qt::Key_Shift]);
             break;
         case '"':
-			keyPressWindows(os, VK_OEM_7, GTKeyboardDriver::key[Qt::Key_Shift]);
+			keyPressWindows(VK_OEM_7, GTKeyboardDriver::key[Qt::Key_Shift]);
 		case '\'':
-			keyPressWindows(os, VK_OEM_7);
+			keyPressWindows(VK_OEM_7);
             break;
         case '!':
-			keyPressWindows(os, '1', GTKeyboardDriver::key[Qt::Key_Shift]);
+			keyPressWindows('1', GTKeyboardDriver::key[Qt::Key_Shift]);
             break;
         case '@':
-			keyPressWindows(os, '2', GTKeyboardDriver::key[Qt::Key_Shift]);
+			keyPressWindows('2', GTKeyboardDriver::key[Qt::Key_Shift]);
             break;
         case '#':
-			keyPressWindows(os, '3', GTKeyboardDriver::key[Qt::Key_Shift]);
+			keyPressWindows('3', GTKeyboardDriver::key[Qt::Key_Shift]);
             break;
         case '$':
-			keyPressWindows(os, '4', GTKeyboardDriver::key[Qt::Key_Shift]);
+			keyPressWindows('4', GTKeyboardDriver::key[Qt::Key_Shift]);
             break;
         case '%':
-			keyPressWindows(os, '5', GTKeyboardDriver::key[Qt::Key_Shift]);
+			keyPressWindows('5', GTKeyboardDriver::key[Qt::Key_Shift]);
             break;
         case '^':
-			keyPressWindows(os, '6', GTKeyboardDriver::key[Qt::Key_Shift]);
+			keyPressWindows('6', GTKeyboardDriver::key[Qt::Key_Shift]);
             break;
         case '&':
-			keyPressWindows(os, '7', GTKeyboardDriver::key[Qt::Key_Shift]);
+			keyPressWindows('7', GTKeyboardDriver::key[Qt::Key_Shift]);
             break;
         case '*':
-			keyPressWindows(os, '8', GTKeyboardDriver::key[Qt::Key_Shift]);
+			keyPressWindows('8', GTKeyboardDriver::key[Qt::Key_Shift]);
             break;
         case '+':
-			keyPressWindows(os, VK_OEM_PLUS, GTKeyboardDriver::key[Qt::Key_Shift]);
+			keyPressWindows(VK_OEM_PLUS, GTKeyboardDriver::key[Qt::Key_Shift]);
             break;
         case '?':
-			keyPressWindows(os, VK_OEM_2, GTKeyboardDriver::key[Qt::Key_Shift]);
+			keyPressWindows(VK_OEM_2, GTKeyboardDriver::key[Qt::Key_Shift]);
             break;
 		case '{':
-			keyPressWindows(os, VK_OEM_4, GTKeyboardDriver::key[Qt::Key_Shift]);
+			keyPressWindows(VK_OEM_4, GTKeyboardDriver::key[Qt::Key_Shift]);
 			break;
 		case '}':
-			keyPressWindows(os, VK_OEM_6, GTKeyboardDriver::key[Qt::Key_Shift]);
+			keyPressWindows(VK_OEM_6, GTKeyboardDriver::key[Qt::Key_Shift]);
 			break;
 		case '|':
-			keyPressWindows(os, VK_OEM_5, GTKeyboardDriver::key[Qt::Key_Shift]);
+			keyPressWindows(VK_OEM_5, GTKeyboardDriver::key[Qt::Key_Shift]);
 			break;
         default:
-			keyPressWindows(os, (int)key);
+			keyPressWindows((int)key);
             break;
     }
+
+	return true;
 }
 
-void GTKeyboardDriver::keyRelease(GUITestOpStatus &os, char key, Qt::KeyboardModifiers modifiers)
+bool GTKeyboardDriver::keyRelease(char key, Qt::KeyboardModifiers modifiers)
 {
     if (isalpha(key)) {
         key = toupper(key);
@@ -197,120 +203,126 @@ void GTKeyboardDriver::keyRelease(GUITestOpStatus &os, char key, Qt::KeyboardMod
 
     switch (key) {
         case '_':
-            keyReleaseWindows(os, VK_OEM_MINUS, GTKeyboardDriver::key[Qt::Key_Shift]);
+            keyReleaseWindows(VK_OEM_MINUS, GTKeyboardDriver::key[Qt::Key_Shift]);
             break;
         case '=':
-            keyReleaseWindows(os, VK_OEM_PLUS);
+            keyReleaseWindows(VK_OEM_PLUS);
             break;
         case '.':
-			keyReleaseWindows(os, VK_DECIMAL);
+			keyReleaseWindows(VK_DECIMAL);
             break;
         case ',':
-            keyReleaseWindows(os, VK_OEM_COMMA);
+            keyReleaseWindows(VK_OEM_COMMA);
             break;
         case ']':
-			keyReleaseWindows(os, VK_OEM_6);
+			keyReleaseWindows(VK_OEM_6);
             break;
         case '\\':
-			keyReleaseWindows(os, VK_OEM_5);
+			keyReleaseWindows(VK_OEM_5);
             break;
         case '[':
-			keyReleaseWindows(os, VK_OEM_4);
+			keyReleaseWindows(VK_OEM_4);
             break;
         case '/':
-			keyReleaseWindows(os, VK_DIVIDE);
+			keyReleaseWindows(VK_DIVIDE);
             break;
         case '\n':
-			keyReleaseWindows(os, GTKeyboardDriver::key[Qt::Key_Enter]);
+			keyReleaseWindows(GTKeyboardDriver::key[Qt::Key_Enter]);
             break;
         case ':':
-			keyReleaseWindows(os, VK_OEM_1, GTKeyboardDriver::key[Qt::Key_Shift]);
+			keyReleaseWindows(VK_OEM_1, GTKeyboardDriver::key[Qt::Key_Shift]);
             break;
         case ';':
-			keyReleaseWindows(os, VK_OEM_1);
+			keyReleaseWindows(VK_OEM_1);
             break;
         case '<':
-			keyReleaseWindows(os, VK_OEM_COMMA, GTKeyboardDriver::key[Qt::Key_Shift]);
+			keyReleaseWindows(VK_OEM_COMMA, GTKeyboardDriver::key[Qt::Key_Shift]);
             break;
         case '>':
-			keyReleaseWindows(os, VK_OEM_PERIOD, GTKeyboardDriver::key[Qt::Key_Shift]);
+			keyReleaseWindows(VK_OEM_PERIOD, GTKeyboardDriver::key[Qt::Key_Shift]);
             break;
         case '(':
-			keyReleaseWindows(os, '9', GTKeyboardDriver::key[Qt::Key_Shift]);
+			keyReleaseWindows('9', GTKeyboardDriver::key[Qt::Key_Shift]);
             break;
         case ')':
-			keyReleaseWindows(os, '0', GTKeyboardDriver::key[Qt::Key_Shift]);
+			keyReleaseWindows('0', GTKeyboardDriver::key[Qt::Key_Shift]);
             break;
         case '"':
-			keyReleaseWindows(os, VK_OEM_7, GTKeyboardDriver::key[Qt::Key_Shift]);
+			keyReleaseWindows(VK_OEM_7, GTKeyboardDriver::key[Qt::Key_Shift]);
             break;
 		case '\'':
-			keyReleaseWindows(os, VK_OEM_7);
+			keyReleaseWindows(VK_OEM_7);
 			break;
         case '!':
-			keyReleaseWindows(os, '1', GTKeyboardDriver::key[Qt::Key_Shift]);
+			keyReleaseWindows('1', GTKeyboardDriver::key[Qt::Key_Shift]);
             break;
         case '@':
-			keyReleaseWindows(os, '2', GTKeyboardDriver::key[Qt::Key_Shift]);
+			keyReleaseWindows('2', GTKeyboardDriver::key[Qt::Key_Shift]);
             break;
         case '#':
-			keyReleaseWindows(os, '3', GTKeyboardDriver::key[Qt::Key_Shift]);
+			keyReleaseWindows('3', GTKeyboardDriver::key[Qt::Key_Shift]);
             break;
         case '$':
-			keyReleaseWindows(os, '4', GTKeyboardDriver::key[Qt::Key_Shift]);
+			keyReleaseWindows('4', GTKeyboardDriver::key[Qt::Key_Shift]);
             break;
         case '%':
-			keyReleaseWindows(os, '5', GTKeyboardDriver::key[Qt::Key_Shift]);
+			keyReleaseWindows('5', GTKeyboardDriver::key[Qt::Key_Shift]);
             break;
         case '^':
-			keyReleaseWindows(os, '6', GTKeyboardDriver::key[Qt::Key_Shift]);
+			keyReleaseWindows('6', GTKeyboardDriver::key[Qt::Key_Shift]);
             break;
         case '&':
-			keyReleaseWindows(os, '7', GTKeyboardDriver::key[Qt::Key_Shift]);
+			keyReleaseWindows('7', GTKeyboardDriver::key[Qt::Key_Shift]);
             break;
         case '*':
-			keyReleaseWindows(os, '8', GTKeyboardDriver::key[Qt::Key_Shift]);
+			keyReleaseWindows('8', GTKeyboardDriver::key[Qt::Key_Shift]);
             break;
         case '+':
-			keyReleaseWindows(os, VK_OEM_PLUS, GTKeyboardDriver::key[Qt::Key_Shift]);
+			keyReleaseWindows(VK_OEM_PLUS, GTKeyboardDriver::key[Qt::Key_Shift]);
             break;
         case '?':
-			keyReleaseWindows(os, VK_OEM_2, GTKeyboardDriver::key[Qt::Key_Shift]);
+			keyReleaseWindows(VK_OEM_2, GTKeyboardDriver::key[Qt::Key_Shift]);
             break;
 		case '{':
-			keyReleaseWindows(os, VK_OEM_4, GTKeyboardDriver::key[Qt::Key_Shift]);
+			keyReleaseWindows(VK_OEM_4, GTKeyboardDriver::key[Qt::Key_Shift]);
 			break;
 		case '}':
-			keyReleaseWindows(os, VK_OEM_6, GTKeyboardDriver::key[Qt::Key_Shift]);
+			keyReleaseWindows(VK_OEM_6, GTKeyboardDriver::key[Qt::Key_Shift]);
 			break;
 		case '|':
-			keyReleaseWindows(os, VK_OEM_5, GTKeyboardDriver::key[Qt::Key_Shift]);
+			keyReleaseWindows(VK_OEM_5, GTKeyboardDriver::key[Qt::Key_Shift]);
 			break;
         default:
-			keyReleaseWindows(os, (int)key);
+			keyReleaseWindows((int)key);
 			break;
     }
 
 	QList<Qt::Key> modKeys = modifiersToKeys(modifiers);
 	foreach(Qt::Key mod, modKeys){
-		keyReleaseWindows(os, GTKeyboardDriver::key[mod]);
+		keyReleaseWindows(GTKeyboardDriver::key[mod]);
 	}
+
+	return true;
 }
 
-void GTKeyboardDriver::keyPress(GUITestOpStatus &os, Qt::Key key, Qt::KeyboardModifiers modifiers){
+bool GTKeyboardDriver::keyPress(Qt::Key key, Qt::KeyboardModifiers modifiers){
 	QList<Qt::Key> modKeys = modifiersToKeys(modifiers);
 	foreach(Qt::Key mod, modKeys){
-		keyPressWindows(os, GTKeyboardDriver::key[mod]);
+		keyPressWindows(GTKeyboardDriver::key[mod]);
 	}
-	keyPressWindows(os, GTKeyboardDriver::key[key]);
+	keyPressWindows(GTKeyboardDriver::key[key]);
+
+	return true;
 }
 
-void GTKeyboardDriver::keyRelease(GUITestOpStatus &os, Qt::Key key, Qt::KeyboardModifiers modifiers){
-	keyReleaseWindows(os, GTKeyboardDriver::key[key]);
+bool GTKeyboardDriver::keyRelease(Qt::Key key, Qt::KeyboardModifiers modifiers){
+	keyReleaseWindows(GTKeyboardDriver::key[key]);
 	QList<Qt::Key> modKeys = modifiersToKeys(modifiers);
 	foreach(Qt::Key mod, modKeys){
-		keyReleaseWindows(os, GTKeyboardDriver::key[mod]);
+		keyReleaseWindows(GTKeyboardDriver::key[mod]);
 	}
+
+	return true;
 }
 
 GTKeyboardDriver::keys::keys()
