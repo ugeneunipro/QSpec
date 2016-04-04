@@ -33,7 +33,7 @@ namespace HI {
 QPoint GTMouseDriver::mousePos = QPoint(-1, -1);
 
 #define GT_METHOD_NAME "moveToP"
-void GTMouseDriver::moveTo(GUITestOpStatus &os, const QPoint& p)
+bool GTMouseDriver::moveTo(const QPoint& p)
 {
 	int x = p.x();
 	int y = p.y();
@@ -44,7 +44,7 @@ void GTMouseDriver::moveTo(GUITestOpStatus &os, const QPoint& p)
     ReleaseDC(NULL, hDCScreen);
 
     QRect screen(0, 0, horres-1, vertres-1);
-    GT_CHECK(screen.contains(QPoint(x, y)), "Invalid coordinates");
+    DRIVER_CHECK(screen.contains(QPoint(x, y)), "Invalid coordinates");
 
     const int points_in_line = 65535;
     const double points_in_x_pixel = points_in_line / static_cast<double>(horres);
@@ -116,16 +116,18 @@ void GTMouseDriver::moveTo(GUITestOpStatus &os, const QPoint& p)
 #else
     GTGlobals::sleep(100); //May be not needed
 #endif
+
+	return true;
 }
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "press"
-void GTMouseDriver::press(GUITestOpStatus &os, Qt::MouseButton button)
+bool GTMouseDriver::press(Qt::MouseButton button)
 {
     unsigned int btn = button == Qt::LeftButton ? MOUSEEVENTF_LEFTDOWN :
                        button == Qt::RightButton ? MOUSEEVENTF_RIGHTDOWN :
                        button == Qt::MidButton ? MOUSEEVENTF_MIDDLEDOWN : 0;
-    GT_CHECK(btn != 0, "button is 0");
+    DRIVER_CHECK(btn != 0, "button is 0");
 
     INPUT event;
     event.type = INPUT_MOUSE;
@@ -137,18 +139,20 @@ void GTMouseDriver::press(GUITestOpStatus &os, Qt::MouseButton button)
     event.mi.dwExtraInfo = 0;
 
     SendInput(1, &event, sizeof(event));
+
+	return true;
 }
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "release"
-void GTMouseDriver::release(GUITestOpStatus &os, Qt::MouseButton button)
+bool GTMouseDriver::release(Qt::MouseButton button)
 {
     // TODO: check if this key has been already pressed
     //unsigned int buttons[3] = {MOUSEEVENTF_LEFTUP, MOUSEEVENTF_RIGHTUP, MOUSEEVENTF_MIDDLEUP};
     unsigned int btn = button == Qt::LeftButton ? MOUSEEVENTF_LEFTUP :
                        button == Qt::RightButton ? MOUSEEVENTF_RIGHTUP :
                        button == Qt::MidButton ? MOUSEEVENTF_MIDDLEUP : 0;
-    GT_CHECK(btn != 0, "button is 0");
+    DRIVER_CHECK(btn != 0, "button is 0");
 
     INPUT event;
     event.type = INPUT_MOUSE;
@@ -160,13 +164,13 @@ void GTMouseDriver::release(GUITestOpStatus &os, Qt::MouseButton button)
     event.mi.dwExtraInfo = 0;
 
     SendInput(1, &event, sizeof(event));
+
+	return true;
 }
 #undef GT_METHOD_NAME
 
-void GTMouseDriver::scroll(GUITestOpStatus &os, int value)
+bool GTMouseDriver::scroll(int value)
 {
-	Q_UNUSED(os);
-
     INPUT event;
     event.type = INPUT_MOUSE;
     event.mi.dx = 0;
@@ -177,6 +181,8 @@ void GTMouseDriver::scroll(GUITestOpStatus &os, int value)
     event.mi.dwExtraInfo = 0;
 
     SendInput(1, &event, sizeof(event));
+
+	return true;
 }
 
 #undef GT_CLASS_NAME
