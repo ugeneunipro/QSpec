@@ -37,52 +37,42 @@ namespace HI {
  *
  * Example:
  * \code {.cpp}
- * GTKeyboardDriver::keyClick(os, 'A'); // print 'a'
- * GTKeyboardDriver::keyClick(os, 'a'); // print 'a'
+ * GTKeyboardDriver::keyClick( 'A'); // print 'a'
+ * GTKeyboardDriver::keyClick( 'a'); // print 'a'
  *
- * GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["shift"]); // print 'A'
- * GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["SHIFT"]); // print 'A'
+ * GTKeyboardDriver::keyClick( 'a', GTKeyboardDriver::key[Qt::Key_Shift]); // print 'A'
+ * GTKeyboardDriver::keyClick( 'a', GTKeyboardDriver::key[Qt::Key_Shift]); // print 'A'
  * //case in ["..."] does not matter
  *
- * GTKeyboardDriver::keySequence(os, "ThIs Is a TeSt StRiNg"); // print "ThIs Is a TeSt StRiNg"
+ * GTKeyboardDriver::keySequence("ThIs Is a TeSt StRiNg"); // print "ThIs Is a TeSt StRiNg"
  * //i.e. case sensitive
  * \endcode
  */
 class HI_EXPORT GTKeyboardDriver {
 public:
     //
-#if defined Q_OS_WIN || defined Q_OS_MAC
-    static void keyClick(GUITestOpStatus &os, char key, int modifiers = 0);
-    static void keyClick(GUITestOpStatus &os, char key, QList<int> modifiers);
-
-    static void keyPress(GUITestOpStatus &os, char key, int modifiers = 0);
-    static void keyRelease(GUITestOpStatus &os, char key, int modifiers = 0);
-#if defined Q_OS_WIN
-    static INPUT getKeyEvent(int key, bool keyUp = false);
-#endif
-#endif
-
     // fails if key == 0
     // Linux: fails if there is an opening X display error
 
-    static void keyClick(GUITestOpStatus &os, int key, int modifiers = 0);
-    static void keyClick(GUITestOpStatus &os, int key, QList<int> modifiers);
-    static void keySequence(GUITestOpStatus &os, const QString &str, int modifiers = 0);
+    static bool keyClick(char key, Qt::KeyboardModifiers = Qt::NoModifier);
+    static bool keyClick(Qt::Key, Qt::KeyboardModifiers = Qt::NoModifier);
+    static bool keySequence(const QString &str, Qt::KeyboardModifiers = Qt::NoModifier);
 
-    static void keyPress(GUITestOpStatus &os, int key, int modifiers = 0);
-    static void keyRelease(GUITestOpStatus &os, int key, int modifiers = 0);
+    static bool keyPress(char key, Qt::KeyboardModifiers = Qt::NoModifier);
+    static bool keyRelease(char key, Qt::KeyboardModifiers = Qt::NoModifier);
+    static bool keyPress(Qt::Key, Qt::KeyboardModifiers = Qt::NoModifier);
+    static bool keyRelease(Qt::Key, Qt::KeyboardModifiers = Qt::NoModifier);
 
-	class HI_EXPORT keys : private QMap<QString, int> {
+    class HI_EXPORT keys : private QMap<Qt::Key, int> {
     public:
         keys();
-        const QStringList mapKeys() const {
-            return QMap<QString, int>::keys();
-        }
-        int operator [] (const QString&) const;
+        int operator [] (const Qt::Key &key) const;
     };
 
     static keys key;
 
+private:
+    static QList<Qt::Key> modifiersToKeys(Qt::KeyboardModifiers m);
 
 };
 

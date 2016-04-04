@@ -47,9 +47,9 @@ void GTLineEdit::setText(GUITestOpStatus& os, QLineEdit* lineEdit, const QString
 
     if(useCopyPaste){
         GTClipboard::setText(os, str);
-        GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
+        GTKeyboardDriver::keyClick( 'v', Qt::ControlModifier);
     }else{
-        GTKeyboardDriver::keySequence(os, str);
+        GTKeyboardDriver::keySequence(str);
     }
     GTGlobals::sleep(500);
 
@@ -83,8 +83,8 @@ void GTLineEdit::clear(GUITestOpStatus& os, QLineEdit* lineEdit) {
 
     GTKeyboardUtils::selectAll(os);
     GTGlobals::sleep(100);
-    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
-    GTGlobals::sleep(1000);
+    GTKeyboardDriver::keyClick( Qt::Key_Delete);
+    GTGlobals::sleep(100);
 
     QString s = lineEdit->text();
     GT_CHECK(s.isEmpty() == true, "Can't clear text, lineEdit is not empty");
@@ -153,7 +153,7 @@ bool GTLineEdit::tryToSetText(GUITestOpStatus &os, QLineEdit *lineEdit, const QS
         clear(os, lineEdit);
     }
 
-    GTKeyboardDriver::keySequence(os, str);
+    GTKeyboardDriver::keySequence(str);
     GTGlobals::sleep(500);
 
     QString s = lineEdit->text();

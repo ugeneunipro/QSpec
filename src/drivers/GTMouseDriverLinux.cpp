@@ -33,20 +33,23 @@ namespace HI {
 #define GT_CLASS_NAME "GTMouseDriver Linux"
 QPoint GTMouseDriver::mousePos = QPoint(-1, -1);
 
-#define GT_METHOD_NAME "moveToP"
-void GTMouseDriver::moveToP(GUITestOpStatus &os, const int x, const int y)
+#define GT_METHOD_NAME "moveTo"
+bool GTMouseDriver::moveTo(const QPoint& p)
 {
+    //mousePos = p;
+    int x = p.x();
+    int y = p.y();
     QByteArray display_name = qgetenv("DISPLAY");
-    GT_CHECK(!display_name.isEmpty(), "Environment variable \"DISPLAY\" not found");
+    DRIVER_CHECK(!display_name.isEmpty(), "Environment variable \"DISPLAY\" not found");
 
     Display *display = XOpenDisplay(display_name.constData());
-    GT_CHECK(display != 0, "display is NULL");
+    DRIVER_CHECK(display != 0, "display is NULL");
 
     int horres = XDisplayWidth(display, 0);
     int vertres = XDisplayHeight(display, 0);
 
     QRect screen(0, 0, horres-1, vertres-1);
-    GT_CHECK(screen.contains(QPoint(x, y)), "Invalid coordinates");
+    DRIVER_CHECK(screen.contains(QPoint(x, y)), "Invalid coordinates");
 
     Window root, child;
     int root_x, root_y, pos_x, pos_y;
@@ -109,61 +112,66 @@ void GTMouseDriver::moveToP(GUITestOpStatus &os, const int x, const int y)
 #else
     GTGlobals::sleep(100); //May be not needed
 #endif
+    return true;
 }
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "press"
-void GTMouseDriver::press(GUITestOpStatus &os, Qt::MouseButton button)
+bool GTMouseDriver::press(Qt::MouseButton button)
 {
     QByteArray display_name = qgetenv("DISPLAY");
-    GT_CHECK(!display_name.isEmpty(), "Environment variable \"DISPLAY\" not found");
+    DRIVER_CHECK(!display_name.isEmpty(), "Environment variable \"DISPLAY\" not found");
 
     Display *display = XOpenDisplay(display_name.constData());
-    GT_CHECK(display != 0, "display is NULL");
+    DRIVER_CHECK(display != 0, "display is NULL");
 
     //1 = Left, 2 = Middle, 3 = Right
     unsigned int btn = button == Qt::LeftButton ? 1 :
                        button == Qt::RightButton ? 3 :
                        button == Qt::MidButton ? 2 : 0;
-    GT_CHECK(btn != 0, "button is 0");
+    DRIVER_CHECK(btn != 0, "button is 0");
 
     XTestFakeButtonEvent(display, btn, True, 0);
     XFlush(display);
 
     XCloseDisplay(display);
+
+    return true;
 }
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "release"
-void GTMouseDriver::release(GUITestOpStatus &os, Qt::MouseButton button)
+bool GTMouseDriver::release(Qt::MouseButton button)
 {
     // TODO: check if this key has been already pressed
     QByteArray display_name = qgetenv("DISPLAY");
-    GT_CHECK(!display_name.isEmpty(), "Environment variable \"DISPLAY\" not found");
+    DRIVER_CHECK(!display_name.isEmpty(), "Environment variable \"DISPLAY\" not found");
 
     Display *display = XOpenDisplay(display_name.constData());
-    GT_CHECK(display != 0, "display is NULL");
+    DRIVER_CHECK(display != 0, "display is NULL");
 
     unsigned int btn = button == Qt::LeftButton ? 1 :
                        button == Qt::RightButton ? 3 :
                        button == Qt::MidButton ? 2 : 0;
-    GT_CHECK(btn != 0, "button is 0");
+    DRIVER_CHECK(btn != 0, "button is 0");
 
     XTestFakeButtonEvent(display, btn, False, 0);
     XFlush(display);
 
     XCloseDisplay(display);
+
+    return true;
 }
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "scroll"
-void GTMouseDriver::scroll(GUITestOpStatus &os, int value)
+bool GTMouseDriver::scroll(int value)
 {
     QByteArray display_name = qgetenv("DISPLAY");
-    GT_CHECK(!display_name.isEmpty(), "Environment variable \"DISPLAY\" not found");
+    DRIVER_CHECK(!display_name.isEmpty(), "Environment variable \"DISPLAY\" not found");
 
     Display *display = XOpenDisplay(display_name.constData());
-    GT_CHECK(display != 0, "display is NULL");
+    DRIVER_CHECK(display != 0, "display is NULL");
 
     unsigned button =  value > 0 ? Button4 : Button5; //Button4 - scroll up, Button5 - scroll down
     value = value > 0 ? value : -value;
@@ -175,6 +183,8 @@ void GTMouseDriver::scroll(GUITestOpStatus &os, int value)
 
     XFlush(display);
     XCloseDisplay(display);
+
+    return true;
 }
 #undef GT_METHOD_NAME
 

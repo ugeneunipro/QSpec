@@ -69,24 +69,24 @@ void GTSpinBox::setValue(GUITestOpStatus& os, QSpinBox *spinBox, int v, GTGlobal
                 arrowPos = QPoint(spinBoxRect.right() - 5, spinBoxRect.height() * 3 / 4);
             }
 
-            GTMouseDriver::moveTo(os, spinBox->mapToGlobal(arrowPos));
+            GTMouseDriver::moveTo(spinBox->mapToGlobal(arrowPos));
             while (spinBox->value() != v) {
-                GTMouseDriver::click(os);
+                GTMouseDriver::click();
                 GTGlobals::sleep(100);
             }
             break;
 
         case GTGlobals::UseKey: {
-            int key = 0;
+            Qt::Key key;
             if (v > spinBox->value()) {
-                key = GTKeyboardDriver::key["up"];
+                key = Qt::Key_Up;
             } else {
-                key = GTKeyboardDriver::key["down"];
+                key = Qt::Key_Down;
             }
 
             GTWidget::setFocus(os, spinBox);
             while (spinBox->value() != v) {
-                GTKeyboardDriver::keyClick(os, key);
+                GTKeyboardDriver::keyClick( key);
                 GTGlobals::sleep(100);
             }
             break;
@@ -95,15 +95,15 @@ void GTSpinBox::setValue(GUITestOpStatus& os, QSpinBox *spinBox, int v, GTGlobal
             QString s = QString::number(v);
             GTWidget::setFocus(os, spinBox);
             GTGlobals::sleep(100);
-            GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+            GTKeyboardDriver::keyClick( 'a', Qt::ControlModifier);
             GTGlobals::sleep(100);
-            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+            GTKeyboardDriver::keyClick( Qt::Key_Delete);
             GTGlobals::sleep(100);
-            GTKeyboardDriver::keySequence(os,s);
+            GTKeyboardDriver::keySequence(s);
             GTGlobals::sleep(100);
         }
     }
-    GTThread::waitForMainThread(os);
+    GTThread::waitForMainThread();
     int currIndex = spinBox->value();
     GT_CHECK(currIndex == v, QString("Can't set index. Expected: %1 actual: %2").arg(v).arg(currIndex));
     GTGlobals::sleep(100);

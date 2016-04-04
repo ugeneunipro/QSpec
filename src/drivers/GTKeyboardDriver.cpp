@@ -29,73 +29,60 @@ namespace HI {
 
 #define GT_METHOD_NAME "keyClick"
 
-void GTKeyboardDriver::keyClick(GUITestOpStatus &os, int key, int modifiers)
+QList<Qt::Key> GTKeyboardDriver::modifiersToKeys(Qt::KeyboardModifiers mod){
+    QList<Qt::Key> result;
+    if(mod.testFlag(Qt::ShiftModifier)){result.append(Qt::Key_Shift);}
+    if(mod.testFlag(Qt::AltModifier)){result.append(Qt::Key_Alt);}
+    if(mod.testFlag(Qt::ControlModifier)){result.append(Qt::Key_Control);}
+    if(mod.testFlag(Qt::MetaModifier)){result.append(Qt::Key_Meta);}
+    return result;
+}
+
+bool GTKeyboardDriver::keyClick(char key, Qt::KeyboardModifiers modifiers)
 {
-    GT_CHECK(key != 0, "key = 0");
-#ifdef Q_OS_MAC
-    if (modifiers==GTKeyboardDriver::key["ctrl"]){
-        modifiers=GTKeyboardDriver::key["cmd"];
-    }
-#endif
-    keyPress(os, key, modifiers);
-    keyRelease(os, key, modifiers);
+    DRIVER_CHECK(key != 0, "key = 0");
+    DRIVER_CHECK(keyPress(key, modifiers), "key could not be pressed");
+    DRIVER_CHECK(keyRelease(key, modifiers), "key could not be released");
+    return true;
+}
+
+bool GTKeyboardDriver::keyClick(Qt::Key key, Qt::KeyboardModifiers modifiers)
+{
+    DRIVER_CHECK(key != 0, "key = 0");
+    DRIVER_CHECK(keyPress(key, modifiers), "key could not be pressed");
+    DRIVER_CHECK(keyRelease(key, modifiers), "key could not be released");
+    return true;
 }
 #undef GT_METHOD_NAME
 
-void GTKeyboardDriver::keyClick(GUITestOpStatus &os, int key, QList<int> modifiers){
-    switch (modifiers.size()) {
-    case 0:
-        keyClick(os, key);
-        break;
-    case 1:
-        keyClick(os, key, modifiers.first());
-        break;
-    default:
-        int modifier = modifiers.takeLast();
-        foreach (int mod, modifiers) {
-            keyPress(os, mod);
-        }
-        keyClick(os, key, modifier);
-        foreach (int mod, modifiers) {
-            keyRelease(os, mod);
-        }
-        break;
-    }
-}
-
-void GTKeyboardDriver::keySequence(GUITestOpStatus &os, const QString &str, int modifiers)
+bool GTKeyboardDriver::keySequence(const QString &str, Qt::KeyboardModifiers modifiers)
 {
-    if (modifiers) {
-        keyPress(os, modifiers);
+    QList<Qt::Key> modifierKeys = modifiersToKeys(modifiers);
+    foreach (Qt::Key mod, modifierKeys) {
+        DRIVER_CHECK(keyPress(mod), "modifier could not be pressed");
     }
 
     foreach(QChar ch, str) {
         char asciiChar = ch.toLatin1();
         if(isalpha(asciiChar) && !islower(asciiChar)) {
-            keyClick(os, asciiChar, key["shift"]);
+            DRIVER_CHECK(keyClick( asciiChar, Qt::ShiftModifier), QString("%1 char could not be clicked with shift modifier").arg(asciiChar));
         } else {
-            keyClick(os, asciiChar);
+            DRIVER_CHECK(keyClick( asciiChar), QString("%1 char could not be clicked").arg(asciiChar));
         }
-#ifdef  Q_OS_MAC
-        GTGlobals::sleep(10); // need for MacOS
-        GTThread::waitForMainThread(os);
-#endif
+        GTGlobals::sleep(10);
     }
 
-    if (modifiers) {
-        keyRelease(os, modifiers);
+    foreach (Qt::Key mod, modifierKeys) {
+        DRIVER_CHECK(keyRelease(mod), "modifier could not be released");
     }
+    GTThread::waitForMainThread();
+    return true;
 }
 
 /******************************************************************************/
-int GTKeyboardDriver::keys::operator [] (const QString &str) const
+int GTKeyboardDriver::keys::operator [] (const Qt::Key &key) const
 {
-    QString lowerStr = str.toLower();
-    //backspace alias
-    if (lowerStr == "backspace"){
-        lowerStr = "back";
-    }
-    return value(lowerStr);
+    return value(key);
 }
 
 GTKeyboardDriver::keys GTKeyboardDriver::key;

@@ -60,7 +60,7 @@ void ColorDialogFiller::commonScenario() {
 
         QColorDialog* d = qobject_cast<QColorDialog*>(dialog);
         GTThread::runInMainThread(os, new Scenario(d, QColor(r, g, b)));
-        GTThread::waitForMainThread(os);
+        GTThread::waitForMainThread();
         GTGlobals::sleep(500);
         return;
     }
@@ -74,7 +74,7 @@ void ColorDialogFiller::commonScenario() {
 #ifdef Q_OS_MAC
     GTWidget::click(os, GTWidget::findButtonByText(os, "OK",dialog));
 #else
-    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+    GTKeyboardDriver::keyClick( Qt::Key_Enter);
 #endif
 }
 #undef GT_METHOD_NAME

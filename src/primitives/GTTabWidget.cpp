@@ -63,8 +63,8 @@ void GTTabWidget::clickTab(GUITestOpStatus &os, QTabWidget* tabWidget, int idx, 
     setCurrentIndex(os, tabWidget, idx);
     QTabBar* tabBar = getTabBar(os, tabWidget);
     QRect r = tabBar->tabRect(idx);
-    GTMouseDriver::moveTo(os, tabBar->mapToGlobal(r.center()));
-    GTMouseDriver::click(os, button);
+    GTMouseDriver::moveTo(tabBar->mapToGlobal(r.center()));
+    GTMouseDriver::click(button);
 }
 #undef GT_METHOD_NAME
 

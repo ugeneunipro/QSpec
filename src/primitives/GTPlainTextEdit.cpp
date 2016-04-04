@@ -39,7 +39,7 @@ void GTPlainTextEdit::setPlainText(GUITestOpStatus& os, QPlainTextEdit* plainTex
 
     GTWidget::setFocus(os, plainTextEdit);
 
-    GTKeyboardDriver::keySequence(os, text);
+    GTKeyboardDriver::keySequence(text);
     GTGlobals::sleep(500);
 
 }
@@ -54,7 +54,7 @@ void GTPlainTextEdit::setPlainText(GUITestOpStatus& os, QPlainTextEdit* plainTex
 //
 //    GTKeyboardUtils::selectAll(os);
 //    GTGlobals::sleep(100);
-//    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+//    GTKeyboardDriver::keyClick( Qt::Key_Delete);
 //    GTGlobals::sleep(1000);
 //
 //    QString s = plainTextEdit->toPlainText();

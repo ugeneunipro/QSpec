@@ -50,13 +50,13 @@ void GTWidget::click(GUITestOpStatus &os, QWidget *w, Qt::MouseButton mouseButto
             p += QPoint(0, 8);
         }
     }
-    GTMouseDriver::moveTo(os, w->mapToGlobal(p));
+    GTMouseDriver::moveTo(w->mapToGlobal(p));
     if(safe){
-        GTMouseDriver::click(os, mouseButton);
+        GTMouseDriver::click(mouseButton);
     }else{
         //sometimes GTGlobals::sleep(os) should not be used after clicking
-        GTMouseDriver::press(os, mouseButton);
-        GTMouseDriver::release(os, mouseButton);
+        GTMouseDriver::press(mouseButton);
+        GTMouseDriver::release(mouseButton);
     }
 }
 #undef GT_METHOD_NAME
@@ -207,8 +207,8 @@ void GTWidget::close(GUITestOpStatus &os, QWidget *widget) {
     GTThread::runInMainThread(os, new Scenario(widget));
 #else
     const QPoint closeButtonPos = GTWidget::getWidgetGlobalTopLeftPoint(os, widget) + QPoint(10, 5);
-    GTMouseDriver::moveTo(os, closeButtonPos);
-    GTMouseDriver::click(os);
+    GTMouseDriver::moveTo(closeButtonPos);
+    GTMouseDriver::click();
     GTGlobals::sleep(100);
 #endif
 }
@@ -328,10 +328,10 @@ void GTWidget::clickLabelLink(GUITestOpStatus &os, QWidget *label, int step, int
     int bottom = r.bottom();
     for(int i = left; i < right; i+=step){
         for(int j = top; j < bottom; j+=step){
-            GTMouseDriver::moveTo(os, label->mapToGlobal(QPoint(i,j)));
+            GTMouseDriver::moveTo(label->mapToGlobal(QPoint(i,j)));
             if(label->cursor().shape() == Qt::PointingHandCursor){
                 GTGlobals::sleep(500);
-                GTMouseDriver::click(os);
+                GTMouseDriver::click();
                 return;
             }
         }
@@ -347,18 +347,18 @@ void GTWidget::clickWindowTitle(GUITestOpStatus &os, QWidget *window) {
     QStyleOptionTitleBar opt;
     opt.initFrom(window);
     const QRect titleLabelRect = window->style()->subControlRect(QStyle::CC_TitleBar, &opt, QStyle::SC_TitleBarLabel);
-    GTMouseDriver::moveTo(os, getWidgetGlobalTopLeftPoint(os, window) + titleLabelRect.center());
-    GTMouseDriver::click(os);
+    GTMouseDriver::moveTo(getWidgetGlobalTopLeftPoint(os, window) + titleLabelRect.center());
+    GTMouseDriver::click();
 }
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "moveWidgetTo"
 void GTWidget::moveWidgetTo(GUITestOpStatus &os, QWidget *window, const QPoint &point){
     //QPoint(window->width()/2,3) - is hack
-    GTMouseDriver::moveTo(os, getWidgetGlobalTopLeftPoint(os, window) + QPoint(window->width()/2,3));
+    GTMouseDriver::moveTo(getWidgetGlobalTopLeftPoint(os, window) + QPoint(window->width()/2,3));
     const QPoint p0 = getWidgetGlobalTopLeftPoint(os, window) + QPoint(window->width()/2,3);
     const QPoint p1 = point + QPoint(window->width()/2,3);
-    GTMouseDriver::dragAndDrop(os, p0, p1);
+    GTMouseDriver::dragAndDrop(p0, p1);
     GTGlobals::sleep(1000);
 }
 #undef GT_METHOD_NAME
@@ -375,9 +375,9 @@ void GTWidget::resizeWidget(GUITestOpStatus &os, QWidget *widget, const QSize &s
 
     QPoint topLeftPos = getWidgetGlobalTopLeftPoint(os, widget) + QPoint(5, 5);
     for (int i=0; i<5; i++){
-        GTMouseDriver::moveTo(os, topLeftPos);
+        GTMouseDriver::moveTo(topLeftPos);
         QPoint newTopLeftPos = topLeftPos + QPoint(widget->frameGeometry().width() - 1, widget->frameGeometry().height() - 1) - QPoint(size.width(), size.height());
-        GTMouseDriver::dragAndDrop(os, topLeftPos, newTopLeftPos);
+        GTMouseDriver::dragAndDrop(topLeftPos, newTopLeftPos);
         if (widget->size() != oldSize){
             neededPositionFound = true;
             break;

@@ -42,9 +42,9 @@ void GTMenuBar::clickCornerMenu(GUITestOpStatus &os, QMenuBar* mBar, GTGlobals::
     QPoint need((num+1)*oneWidth - oneWidth/2, r.height()/2);
     QPoint p = cWidget->mapToGlobal(need);
 
-    GTMouseDriver::moveTo(os, p);
+    GTMouseDriver::moveTo(p);
     GTGlobals::sleep(200);
-    GTMouseDriver::click(os);
+    GTMouseDriver::click();
     GTGlobals::sleep(500);
 }
 #undef GT_METHOD_NAME

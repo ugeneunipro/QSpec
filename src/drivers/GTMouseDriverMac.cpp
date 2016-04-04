@@ -49,19 +49,13 @@ bool isPointInsideScreen(int x, int y) {
     return isPointInsideScreen(QPoint(x, y));
 }
 
-}
-
-#define GT_METHOD_NAME "moveToP"
-void GTMouseDriver::moveToP(GUITestOpStatus &os, const int x, const int y)
-{
-    if (bp.testFlag(Qt::LeftButton)) {
-        selectArea(os, x, y);
-        return;
-    }
+#define GT_METHOD_NAME "selectAreaMac"
+void selectAreaMac(GUITestOpStatus &os, const int x, const int y) {
+    Q_UNUSED(os);
 
     GT_CHECK(isPointInsideScreen(x, y), "Invalid coordinates");
 
-    CGEventRef event = CGEventCreateMouseEvent(NULL, kCGEventMouseMoved, CGPointMake(x, y), 0 /*ignored*/);
+    CGEventRef event = CGEventCreateMouseEvent(NULL, kCGEventLeftMouseDragged, CGPointMake(x, y), kCGMouseButtonLeft /*ignored*/);
     GT_CHECK(event != NULL, "Can't create event");
 
     CGEventPost(kCGSessionEventTap, event);
@@ -70,13 +64,21 @@ void GTMouseDriver::moveToP(GUITestOpStatus &os, const int x, const int y)
 }
 #undef GT_METHOD_NAME
 
-#define GT_METHOD_NAME "selectArea"
-void GTMouseDriver::selectArea(GUITestOpStatus &os, const int x, const int y) {
-    Q_UNUSED(os);
+}
+
+#define GT_METHOD_NAME "moveToP"
+void GTMouseDriver::moveTo(GUITestOpStatus &os, const QPoint& p)
+{
+    int x = p.x();
+    int y = p.y();
+    if (bp.testFlag(Qt::LeftButton)) {
+        selectAreaMac(os, x, y);
+        return;
+    }
 
     GT_CHECK(isPointInsideScreen(x, y), "Invalid coordinates");
 
-    CGEventRef event = CGEventCreateMouseEvent(NULL, kCGEventLeftMouseDragged, CGPointMake(x, y), kCGMouseButtonLeft /*ignored*/);
+    CGEventRef event = CGEventCreateMouseEvent(NULL, kCGEventMouseMoved, CGPointMake(x, y), 0 /*ignored*/);
     GT_CHECK(event != NULL, "Can't create event");
 
     CGEventPost(kCGSessionEventTap, event);

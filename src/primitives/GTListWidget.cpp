@@ -38,8 +38,8 @@ void GTListWidget::click(GUITestOpStatus &os, QListWidget *listWidget, const QSt
     QRect r = listWidget->visualItemRect(item);
     QPoint p = QPoint(r.left() + 30, r.center().y());
     QPoint global = listWidget->viewport()->mapToGlobal(p);
-    GTMouseDriver::moveTo(os, global);
-    GTMouseDriver::click(os, button);
+    GTMouseDriver::moveTo(global);
+    GTMouseDriver::click(button);
     GTGlobals::sleep();
     GT_CHECK(true, "click method completed");
 }
@@ -62,7 +62,7 @@ void GTListWidget::checkItem(GUITestOpStatus &os, QListWidget *listWidget, const
     GT_CHECK(NULL != listWidget, "List widget is NULL");
     if (newState != isItemChecked(os, listWidget, text)) {
         click(os, listWidget, text);
-        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
+        GTKeyboardDriver::keyClick( Qt::Key_Space);
     }
 }
 #undef GT_METHOD_NAME

@@ -64,8 +64,8 @@ QMenu* GTMenu::showMainMenu(GUITestOpStatus &os, const QString &menuName, GTGlob
         pos = mainWindow->menuBar()->actionGeometry(menu).center();
         gPos = mainWindow->menuBar()->mapToGlobal(pos);
 
-        GTMouseDriver::moveTo(os, gPos);
-        GTMouseDriver::click(os);
+        GTMouseDriver::moveTo(gPos);
+        GTMouseDriver::click();
         break;
 
     case GTGlobals::UseKeyBoard:
@@ -74,7 +74,7 @@ QMenu* GTMenu::showMainMenu(GUITestOpStatus &os, const QString &menuName, GTGlob
         key_pos = menuText.indexOf('&');
         key = (menuText.at(key_pos + 1)).toLatin1();
 
-        GTKeyboardDriver::keyClick(os, key, GTKeyboardDriver::key["alt"]);
+        GTKeyboardDriver::keyClick( key, Qt::AltModifier);
         break;
 
     default:
@@ -154,7 +154,7 @@ QMenu* GTMenu::showContextMenu(GUITestOpStatus &os, QWidget *ground, GTGlobals::
         break;
 
     case GTGlobals::UseKey:
-        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["context_menu"]);
+
         break;
     default:
         break;
@@ -239,36 +239,37 @@ QAction* GTMenu::clickMenuItem(GUITestOpStatus &os, const QMenu *menu, const QSt
             firstMoveTo = QPoint(currentCursorPosition.x(), actionPosition.y()); // move by Y first
         }
 
-        GTMouseDriver::moveTo(os, firstMoveTo); // move by Y first
+        GTMouseDriver::moveTo(firstMoveTo); // move by Y first
         GTGlobals::sleep(100);
 
-        GTMouseDriver::moveTo(os, actionPosition); // move cursor to action
+        GTMouseDriver::moveTo(actionPosition); // move cursor to action
         GTGlobals::sleep(200);
 
 #ifdef Q_OS_WIN
-        GTMouseDriver::click(os);
+        GTMouseDriver::click();
 #else
         QMenu* actionMenu = action->menu();
         bool clickingSubMenu = actionMenu ? true : false;
         if (!clickingSubMenu) {
-            GTMouseDriver::click(os);
+            GTMouseDriver::click();
         }
 #endif
         break;
     }
     case GTGlobals::UseKey:
         while(action != menu->activeAction()) {
-            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["down"]);
+            GTKeyboardDriver::keyClick( Qt::Key_Down);
             GTGlobals::sleep(200);
         }
 
-        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+        GTKeyboardDriver::keyClick( Qt::Key_Enter);
+
         GTGlobals::sleep(200);
         break;
     default:
         break;
     }
-    GTThread::waitForMainThread(os);
+    GTThread::waitForMainThread();
     QMenu* activePopupMenu = qobject_cast<QMenu*>(QApplication::activePopupWidget());
     if(activePopupMenu==NULL)
         action=NULL;

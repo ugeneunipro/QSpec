@@ -20,19 +20,18 @@
  */
 
 #include <QApplication>
-#include <QTimer>
 #include <utils/GTThread.h>
 
 #include "GTMouseDriver.h"
 
 namespace HI {
 
-void GTMouseDriver::click(GUITestOpStatus &os, Qt::MouseButton button)
+bool GTMouseDriver::click(Qt::MouseButton button)
 {
-    press(os, button);
-    release(os, button);
-
+    DRIVER_CHECK(press(button), "Button could not be pressed");
+    DRIVER_CHECK(release(button), "Button could not be released");
     GTGlobals::sleep(500);
+    return true;
 }
 
 namespace {
@@ -43,60 +42,44 @@ bool isFarEnoughToStartDnd(const QPoint &start, const QPoint &end) {
 
 }
 
-void GTMouseDriver::dragAndDrop(GUITestOpStatus &os, const QPoint& start, const QPoint& end) {
-    moveTo(os, start);
-    GTDragger d(os, end);
-    Q_UNUSED(d);
+bool GTMouseDriver::dragAndDrop(const QPoint& start, const QPoint& end) {
+    DRIVER_CHECK(moveTo(start), QString("Mouse could not be moved to point (%1, %2)").arg(start.x()).arg(start.y()));
 
-    press(os);
+    DRIVER_CHECK(press(), "Left button could not be pressed");
 
     const QPoint farPoint = (isFarEnoughToStartDnd(start, (end + start) / 2) ?
                                  (end + start) / 2 :
                                  QPoint(0, 0));
-    GTMouseDriver::moveTo(os, farPoint);
+    DRIVER_CHECK(moveTo(farPoint), QString("Mouse could not be moved to point (%1, %2)").arg(farPoint.x()).arg(farPoint.y()));
 
-    GTThread::waitForMainThread(os);
+    DRIVER_CHECK(moveTo(end), QString("Mouse could not be moved to point (%1, %2)").arg(end.x()).arg(end.y()));;
+    DRIVER_CHECK(release(), "Button could not be released");
+
+    GTThread::waitForMainThread();
+    return true;
+}
+
+bool GTMouseDriver::selectArea(const QPoint &start, const QPoint &end){
+    DRIVER_CHECK(dragAndDrop(start, end), "Drag and drop failed");
+    return true;
 }
 
 #ifndef Q_OS_MAC
-void GTMouseDriver::doubleClick(GUITestOpStatus &os)
+bool GTMouseDriver::doubleClick()
 {
-    press(os, Qt::LeftButton);
-    release(os, Qt::LeftButton);
+    DRIVER_CHECK(press(Qt::LeftButton), "Left button could not be pressed on first click");
+    DRIVER_CHECK(release(Qt::LeftButton), "Left button could not be released on first click");;
     GTGlobals::sleep(100);
 
-    press(os, Qt::LeftButton);
-    release(os, Qt::LeftButton);
+    DRIVER_CHECK(press(Qt::LeftButton), "Left button could not be pressed on second click");
+    DRIVER_CHECK(release(Qt::LeftButton), "Left button could not be released on second click");
     GTGlobals::sleep(250);
+    return true;
 }
 #endif
 
-GTDragger::GTDragger(GUITestOpStatus &_os, const QPoint& _to) :
-    QObject(),
-    os(_os),
-    to(_to),
-    done(false)
-{
-    QTimer::singleShot(2000, this, SLOT(sl_execDrag()));
-    GTGlobals::sleep(500);
-}
-
-GTDragger::~GTDragger() {
-    if (!done) {
-        sl_execDrag();
-    }
-}
-
-void GTDragger::sl_execDrag(){
-    GTMouseDriver::moveTo(os, to);
-#ifndef Q_OS_LINUX
-    GTMouseDriver::release(os);
-    GTThread::waitForMainThread(os);
-#else
-    GTMouseDriver::click(os);
-    GTGlobals::sleep();
-#endif
-    done = true;
+QPoint GTMouseDriver::getMousePosition(){
+    return QCursor::pos();
 }
 
 } //namespace

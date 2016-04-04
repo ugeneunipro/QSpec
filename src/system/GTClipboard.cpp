@@ -60,7 +60,7 @@ QString GTClipboard::text(GUITestOpStatus &os) {
     };
 
     GTThread::runInMainThread(os, new Scenario(clipboardText));
-    GTThread::waitForMainThread(os);
+    GTThread::waitForMainThread();
     return clipboardText;
 }
 #undef GT_METHOD_NAME
@@ -69,7 +69,7 @@ QString GTClipboard::text(GUITestOpStatus &os) {
 void GTClipboard::setText(GUITestOpStatus &os, QString text ){
     class Scenario : public CustomScenario {
     public:
-        Scenario(const QString &_text) : text(_text){}
+        Scenario(QString _text) : text(_text){}
         void run(GUITestOpStatus &os) {
             Q_UNUSED(os);
             QClipboard *clipboard = QApplication::clipboard();
@@ -81,7 +81,7 @@ void GTClipboard::setText(GUITestOpStatus &os, QString text ){
     };
 
     GTThread::runInMainThread(os, new Scenario(text));
-    GTThread::waitForMainThread(os);
+    GTThread::waitForMainThread();
 }
 
 #undef GT_METHOD_NAME
@@ -123,7 +123,7 @@ void GTClipboard::setUrls(GUITestOpStatus &os, const QList<QString> &urls) {
 
     QList<QUrl> qurls = toLocalQUrls(os, urls);
     GTThread::runInMainThread(os, new Scenario(qurls));
-    GTThread::waitForMainThread(os);
+    GTThread::waitForMainThread();
 }
 
 #undef GT_METHOD_NAME
@@ -141,7 +141,7 @@ void GTClipboard::clear(GUITestOpStatus &os){
     };
 
     GTThread::runInMainThread(os, new Scenario());
-    GTThread::waitForMainThread(os);
+    GTThread::waitForMainThread();
 }
 #undef GT_METHOD_NAME
 

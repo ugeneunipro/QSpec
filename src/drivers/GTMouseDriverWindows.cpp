@@ -33,8 +33,10 @@ namespace HI {
 QPoint GTMouseDriver::mousePos = QPoint(-1, -1);
 
 #define GT_METHOD_NAME "moveToP"
-void GTMouseDriver::moveToP(GUITestOpStatus &os, const int x, const int y)
+void GTMouseDriver::moveTo(GUITestOpStatus &os, const QPoint& p)
 {
+	int x = p.x();
+	int y = p.y();
     // get screen resolution
     HDC hDCScreen = GetDC(NULL);
     int horres = GetDeviceCaps(hDCScreen, HORZRES);
