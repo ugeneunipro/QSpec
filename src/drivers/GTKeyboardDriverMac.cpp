@@ -33,17 +33,17 @@ namespace HI {
 
 int asciiToVirtual(int);
 bool extractShiftModifier(char &key);
-void keyPressMac(GUITestOpStatus &os, int key);
-void keyReleaseMac(GUITestOpStatus &os, int key);
+bool keyPressMac(int key);
+bool keyReleaseMac(int key);
 
 #define GT_CLASS_NAME "GTKeyboardDriverMac"
 #define GT_METHOD_NAME "keyPress_char"
-void GTKeyboardDriver::keyPress(GUITestOpStatus &os, char key, Qt::KeyboardModifiers modifiers) {
-    GT_CHECK(key != 0, "key = 0");
+bool  GTKeyboardDriver::keyPress(char key, Qt::KeyboardModifiers modifiers) {
+    DRIVER_CHECK(key != 0, "key = 0");
 
     const bool isChanged = extractShiftModifier(key);
     if (isChanged) {
-        keyPressMac(os, GTKeyboardDriver::key[Qt::Key_Shift]);
+        keyPressMac(GTKeyboardDriver::key[Qt::Key_Shift]);
     } else {
         key = asciiToVirtual(key);
     }
@@ -51,79 +51,55 @@ void GTKeyboardDriver::keyPress(GUITestOpStatus &os, char key, Qt::KeyboardModif
     GTGlobals::sleep(1);
     QList<Qt::Key> modKeys = modifiersToKeys(modifiers);
     foreach (Qt::Key mod, modKeys) {
-        keyPressMac(os, GTKeyboardDriver::key[mod]);
+        keyPressMac(GTKeyboardDriver::key[mod]);
     }
 
-<<<<<<< HEAD
-    keyPressMac(os, (int)key);
-=======
-    CGEventRef event = CGEventCreateKeyboardEvent(NULL, key, true);
-    GT_CHECK(event != NULL, "Can't create event");
-
-    CGEventSetFlags(event, CGEventGetFlags(event) & ~kCGEventFlagMaskNumericPad);
-
-    CGEventPost(kCGSessionEventTap, event);
-    CFRelease(event);
-    GTGlobals::sleep(1);
->>>>>>> ugene
+    return keyPressMac((int)key);
 }
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "keyRelease_char"
-void GTKeyboardDriver::keyRelease(GUITestOpStatus &os, char key, Qt::KeyboardModifiers modifiers) {
-    GT_CHECK(key != 0, "key = 0");
+bool GTKeyboardDriver::keyRelease(char key, Qt::KeyboardModifiers modifiers) {
+    DRIVER_CHECK(key != 0, "key = 0");
 
     const bool isChanged = extractShiftModifier(key);
     if (!isChanged) {
         key = asciiToVirtual(key);
     } else {
-        keyReleaseMac(os, GTKeyboardDriver::key[Qt::Key_Shift]);
+        keyReleaseMac(GTKeyboardDriver::key[Qt::Key_Shift]);
     }
 
     GTGlobals::sleep(1);
-    keyReleaseMac(os, (int)key);
+    keyReleaseMac((int)key);
     GTGlobals::sleep(1);
 
     QList<Qt::Key> modKeys = modifiersToKeys(modifiers);
     foreach (Qt::Key mod, modKeys) {
-        keyReleaseMac(os, GTKeyboardDriver::key[mod]);
+        keyReleaseMac(GTKeyboardDriver::key[mod]);
     }
     GTGlobals::sleep(1);
+
+    return true;
 }
 #undef GT_METHOD_NAME
 
-<<<<<<< HEAD
-void GTKeyboardDriver::keyPress(GUITestOpStatus &os, Qt::Key key, Qt::KeyboardModifiers modifiers){
+bool GTKeyboardDriver::keyPress(Qt::Key key, Qt::KeyboardModifiers modifiers){
     QList<Qt::Key> modKeys = modifiersToKeys(modifiers);
     foreach (Qt::Key mod, modKeys) {
-        keyPressMac(os, GTKeyboardDriver::key[mod]);
+        keyPressMac(GTKeyboardDriver::key[mod]);
     }
-    keyPressMac(os, GTKeyboardDriver::key[key]);
+    return keyPressMac(GTKeyboardDriver::key[key]);
 }
-=======
-#define GT_METHOD_NAME "keyRelease_int"
-void GTKeyboardDriver::keyRelease(GUITestOpStatus &os, int key, int modifiers)
-{
-    if (key==GTKeyboardDriver::key["ctrl"])
-        key=GTKeyboardDriver::key["cmd"];
 
-    CGEventRef event = CGEventCreateKeyboardEvent(NULL, key, false);
-    GT_CHECK(event != NULL, "Can't create event");
-
-    CGEventSetFlags(event, CGEventGetFlags(event) & ~kCGEventFlagMaskNumericPad);
-
-    CGEventPost(kCGSessionEventTap, event);
-    CFRelease(event);
-    GTGlobals::sleep(1);
->>>>>>> ugene
-
-void GTKeyboardDriver::keyRelease(GUITestOpStatus &os, Qt::Key key, Qt::KeyboardModifiers modifiers){
-    keyReleaseMac(os, GTKeyboardDriver::key[key]);
+bool GTKeyboardDriver::keyRelease(Qt::Key key, Qt::KeyboardModifiers modifiers){
+    keyReleaseMac(GTKeyboardDriver::key[key]);
 
     QList<Qt::Key> modKeys = modifiersToKeys(modifiers);
     foreach (Qt::Key mod, modKeys) {
-        keyReleaseMac(os, GTKeyboardDriver::key[mod]);
+        keyReleaseMac(GTKeyboardDriver::key[mod]);
     }
+
+    return true;
 }
 
 GTKeyboardDriver::keys::keys()
@@ -385,24 +361,28 @@ bool extractShiftModifier(char &key) {
     return false;
 }
 
-void keyPressMac(GUITestOpStatus &os, int key){
+bool keyPressMac(int key){
     CGEventRef event = CGEventCreateKeyboardEvent(NULL, key, true);
-    //GT_CHECK(event != NULL, "Can't create event");
+    DRIVER_CHECK(event != NULL, "Can't create event");
     CGEventSetFlags(event, CGEventGetFlags(event) & ~kCGEventFlagMaskNumericPad);
 
     CGEventPost(kCGSessionEventTap, event);
     CFRelease(event);
     GTGlobals::sleep(1);
+
+    return true;
 }
 
-void keyReleaseMac(GUITestOpStatus &os, int key){
+bool keyReleaseMac(int key){
     CGEventRef event = CGEventCreateKeyboardEvent(NULL, key, false);
-    //GT_CHECK(event != NULL, "Can't create event");
+    DRIVER_CHECK(event != NULL, "Can't create event");
     CGEventSetFlags(event, CGEventGetFlags(event) & ~kCGEventFlagMaskNumericPad);
 
     CGEventPost(kCGSessionEventTap, event);
     CFRelease(event);
     GTGlobals::sleep(1);
+
+    return true;
 }
 
 #endif
