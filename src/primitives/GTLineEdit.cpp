@@ -25,6 +25,7 @@
 #include "primitives/GTWidget.h"
 #include "system/GTClipboard.h"
 #include "utils/GTKeyboardUtils.h"
+#include "utils/GTThread.h"
 
 namespace HI {
 #define GT_CLASS_NAME "GTLineEdit"
@@ -85,6 +86,7 @@ void GTLineEdit::clear(GUITestOpStatus& os, QLineEdit* lineEdit) {
     GTGlobals::sleep(100);
     GTKeyboardDriver::keyClick( Qt::Key_Delete);
     GTGlobals::sleep(100);
+    GTThread::waitForMainThread();
 
     QString s = lineEdit->text();
     GT_CHECK(s.isEmpty() == true, "Can't clear text, lineEdit is not empty");
