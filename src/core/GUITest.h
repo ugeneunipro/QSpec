@@ -49,15 +49,18 @@ private:
 class HI_EXPORT GUITest: public QObject, public GUITestIgnorable {
     Q_OBJECT
 public:
-    GUITest(const QString &_name = "", const QString &_suite = "", int _timeout=240000) : name(_name), suite(_suite), timeout(_timeout) {}
+    GUITest(const QString &_name = "", const QString &_suite = "", int _timeout=240000, QString _label=""):
+        name(_name), suite(_suite), timeout(_timeout), label(_label) {}
     virtual ~GUITest(){}
 
     QString getName() const { return name; }
     QString getSuite() const { return suite; }
     QString getFullName() const { return suite + ":" + name; }
+    QString getLabel() const {return label;}
     int getTimeout() const { return timeout; }
     void setName(const QString &n) { name = n; }
     void setTimeout(int _timeout) { timeout = _timeout; }
+    void setLabel(QString _label) { label = _label; }
 
     static const QString screenshotDir;
 
@@ -69,6 +72,7 @@ private:
     QString name;
     QString suite;
     int timeout;
+    QString label;
 public slots:
     void sl_fail();
 };
