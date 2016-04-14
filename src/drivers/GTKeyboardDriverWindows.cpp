@@ -328,7 +328,7 @@ bool GTKeyboardDriver::keyRelease(Qt::Key key, Qt::KeyboardModifiers modifiers){
 GTKeyboardDriver::keys::keys()
 {
     //ADD_KEY("context_menu", VK_APPS);
-    //ADD_KEY("back", VK_BACK);
+    ADD_KEY(Qt::Key_Backspace, VK_BACK);
     ADD_KEY(Qt::Key_Tab, VK_TAB);
     //ADD_KEY("clear", VK_CLEAR);
     ADD_KEY(Qt::Key_Enter, VK_RETURN);
