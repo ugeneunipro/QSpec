@@ -284,6 +284,13 @@ void GTUtilsDialog::waitForDialogWhichMayRunOrNot(GUITestOpStatus &os, Runnable 
     waitForDialog(os, r, settings);
 }
 
+void GTUtilsDialog::waitForDialogClosed(){
+    while(QApplication::activeModalWidget() != NULL){
+        GTGlobals::sleep(100);
+    }
+    GTThread::waitForMainThread();
+}
+
 #define GT_METHOD_NAME "checkAllFinished"
 void GTUtilsDialog::checkAllFinished(GUITestOpStatus &os) {
     Q_UNUSED(os);

@@ -153,6 +153,8 @@ public:
 
     static void waitForDialog(GUITestOpStatus &os, Runnable *r, int timeout = 0);
 
+    static void waitForDialogClosed();
+
     static void waitForDialogWhichMustNotBeRunned(GUITestOpStatus &os, Runnable *r);
 
     static void waitForDialogWhichMayRunOrNot(GUITestOpStatus &os, Runnable *r);

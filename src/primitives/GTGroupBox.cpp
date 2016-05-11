@@ -43,7 +43,7 @@ void GTGroupBox::setChecked(GUITestOpStatus &os, QGroupBox *groupBox, bool check
     const QRect checkBoxRect = getCheckBoxRect(groupBox);
     const QPoint offset(5, checkBoxRect.height() / 2);
     GTWidget::click(os, groupBox, Qt::LeftButton, checkBoxRect.center() + offset);
-    GTGlobals::sleep(100);
+    GTGlobals::sleep();
 
     GT_CHECK(checked == groupBox->isChecked(), "Can't set a new state");
 }

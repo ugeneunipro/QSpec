@@ -58,6 +58,7 @@ void GTWidget::click(GUITestOpStatus &os, QWidget *w, Qt::MouseButton mouseButto
         GTMouseDriver::press(mouseButton);
         GTMouseDriver::release(mouseButton);
     }
+    GTGlobals::sleep(200);
 }
 #undef GT_METHOD_NAME
 

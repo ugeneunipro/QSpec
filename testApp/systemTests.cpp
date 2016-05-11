@@ -37,7 +37,7 @@ TEST_CLASS_DEFINITION(FilePermissionTest)
     CHECK_SET_ERR(f1_size == 5, "wrong size of testfile1");
 
     // set the file RW and check we can modify it
-    //GTFile::setReadWrite(os, f1); TODO: restore after merging with master
+    GTFile::setReadWrite(os, f1);
     qDebug() << "RW testfile1 perms " << ff1.permissions();
     QFile ff2(f1);
     res = ff2.open(QFile::Append);
@@ -79,7 +79,7 @@ TEST_CLASS_DEFINITION(DirPermissionTest)
     CHECK_SET_ERR(!res, "should not create new file");
 
     // set the dir RW and check we can create the new file again
-    //GTFile::setReadWrite(os, testDir); TODO: restore after merging with master
+    GTFile::setReadWrite(os, testDir);
     GTFile::create( os, f2 );
 
 //    // set the dir RO and check we can delete it

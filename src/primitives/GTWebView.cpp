@@ -24,6 +24,7 @@
 
 #include <drivers/GTMouseDriver.h>
 #include "primitives/GTWebView.h"
+#include <utils/GTThread.h>
 
 #include <QWebFrame>
 
@@ -144,6 +145,7 @@ HIWebElement GTWebView::findContextMenuElement(GUITestOpStatus &os, QWebView *vi
 void GTWebView::click(GUITestOpStatus &os, QWebView *view, HIWebElement el, Qt::MouseButton button){
     GTMouseDriver::moveTo(view->mapToGlobal(el.geometry().center()));
     GTMouseDriver::click(button);
+    GTThread::waitForMainThread();
 }
 
 void GTWebView::selectElementText(GUITestOpStatus &os, QWebView *view, HIWebElement el){
