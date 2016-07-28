@@ -44,11 +44,12 @@ namespace HI {
 #define GT_CLASS_NAME "GTFileDialogUtils"
 
 GTFileDialogUtils::GTFileDialogUtils(GUITestOpStatus &_os, const QString &_path, const QString &_fileName,
-                                     Button _button, GTGlobals::UseMethod _method) :
+                                     Button _button, GTGlobals::UseMethod _method, TextInput textInput) :
     Filler(_os, "QFileDialog"),
     fileName(_fileName),
     button(_button),
-    method(_method)
+    method(_method),
+    textInput(textInput)
 
 {   path = QDir::cleanPath(QDir::currentPath() + "/" + _path);
     if (path.at(path.count() - 1) != '/') {
@@ -56,10 +57,11 @@ GTFileDialogUtils::GTFileDialogUtils(GUITestOpStatus &_os, const QString &_path,
     }
 }
 
-GTFileDialogUtils::GTFileDialogUtils(GUITestOpStatus &os, const QString &filePath, GTGlobals::UseMethod method, Button b) :
+GTFileDialogUtils::GTFileDialogUtils(GUITestOpStatus &os, const QString &filePath, GTGlobals::UseMethod method, Button b, TextInput textInput) :
     Filler(os, "QFileDialog"),
     button(b),
-    method(method)
+    method(method),
+    textInput(textInput)
 
 {
     QFileInfo fileInfo(filePath);
@@ -74,7 +76,8 @@ GTFileDialogUtils::GTFileDialogUtils(GUITestOpStatus &os, CustomScenario *custom
     : Filler(os, "QFileDialog", customScenario),
       fileDialog(NULL),
       button(Open),
-      method(GTGlobals::UseMouse)
+      method(GTGlobals::UseMouse),
+      textInput(Typing)
 {
 
 }
@@ -164,7 +167,7 @@ void GTFileDialogUtils_list::setNameList(GUITestOpStatus &os, const QStringList 
         str.append('\"' + name + "\" ");
     }
     QLineEdit* fileEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os,FILE_NAME_LINE_EDIT));
-    GTLineEdit::setText(os, fileEdit, str, false, true);
+    GTLineEdit::setText(os, fileEdit, fileName, false, textInput == CopyPaste ? true : false);
 }
 #undef GT_METHOD_NAME
 
@@ -203,7 +206,7 @@ bool GTFileDialogUtils::setPath()
     QLineEdit* lineEdit = fileDialog->findChild<QLineEdit*>(FILE_NAME_LINE_EDIT);
     GT_CHECK_RESULT(lineEdit != 0, QString("line edit \"%1\" not found").arg(FILE_NAME_LINE_EDIT), false);
     lineEdit->setCompleter(NULL);
-    GTLineEdit::setText(os,lineEdit,path);
+    GTLineEdit::setText(os, lineEdit, path, false, textInput == CopyPaste ? true : false);
 
     GT_CHECK_RESULT(lineEdit->text() == path, "Can't open file \"" + lineEdit->text() + "\"", false);
     return true;
@@ -217,7 +220,7 @@ void GTFileDialogUtils::setName()
     GT_CHECK(lineEdit != 0, QString("line edit \"%1\" not found").arg(FILE_NAME_LINE_EDIT));
     lineEdit->setCompleter(NULL);
 
-    GTLineEdit::setText(os, lineEdit,fileName);
+    GTLineEdit::setText(os, lineEdit, fileName, false, textInput == CopyPaste ? true : false);
 }
 #undef GT_METHOD_NAME
 
@@ -237,7 +240,7 @@ void GTFileDialogUtils::selectFile()
     case GTGlobals::UseKey:{
         QLineEdit* lineEdit = fileDialog->findChild<QLineEdit*>(FILE_NAME_LINE_EDIT);
         GT_CHECK(lineEdit != 0, QString("line edit \"1\" not found").arg(FILE_NAME_LINE_EDIT));
-        GTLineEdit::setText(os,lineEdit,fileName);
+        GTLineEdit::setText(os,lineEdit,fileName, false, textInput == CopyPaste ? true : false);
 
         GTWidget::click(os,lineEdit);
         break;

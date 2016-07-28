@@ -32,9 +32,10 @@ friend class GTFileDialogUtils_list;
 public:
     enum Button {Open, Cancel, Save, Choose};
     enum ViewMode {List, Detail};
+    enum TextInput { Typing, CopyPaste };
 
-    GTFileDialogUtils(GUITestOpStatus &os, const QString &folderPath, const QString &fileName, Button b = Open, GTGlobals::UseMethod = GTGlobals::UseMouse);
-    GTFileDialogUtils(GUITestOpStatus &os, const QString &filePath, GTGlobals::UseMethod method = GTGlobals::UseMouse, Button b = Open);
+    GTFileDialogUtils(GUITestOpStatus &os, const QString &folderPath, const QString &fileName, Button b = Open, GTGlobals::UseMethod = GTGlobals::UseMouse, TextInput = Typing);
+    GTFileDialogUtils(GUITestOpStatus &os, const QString &filePath, GTGlobals::UseMethod method = GTGlobals::UseMouse, Button b = Open, TextInput = Typing);
     GTFileDialogUtils(GUITestOpStatus &os, CustomScenario *customScenario);
     void openFileDialog();
     void commonScenario();
@@ -51,6 +52,7 @@ protected:
     QString path, fileName;
     Button button;
     GTGlobals::UseMethod method;
+    TextInput textInput;
 };
 class HI_EXPORT GTFileDialogUtils_list : public GTFileDialogUtils{
 public:
