@@ -77,14 +77,26 @@ matrix:
       osx_image: xcode7.3
       before_install:
         - brew update
-        - brew install qt5
+        - brew install qt55
+      env:
+        - PATH=$PATH:/usr/local/opt/qt55/bin/
+        - CC=clang
+        - CXX=clang++
     - os: osx
       osx_image: xcode6.4
       before_install:
         - brew update
-        - brew install qt5
+        - brew install qt55
+      env:
+        - PATH=$PATH:/usr/local/opt/qt55/bin/
+        - CC=clang
+        - CXX=clang++
     - os: osx
       osx_image: beta-xcode6.1
       before_install:
         - brew update
-        - brew install qt5
+        - brew install qt55
+      env:
+        - PATH=$PATH:/usr/local/opt/qt55/bin/
+        - CC=clang
+        - CXX=clang++
