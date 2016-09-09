@@ -27,7 +27,6 @@
 #include "drivers/GTMouseDriver.h"
 #include "primitives/GTAction.h"
 #include "primitives/GTMainWindow.h"
-#include "primitives/PopupChooser.h"
 #include "utils/GTUtilsDialog.h"
 
 #include <QMainWindow>
