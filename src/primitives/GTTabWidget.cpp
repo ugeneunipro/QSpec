@@ -87,7 +87,8 @@ int GTTabWidget::getTabNumByName(GUITestOpStatus &os, QTabWidget *tabWidget, QSt
     for(int i=0; i<tabBar->count(); i++){
         QString text = tabBar->tabText(i);
         if(text == tabName){
-            num = -1;
+            num = i;
+            break;
         }
     }
     GT_CHECK_RESULT(num != -1, "tab " + tabName + " not found", -1);
