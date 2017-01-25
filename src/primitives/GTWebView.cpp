@@ -26,6 +26,8 @@
 #include "primitives/GTWebView.h"
 #include <utils/GTThread.h>
 
+#include <QWebFrame>
+
 namespace HI {
 namespace {
 bool compare(QString s1, QString s2, bool exactMatch){
@@ -43,11 +45,11 @@ HIWebElement::HIWebElement(){
     xml = QString();
 }
 
-//HIWebElement::HIWebElement(const QWebElement &el){
-//    rect = el.geometry();
-//    text = el.toPlainText();
-//    xml = el.toInnerXml();
-//}
+HIWebElement::HIWebElement(const QWebElement &el){
+    rect = el.geometry();
+    text = el.toPlainText();
+    xml = el.toInnerXml();
+}
 
 QRect HIWebElement::geometry(){
     return rect;
@@ -64,10 +66,10 @@ QString HIWebElement::toPlainText(){
 #define GT_CLASS_NAME "GTWebView"
 
 #define GT_METHOD_NAME "findElement"
-HIWebElement GTWebView::findElement(GUITestOpStatus &os, QWebEngineView *view, const QString &text, const QString &tag, bool exactMatch) {
+HIWebElement GTWebView::findElement(GUITestOpStatus &os, QWebView *view, const QString &text, const QString &tag, bool exactMatch) {
     class Scenario : public CustomScenario {
     public:
-        Scenario(QWebEngineView *view, const QString &text, const QString &tag, bool exactMatch, HIWebElement &webElement) :
+        Scenario(QWebView *view, const QString &text, const QString &tag, bool exactMatch, HIWebElement &webElement) :
             view(view),
             text(text),
             tag(tag),
@@ -76,21 +78,21 @@ HIWebElement GTWebView::findElement(GUITestOpStatus &os, QWebEngineView *view, c
 
         void run(GUITestOpStatus &os) {
             Q_UNUSED(os);
-//            QWebFrame* frame = view->page()->mainFrame();
-//            foreach (QWebElement el, frame->findAllElements(tag)) {
-//                QString s = el.toPlainText();
-//                int width = el.geometry().width();
+            QWebFrame* frame = view->page()->mainFrame();
+            foreach (QWebElement el, frame->findAllElements(tag)) {
+                QString s = el.toPlainText();
+                int width = el.geometry().width();
 
-//                if (compare(s, text, exactMatch) && width != 0) {
-//                    webElement = HIWebElement(el);
-//                    return;
-//                }
-//            }
+                if (compare(s, text, exactMatch) && width != 0) {
+                    webElement = HIWebElement(el);
+                    return;
+                }
+            }
             GT_CHECK(false, QString("element with text '%1' and tag '%2' not found").arg(text).arg(tag));
         }
 
     private:
-        QWebEngineView *view;
+        QWebView *view;
         const QString text;
         const QString tag;
         bool exactMatch;
@@ -105,7 +107,7 @@ HIWebElement GTWebView::findElement(GUITestOpStatus &os, QWebEngineView *view, c
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "checkElement"
-void GTWebView::checkElement(GUITestOpStatus &os, QWebEngineView *view, QString text, QString tag, bool exists, bool exactMatch){
+void GTWebView::checkElement(GUITestOpStatus &os, QWebView *view, QString text, QString tag, bool exists, bool exactMatch){
     const bool found = doesElementExist(os, view, text, tag, exactMatch);
     if (exists) {
         GT_CHECK(found, "element with text " + text + " and tag " + tag + " not found");
@@ -116,64 +118,59 @@ void GTWebView::checkElement(GUITestOpStatus &os, QWebEngineView *view, QString 
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "doesElementExist"
-bool GTWebView::doesElementExist(GUITestOpStatus &os, QWebEngineView *view, const QString &text, const QString &tag, bool exactMatch) {
+bool GTWebView::doesElementExist(GUITestOpStatus &os, QWebView *view, const QString &text, const QString &tag, bool exactMatch) {
     Q_UNUSED(os)
-//    QWebFrame* frame = view->page()->mainFrame();
-//--------------------
-//    view->page()->runJavaScript("var elements = document.getElementsByTagName("+tag+");"
-//                                "for(var i = 0; i<elements.length; i++){"
-//                                "}");
-//--------------------
-//    foreach (QWebElement el, frame->findAllElements(tag)) {
-//        QString s = el.toPlainText();
-//        int width = el.geometry().width();
+    QWebFrame* frame = view->page()->mainFrame();
 
-//        if (compare(s, text, exactMatch) && width != 0) {
-//            return true;
-//        }
-//    }
+    foreach (QWebElement el, frame->findAllElements(tag)) {
+        QString s = el.toPlainText();
+        int width = el.geometry().width();
+
+        if (compare(s, text, exactMatch) && width != 0) {
+            return true;
+        }
+    }
     return false;
 }
 #undef GT_METHOD_NAME
 
-HIWebElement GTWebView::findTreeElement(GUITestOpStatus &os, QWebEngineView *view, QString text){
+HIWebElement GTWebView::findTreeElement(GUITestOpStatus &os, QWebView *view, QString text){
     return findElement(os, view, text, "SPAN");
 }
 
-HIWebElement GTWebView::findContextMenuElement(GUITestOpStatus &os, QWebEngineView *view, QString text){
+HIWebElement GTWebView::findContextMenuElement(GUITestOpStatus &os, QWebView *view, QString text){
     return findElement(os, view, text, "LI");
 }
 
-void GTWebView::click(GUITestOpStatus &os, QWebEngineView *view, HIWebElement el, Qt::MouseButton button){
+void GTWebView::click(GUITestOpStatus &os, QWebView *view, HIWebElement el, Qt::MouseButton button){
     GTMouseDriver::moveTo(view->mapToGlobal(el.geometry().center()));
     GTMouseDriver::click(button);
     GTThread::waitForMainThread();
 }
 
-void GTWebView::selectElementText(GUITestOpStatus &os, QWebEngineView *view, HIWebElement el){
+void GTWebView::selectElementText(GUITestOpStatus &os, QWebView *view, HIWebElement el){
     GTMouseDriver::moveTo(view->mapToGlobal(el.geometry().topLeft()) + QPoint(5,5));
     GTMouseDriver::press();
     GTMouseDriver::moveTo(view->mapToGlobal(el.geometry().bottomRight()) - QPoint(5,5));
     GTMouseDriver::release();
 }
 
-void GTWebView::traceAllWebElements(GUITestOpStatus &os, QWebEngineView *view){
+void GTWebView::traceAllWebElements(GUITestOpStatus &os, QWebView *view){
     Q_UNUSED(os)
-    qDebug("GT_DEBUG_MESSAGE tag: TODO fix me");
-//    QWebFrame* frame = view->page()->mainFrame();
-//    QWebElement result;
-//    foreach (QWebElement el, frame->findAllElements("*")) {
-//        QString s = el.toPlainText();
-//        QString tagName = el.tagName();
-//        QString localName = el.localName();
+    QWebFrame* frame = view->page()->mainFrame();
+    QWebElement result;
+    foreach (QWebElement el, frame->findAllElements("*")) {
+        QString s = el.toPlainText();
+        QString tagName = el.tagName();
+        QString localName = el.localName();
 
-//        if(el.geometry().width() != 0){
-//            qDebug("GT_DEBUG_MESSAGE tag: %s name: %s text: %s width: %d", tagName.toLocal8Bit().constData(), localName.toLocal8Bit().constData(), s.toLocal8Bit().constData(), el.geometry().width());
-//        }
-//        if (s == "Input"){
-//            result = el;
-//        }
-//    }
+        if(el.geometry().width() != 0){
+            qDebug("GT_DEBUG_MESSAGE tag: %s name: %s text: %s width: %d", tagName.toLocal8Bit().constData(), localName.toLocal8Bit().constData(), s.toLocal8Bit().constData(), el.geometry().width());
+        }
+        if (s == "Input"){
+            result = el;
+        }
+    }
 
 }
 

@@ -4,7 +4,7 @@ TARGET = qspec
 TEMPLATE = lib
 CONFIG += debug_and_release
 CONFIG += warn_on
-QT += testlib widgets webengine webenginewidgets
+QT += testlib webkitwidgets
 
 DEFINES += BUILDING_HUMIMIT_DLL
 DEFINES += QT_DLL
