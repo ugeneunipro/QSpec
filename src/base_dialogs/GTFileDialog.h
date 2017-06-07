@@ -40,6 +40,7 @@ public:
     void commonScenario();
 
 protected:
+    void init(const QString &filePath);
 
     bool setPath();
     void setName();
@@ -52,6 +53,7 @@ protected:
     Button button;
     GTGlobals::UseMethod method;
 };
+
 class HI_EXPORT GTFileDialogUtils_list : public GTFileDialogUtils{
 public:
     GTFileDialogUtils_list(GUITestOpStatus &os, const QString &folderPath, const QStringList &fileNames);
