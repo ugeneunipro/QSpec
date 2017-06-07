@@ -50,11 +50,8 @@ GTFileDialogUtils::GTFileDialogUtils(GUITestOpStatus &_os, const QString &_path,
     button(_button),
     method(_method),
     textInput(textInput)
-
-{   path = QDir::cleanPath(QDir::currentPath() + "/" + _path);
-    if (path.at(path.count() - 1) != '/') {
-        path += '/';
-    }
+{
+    init(_path + "/" + fileName);
 }
 
 GTFileDialogUtils::GTFileDialogUtils(GUITestOpStatus &os, const QString &filePath, GTGlobals::UseMethod method, Button b, TextInput textInput) :
@@ -62,14 +59,8 @@ GTFileDialogUtils::GTFileDialogUtils(GUITestOpStatus &os, const QString &filePat
     button(b),
     method(method),
     textInput(textInput)
-
 {
-    QFileInfo fileInfo(filePath);
-    path = fileInfo.absoluteDir().absolutePath();
-    fileName = fileInfo.fileName();
-    if (path.at(path.count() - 1) != '/') {
-        path += '/';
-    }
+    init(filePath);
 }
 
 GTFileDialogUtils::GTFileDialogUtils(GUITestOpStatus &os, CustomScenario *customScenario)
@@ -122,6 +113,17 @@ void GTFileDialogUtils::commonScenario()
         clickButton(button);
     }
     GTGlobals::sleep(500);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "init"
+void GTFileDialogUtils::init(const QString &filePath) {
+    const QFileInfo fileInfo(filePath);
+    path = fileInfo.absoluteDir().absolutePath();
+    fileName = fileInfo.fileName();
+    if (!path.endsWith('/')) {
+        path += '/';
+    }
 }
 #undef GT_METHOD_NAME
 
