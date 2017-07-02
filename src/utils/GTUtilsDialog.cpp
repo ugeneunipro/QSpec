@@ -265,7 +265,7 @@ void GTUtilsDialog::waitForDialog(GUITestOpStatus &os, Runnable *r, int timeout)
     waitForDialog(os, r, settings);
 }
 
-void GTUtilsDialog::waitForDialogWhichMustNotBeRunned(GUITestOpStatus &os, Runnable *r) {
+void GTUtilsDialog::waitForDialogWhichMustNotBeRun(GUITestOpStatus &os, Runnable *r) {
     GUIDialogWaiter::WaitSettings settings;
     Filler* f = dynamic_cast<Filler*>(r);
     if (f) {
