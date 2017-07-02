@@ -76,6 +76,9 @@ public:
     int waiterId;
 
     bool isExpectedName(const QString& widgetObjectName, const QString& expectedObjectName);
+
+    bool operator ==(Runnable const * const runnable) const;
+
 public slots:
     void checkDialog();
     void checkDialogPool();
@@ -158,6 +161,8 @@ public:
     static void waitForDialogWhichMustNotBeRunned(GUITestOpStatus &os, Runnable *r);
 
     static void waitForDialogWhichMayRunOrNot(GUITestOpStatus &os, Runnable *r);
+
+    static void removeRunnable(Runnable const * const runnable);
 
     // deletes all GUIDialogWaiters, sets err if there are unfinished waiters
     static void cleanup(GUITestOpStatus &os, CleanupSettings s = FailOnUnfinished);
