@@ -32,7 +32,7 @@ namespace HI {
 
 class HI_EXPORT GTScrollBar {
 public:
-    static QScrollBar* getScrollBar(GUITestOpStatus &os, const QString &scrollBarSysName);
+    static QScrollBar *getScrollBar(GUITestOpStatus &os, const QString &scrollBarName);
 
     static void pageUp(GUITestOpStatus &os, QScrollBar *scrollbar, GTGlobals::UseMethod useMethod);
     static void pageDown(GUITestOpStatus &os, QScrollBar *scrollbar, GTGlobals::UseMethod useMethod);

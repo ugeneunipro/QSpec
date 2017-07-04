@@ -28,11 +28,8 @@ namespace HI {
 #define GT_CLASS_NAME "GTScrollBar"
 
 #define GT_METHOD_NAME "getScrollBar"
-QScrollBar* GTScrollBar::getScrollBar(GUITestOpStatus &os, const QString &scrollBarSysName) {
-    QString scrollBarTypeCheck = "QScrollBar";
-    QScrollBar *scrollBar = static_cast<QScrollBar*>(GTWidget::findWidget(os, scrollBarSysName));
-    GT_CHECK_RESULT(0 == scrollBarTypeCheck.compare(scrollBar->metaObject()->className()), "No such scrollbar: " + scrollBarSysName, NULL); //the found widget is not a qscrollbar
-    return scrollBar;
+QScrollBar *GTScrollBar::getScrollBar(GUITestOpStatus &os, const QString &scrollBarName) {
+    return GTWidget::findExactWidget<QScrollBar *>(os, scrollBarName);
 }
 #undef GT_METHOD_NAME
 
