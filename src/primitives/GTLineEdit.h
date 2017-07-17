@@ -37,8 +37,10 @@ public:
     // or a set text differs from a given string
 #ifdef Q_OS_MAC
     static void setText(GUITestOpStatus& os, QLineEdit* lineEdit, const QString &str, bool noCheck = false, bool useCopyPaste = true);
+    static void setText(GUITestOpStatus& os, const QString &lineEditName, const QString &text, const QWidget * const parent, bool noCheck = false, bool useCopyPaste = true);
 #else
     static void setText(GUITestOpStatus& os, QLineEdit* lineEdit, const QString &str, bool noCheck = false, bool useCopyPaste = false);
+    static void setText(GUITestOpStatus& os, const QString &lineEditName, const QString &text, QWidget const * const parent, bool noCheck = false, bool useCopyPaste = false);
 #endif
     static QString getText(GUITestOpStatus &os, QLineEdit *lineEdit);
     // fails if lineEdit is NULL, or lineEdit's text wasn't cleared

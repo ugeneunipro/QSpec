@@ -30,7 +30,7 @@
 namespace HI {
 #define GT_CLASS_NAME "GTLineEdit"
 
-#define GT_METHOD_NAME ""
+#define GT_METHOD_NAME "setText"
 void GTLineEdit::setText(GUITestOpStatus& os, QLineEdit* lineEdit, const QString &str, bool noCheck /* = false*/, bool useCopyPaste) {
 
     GT_CHECK(lineEdit != NULL, "lineEdit is NULL");
@@ -64,6 +64,12 @@ void GTLineEdit::setText(GUITestOpStatus& os, QLineEdit* lineEdit, const QString
     }
     GT_CHECK(s == str, "Can't set text, set text differs from a given string in lineEdit " + lineEdit->objectName() +
              ". Expected: " + str + " Actual: " + s);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "setText"
+void GTLineEdit::setText(GUITestOpStatus &os, const QString &lineEditName, const QString &text, QWidget const * const parent, bool noCheck, bool useCopyPaste) {
+    setText(os, GTWidget::findExactWidget<QLineEdit *>(os, lineEditName, parent), text, noCheck, useCopyPaste);
 }
 #undef GT_METHOD_NAME
 

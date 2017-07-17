@@ -30,7 +30,7 @@ namespace HI {
 #define GT_CLASS_NAME "GTTabWidget"
 
 #define GT_METHOD_NAME "setCurrentIndex"
-void GTTabWidget::setCurrentIndex(GUITestOpStatus& os, QTabWidget *tabWidget, int index) {
+void GTTabWidget::setCurrentIndex(GUITestOpStatus& os, QTabWidget * const tabWidget, int index) {
 
     GT_CHECK(tabWidget != NULL, "QTabWidget* == NULL");
 
@@ -58,20 +58,32 @@ QTabBar* GTTabWidget::getTabBar(GUITestOpStatus &os, QTabWidget* tabWidget){
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "clickTab"
-void GTTabWidget::clickTab(GUITestOpStatus &os, QTabWidget* tabWidget, int idx, Qt::MouseButton button){
+void GTTabWidget::clickTab(GUITestOpStatus &os, QTabWidget * const tabWidget, int tabIndex, Qt::MouseButton button){
     GT_CHECK(tabWidget != NULL, "tabWidget is NULL");
-    setCurrentIndex(os, tabWidget, idx);
+    setCurrentIndex(os, tabWidget, tabIndex);
     QTabBar* tabBar = getTabBar(os, tabWidget);
-    QRect r = tabBar->tabRect(idx);
+    QRect r = tabBar->tabRect(tabIndex);
     GTMouseDriver::moveTo(tabBar->mapToGlobal(r.center()));
     GTMouseDriver::click(button);
 }
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "clickTab"
-void GTTabWidget::clickTab(GUITestOpStatus &os, QTabWidget* tabWidget, QString tabName, Qt::MouseButton button){
+void GTTabWidget::clickTab(GUITestOpStatus &os, const QString &tabWidgetName, QWidget const * const parent, int tabIndex, Qt::MouseButton button) {
+    clickTab(os, GTWidget::findExactWidget<QTabWidget *>(os, tabWidgetName, parent), tabIndex, button);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "clickTab"
+void GTTabWidget::clickTab(GUITestOpStatus &os, QTabWidget * const tabWidget, const QString &tabName, Qt::MouseButton button){
     int num = getTabNumByName(os, tabWidget, tabName);
     clickTab(os, tabWidget, num, button);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "clickTab"
+void GTTabWidget::clickTab(GUITestOpStatus &os, const QString &tabWidgetName, QWidget const * const parent, const QString &tabName, Qt::MouseButton button) {
+    clickTab(os, GTWidget::findExactWidget<QTabWidget *>(os, tabWidgetName, parent), tabName, button);
 }
 #undef GT_METHOD_NAME
 

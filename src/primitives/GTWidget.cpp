@@ -78,7 +78,7 @@ void GTWidget::setFocus(GUITestOpStatus &os, QWidget *w) {
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "findWidget"
-QWidget* GTWidget::findWidget(GUITestOpStatus &os, const QString &widgetName, QWidget *parentWidget, const GTGlobals::FindOptions& options) {
+QWidget* GTWidget::findWidget(GUITestOpStatus &os, const QString &widgetName, QWidget const * const parentWidget, const GTGlobals::FindOptions& options) {
     Q_UNUSED(os);
 
     if (parentWidget == NULL) {
@@ -397,6 +397,34 @@ QPoint GTWidget::getWidgetGlobalTopLeftPoint(GUITestOpStatus &os, QWidget *widge
     Q_UNUSED(os);
     GT_CHECK_RESULT(NULL != widget, "Widget is NULL", QPoint());
     return (widget->isWindow() ? widget->pos() : widget->parentWidget()->mapToGlobal(QPoint(0, 0)));
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getActiveModalWidget"
+QWidget *GTWidget::getActiveModalWidget(GUITestOpStatus &os) {
+    Q_UNUSED(os);
+    QWidget *modalWidget = QApplication::activeModalWidget();
+    GT_CHECK_RESULT(NULL != modalWidget, "Active modal widget is NULL", NULL);
+    return modalWidget;
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "checkEnabled"
+void GTWidget::checkEnabled(GUITestOpStatus &os, QWidget *widget, bool expectedEnabledState) {
+    Q_UNUSED(os);
+    GT_CHECK(NULL != widget, "Widget is NULL");
+    GT_CHECK(widget->isVisible(), "Widget is not visible");
+    const bool actualEnabledState = widget->isEnabled();
+    GT_CHECK(expectedEnabledState == actualEnabledState,
+             QString("Widget state is incorrect: expected '%1', got '%'2")
+             .arg(expectedEnabledState ? "enabled" : "disabled")
+             .arg(actualEnabledState ? "enabled" : "disabled"));
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "checkEnabled"
+void GTWidget::checkEnabled(GUITestOpStatus &os, const QString &widgetName, bool expectedEnabledState, QWidget const * const parent) {
+    checkEnabled(os, GTWidget::findWidget(os, widgetName, parent), expectedEnabledState);
 }
 #undef GT_METHOD_NAME
 

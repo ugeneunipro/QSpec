@@ -37,7 +37,8 @@ public:
 
     // Fails if the comboBox is NULL, combobox doesn't contain an item with text
     // or a comboBox current item's text differs from a given text in the end of method's execution
-    static void setIndexWithText(GUITestOpStatus& os, QComboBox *comboBox, const QString& text, bool checkVal = true, GTGlobals::UseMethod method = GTGlobals::UseKeyBoard);
+    static void setIndexWithText(GUITestOpStatus& os, QComboBox * const comboBox, const QString& text, bool checkVal = true, GTGlobals::UseMethod method = GTGlobals::UseKeyBoard);
+    static void setIndexWithText(GUITestOpStatus& os, const QString &comboBoxName, const QWidget * const parent, const QString &text, bool checkVal = true, GTGlobals::UseMethod method = GTGlobals::UseKeyBoard);
 
     static QStringList getValues(GUITestOpStatus &os, QComboBox *comboBox);
     static void checkValues(GUITestOpStatus& os, QComboBox *comboBox, const QStringList &values);

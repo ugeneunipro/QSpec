@@ -41,7 +41,7 @@ public:
     static void setFocus(GUITestOpStatus &os, QWidget *w);
 
     // finds widget with the given object name using given FindOptions. Parent widget is QMainWindow, if not set
-    static QWidget *findWidget(GUITestOpStatus &os, const QString &widgetName, QWidget *parentWidget = NULL, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
+    static QWidget *findWidget(GUITestOpStatus &os, const QString &widgetName, const QWidget * const parentWidget = NULL, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
     static QPoint getWidgetCenter(GUITestOpStatus &os, QWidget* w);
 
     static QAbstractButton *findButtonByText(GUITestOpStatus &os, const QString &text, QWidget *parentWidget = NULL, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
@@ -64,10 +64,15 @@ public:
     static void resizeWidget(GUITestOpStatus &os, QWidget *widget, const QSize &size);
     static QPoint getWidgetGlobalTopLeftPoint(GUITestOpStatus &os, QWidget *widget);
 
+    static QWidget *getActiveModalWidget(GUITestOpStatus &os);
+
+    static void checkEnabled(GUITestOpStatus &os, QWidget *widget, bool expectedEnabledState = true);
+    static void checkEnabled(GUITestOpStatus &os, const QString &widgetName, bool expectedEnabledState = true, QWidget const * const parent = NULL);
+
     #define GT_CLASS_NAME "GTWidget"
     #define GT_METHOD_NAME "findWidget"
     template<class T>
-    static T findExactWidget(GUITestOpStatus &os, const QString &widgetName, QWidget *parentWidget = NULL, const GTGlobals::FindOptions& options= GTGlobals::FindOptions()){
+    static T findExactWidget(GUITestOpStatus &os, const QString &widgetName, QWidget const * const parentWidget = NULL, const GTGlobals::FindOptions& options= GTGlobals::FindOptions()){
         T result = NULL;
         QWidget* w = findWidget(os, widgetName, parentWidget, options);
         result = qobject_cast<T>(w);
