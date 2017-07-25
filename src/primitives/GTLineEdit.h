@@ -43,6 +43,8 @@ public:
     static void setText(GUITestOpStatus& os, const QString &lineEditName, const QString &text, QWidget const * const parent, bool noCheck = false, bool useCopyPaste = false);
 #endif
     static QString getText(GUITestOpStatus &os, QLineEdit *lineEdit);
+    static QString getText(GUITestOpStatus &os, const QString &lineEditName, QWidget *parent = NULL);
+
     // fails if lineEdit is NULL, or lineEdit's text wasn't cleared
     static void clear(GUITestOpStatus& os, QLineEdit* lineEdit);
 

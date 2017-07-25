@@ -81,6 +81,12 @@ QString GTLineEdit::getText(GUITestOpStatus &os, QLineEdit *lineEdit) {
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "getText"
+QString GTLineEdit::getText(GUITestOpStatus &os, const QString &lineEditName, QWidget *parent) {
+    return getText(os, GTWidget::findExactWidget<QLineEdit *>(os, lineEditName, parent));
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "clear"
 void GTLineEdit::clear(GUITestOpStatus& os, QLineEdit* lineEdit) {
 

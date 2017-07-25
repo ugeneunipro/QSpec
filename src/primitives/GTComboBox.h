@@ -40,6 +40,9 @@ public:
     static void setIndexWithText(GUITestOpStatus& os, QComboBox * const comboBox, const QString& text, bool checkVal = true, GTGlobals::UseMethod method = GTGlobals::UseKeyBoard);
     static void setIndexWithText(GUITestOpStatus& os, const QString &comboBoxName, const QWidget * const parent, const QString &text, bool checkVal = true, GTGlobals::UseMethod method = GTGlobals::UseKeyBoard);
 
+    static QString getCurrentText(GUITestOpStatus& os, QComboBox * const comboBox);
+    static QString getCurrentText(GUITestOpStatus& os, const QString &comboBoxName, const QWidget * const parent = NULL);
+
     static QStringList getValues(GUITestOpStatus &os, QComboBox *comboBox);
     static void checkValues(GUITestOpStatus& os, QComboBox *comboBox, const QStringList &values);
 
