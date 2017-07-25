@@ -92,7 +92,8 @@ void GTComboBox::setCurrentIndex(GUITestOpStatus& os, QComboBox *comboBox, int i
 
 }
 
-void GTComboBox::setIndexWithText(GUITestOpStatus& os, QComboBox *comboBox, const QString& text, bool checkVal, GTGlobals::UseMethod method) {
+#define GT_METHOD_NAME "setIndexWithText"
+void GTComboBox::setIndexWithText(GUITestOpStatus& os, QComboBox * const comboBox, const QString& text, bool checkVal, GTGlobals::UseMethod method) {
     GT_CHECK(comboBox != NULL, "QComboBox* == NULL");
 
     int index = comboBox->findText(text, Qt::MatchContains);
@@ -104,6 +105,26 @@ void GTComboBox::setIndexWithText(GUITestOpStatus& os, QComboBox *comboBox, cons
         QString currentText = comboBox->currentText();
         GT_CHECK(currentText == text, "Can't set text");
     }
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "setIndexWithText"
+void GTComboBox::setIndexWithText(GUITestOpStatus &os, const QString &comboBoxName, QWidget const * const parent, const QString &text, bool checkVal, GTGlobals::UseMethod method) {
+    setIndexWithText(os, GTWidget::findExactWidget<QComboBox *>(os, comboBoxName, parent), text, checkVal, method);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getCurrentText"
+QString GTComboBox::getCurrentText(GUITestOpStatus &os, QComboBox * const comboBox) {
+    Q_UNUSED(os);
+    GT_CHECK_RESULT(comboBox != NULL, "comboBox is NULL", "");
+    return comboBox->currentText();
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getCurrentText"
+QString GTComboBox::getCurrentText(GUITestOpStatus &os, const QString &comboBoxName, const QWidget * const parent) {
+    return getCurrentText(os, GTWidget::findExactWidget<QComboBox *>(os, comboBoxName, parent));
 }
 #undef GT_METHOD_NAME
 
