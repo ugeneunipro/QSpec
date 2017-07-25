@@ -114,6 +114,20 @@ void GTComboBox::setIndexWithText(GUITestOpStatus &os, const QString &comboBoxNa
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "getCurrentText"
+QString GTComboBox::getCurrentText(GUITestOpStatus &os, QComboBox * const comboBox) {
+    Q_UNUSED(os);
+    GT_CHECK_RESULT(comboBox != NULL, "comboBox is NULL", "");
+    return comboBox->currentText();
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getCurrentText"
+QString GTComboBox::getCurrentText(GUITestOpStatus &os, const QString &comboBoxName, const QWidget * const parent) {
+    return getCurrentText(os, GTWidget::findExactWidget<QComboBox *>(os, comboBoxName, parent));
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "getValues"
 QStringList GTComboBox::getValues(GUITestOpStatus &os, QComboBox *comboBox) {
     QStringList result;
