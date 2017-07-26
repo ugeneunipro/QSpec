@@ -1,9 +1,10 @@
 #ifndef _HI_GUI_TEST_H_
 #define _HI_GUI_TEST_H_
 
-#include <QtCore/QTimer>
+#include <QTimer>
+
 #include "GTGlobals.h"
-#include <core/GUITestOpStatus.h>
+#include "core/GUITestOpStatus.h"
 
 namespace HI {
 
@@ -65,6 +66,11 @@ public:
     static const QString screenshotDir;
 
     virtual void run(GUITestOpStatus &os) = 0;
+    virtual void cleanup() {}
+
+private slots:
+    void sl_fail();
+
 private:
     GUITest(const GUITest&);
     GUITest& operator=(const GUITest&);
@@ -73,8 +79,6 @@ private:
     QString suite;
     int timeout;
     QString label;
-public slots:
-    void sl_fail();
 };
 
 typedef QList<GUITest*> GUITests;
