@@ -30,6 +30,14 @@
 namespace HI {
 #define GT_CLASS_NAME "PopupChooser"
 
+PopupChooser::PopupChooser(GUITestOpStatus &os, const QStringList &namePath, GTGlobals::UseMethod useMethod)
+    : Filler(os, GUIDialogWaiter::WaitSettings(QString(), GUIDialogWaiter::Popup)),
+      namePath(namePath),
+      useMethod(useMethod)
+{
+
+}
+
 #define GT_METHOD_NAME "run"
 void PopupChooser::commonScenario() {
     GTGlobals::sleep(1000);
@@ -57,6 +65,15 @@ void PopupChooser::clickEsc(GUITestOpStatus &) {
 
 #undef GT_CLASS_NAME
 
+PopupChooserByText::PopupChooserByText(GUITestOpStatus &os, const QStringList &namePath, GTGlobals::UseMethod useMethod, Qt::MatchFlag matchFlagy)
+    : Filler(os, GUIDialogWaiter::WaitSettings(QString(), GUIDialogWaiter::Popup)),
+      namePath(namePath),
+      useMethod(useMethod),
+      matchFlag(matchFlag)
+{
+
+}
+
 void PopupChooserByText::commonScenario()
 {
     GTGlobals::sleep(1000);
@@ -65,15 +82,24 @@ void PopupChooserByText::commonScenario()
     GTMenu::clickMenuItemByText(os, activePopupMenu, namePath, useMethod, matchFlag);
 }
 
-
 #define GT_CLASS_NAME "PopupChecker"
 
-#define GT_METHOD_NAME "run"
 PopupChecker::PopupChecker(GUITestOpStatus &os, CustomScenario *scenario) :
     Filler(os, GUIDialogWaiter::WaitSettings(QString(), GUIDialogWaiter::Popup), scenario)
 {
+
 }
 
+PopupChecker::PopupChecker(GUITestOpStatus &os, const QStringList &namePath, CheckOptions options, GTGlobals::UseMethod useMethod)
+    : Filler(os, GUIDialogWaiter::WaitSettings(QString(), GUIDialogWaiter::Popup)),
+      namePath(namePath),
+      options(options),
+      useMethod(useMethod)
+{
+
+}
+
+#define GT_METHOD_NAME "commonScenario"
 void PopupChecker::commonScenario() {
     GTGlobals::sleep(1000);
     GTMouseDriver::release();
@@ -139,10 +165,10 @@ void PopupChecker::commonScenario() {
 
 #define GT_CLASS_NAME "PopupCheckerByText"
 
-#define GT_METHOD_NAME "run"
 PopupCheckerByText::PopupCheckerByText(GUITestOpStatus &os, CustomScenario *scenario) :
     Filler(os, GUIDialogWaiter::WaitSettings(QString(), GUIDialogWaiter::Popup), scenario)
 {
+
 }
 
 PopupCheckerByText::PopupCheckerByText(GUITestOpStatus &os,
@@ -150,7 +176,8 @@ PopupCheckerByText::PopupCheckerByText(GUITestOpStatus &os,
                                        PopupChecker::CheckOptions options,
                                        GTGlobals::UseMethod useMethod) :
     Filler(os, GUIDialogWaiter::WaitSettings(QString(), GUIDialogWaiter::Popup)),
-    textPaths(QList<QStringList>() << namePath),
+    menuPath(namePath.mid(0, namePath.size() - 1)),
+    itemsNames(namePath.isEmpty() ? "" : namePath.last()),
     options(options),
     useMethod(useMethod)
 {
@@ -158,78 +185,79 @@ PopupCheckerByText::PopupCheckerByText(GUITestOpStatus &os,
 }
 
 PopupCheckerByText::PopupCheckerByText(GUITestOpStatus &os,
-                                       const QList<QStringList> &namePaths,
+                                       const QStringList &menuPath,
+                                       const QStringList &itemsNames,
                                        PopupChecker::CheckOptions options,
                                        GTGlobals::UseMethod useMethod) :
     Filler(os, GUIDialogWaiter::WaitSettings(QString(), GUIDialogWaiter::Popup)),
-    textPaths(namePaths),
+    menuPath(menuPath),
+    itemsNames(itemsNames),
     options(options),
     useMethod(useMethod)
 {
 
 }
 
+#define GT_METHOD_NAME "commonScenario"
 void PopupCheckerByText::commonScenario() {
     GTGlobals::sleep(1000);
     GTMouseDriver::release();
-    QMenu* activePopupMenu = qobject_cast<QMenu*>(QApplication::activePopupWidget());
+    QMenu* activePopupMenu = qobject_cast<QMenu *>(QApplication::activePopupWidget());
     GT_CHECK(NULL != activePopupMenu, "Active popup menu is NULL");
 
-    QAction* act;
+    QAction* act = NULL;
 
-    if (textPaths.isEmpty() || textPaths.first().isEmpty()) {
+    if (itemsNames.isEmpty()) {
         PopupChooser::clickEsc(os);
         return;
     }
 
-    foreach (QStringList textPath, textPaths) {
-        QString actName;
-        int escCount = textPath.size();
-        if(textPath.size()>1){
-            actName = textPath.takeLast();
-            GTMenu::clickMenuItemByText(os, activePopupMenu, textPath, useMethod);
-            QMenu* activePopupMenuToCheck = qobject_cast<QMenu*>(QApplication::activePopupWidget());
-            act = GTMenu::getMenuItem(os, activePopupMenuToCheck, actName, true);
-        }else{
-            QMenu* activePopupMenuToCheck = qobject_cast<QMenu*>(QApplication::activePopupWidget());
-            actName = textPath.last();
-            act = GTMenu::getMenuItem(os, activePopupMenuToCheck, actName, true);
+    GTMenu::clickMenuItemByText(os, activePopupMenu, menuPath, useMethod);
+    QMenu *activePopupMenuToCheck = qobject_cast<QMenu *>(QApplication::activePopupWidget());
+
+    foreach (const QString &itemName, itemsNames) {
+        act = GTMenu::getMenuItem(os, activePopupMenuToCheck, itemName, true);
+        if (options.testFlag(PopupChecker::Exists)) {
+            GT_CHECK(act != NULL, "action '" + itemName + "' not found");
+            qDebug("GT_DEBUG_MESSAGE options.testFlag(Exists)");
+        } else {
+            GT_CHECK(act == NULL, "action '" + itemName + "' unexpectidly found");
         }
 
-        if(options.testFlag(PopupChecker::Exists)){
-            GT_CHECK(act != NULL, "action '" + actName + "' not found");
-            qDebug("GT_DEBUG_MESSAGE options.testFlag(Exists)");
-        }else{
-            GT_CHECK(act == NULL, "action '" + actName + "' unexpectidly found");
-        }
-        if(options.testFlag(PopupChecker::IsEnabled)){
+        if (options.testFlag(PopupChecker::IsEnabled)) {
             GT_CHECK(act->isEnabled(), "action '" + act->objectName() + "' is not enabled");
             qDebug("GT_DEBUG_MESSAGE options.testFlag(IsEnabled)");
         }
-        if(options.testFlag(PopupChecker::IsDisabled)){
+
+        if (options.testFlag(PopupChecker::IsDisabled)) {
             GT_CHECK(!act->isEnabled(), "action '" + act->objectName() + "' is enabled");
             qDebug("GT_DEBUG_MESSAGE options.testFlag(IsDisabled");
         }
-        if(options.testFlag(PopupChecker::IsChecable)){
+
+        if (options.testFlag(PopupChecker::IsChecable)) {
             GT_CHECK(act->isCheckable(), "action '" + act->objectName() + "' is not checkable");
             qDebug("GT_DEBUG_MESSAGE options.testFlag(IsChecable)");
         }
-        if(options.testFlag(PopupChecker::IsChecked)){
+
+        if (options.testFlag(PopupChecker::IsChecked)) {
             GT_CHECK(act->isCheckable(), "action '" + act->objectName() + "' is not checked");
             qDebug("GT_DEBUG_MESSAGE options.testFlag(IsChecked)");
         }
-        if (options.testFlag(PopupChecker::IsChecked)){
+
+        if (options.testFlag(PopupChecker::IsChecked)) {
             GT_CHECK(act->isChecked(), "action '" + act->objectName() + "' is not checked");
             qDebug("GT_DEBUG_MESSAGE options.testFlag(IsChecked)");
         } 
-        if (options.testFlag(PopupChecker::IsUnchecked)){
+
+        if (options.testFlag(PopupChecker::IsUnchecked) ){
             GT_CHECK(!act->isChecked(), "action '" + act->objectName() + "' is checked");
             qDebug("GT_DEBUG_MESSAGE options.testFlag(IsUnchecked)");
         }
-        for (int i = 0; i < escCount - 1; i++) {
-            PopupChooser::clickEsc(os);
-            GTGlobals::sleep(300);
-        }
+    }
+
+    for (int i = 0; i < menuPath.size() - 1; i++) {
+        PopupChooser::clickEsc(os);
+        GTGlobals::sleep(100);
     }
 
     PopupChooser::clickEsc(os);

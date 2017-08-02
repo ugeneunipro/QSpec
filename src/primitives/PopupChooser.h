@@ -28,72 +28,87 @@
 namespace HI {
 
 class HI_EXPORT PopupChooser : public Filler {
-        friend class PopupChecker;
-        friend class PopupCheckerByText;
-    public:
-        PopupChooser(GUITestOpStatus &_os, const QStringList &_namePath, GTGlobals::UseMethod _useMethod = GTGlobals::UseKey) //UseKey need for Ubuntu
-            :Filler(_os, GUIDialogWaiter::WaitSettings(QString(), GUIDialogWaiter::Popup)), namePath(_namePath), useMethod(_useMethod){}
-        virtual void commonScenario();
-    protected:
-        QStringList namePath;
-        GTGlobals::UseMethod useMethod;
+    friend class PopupChecker;
+    friend class PopupCheckerByText;
+public:
+    PopupChooser(GUITestOpStatus &os,
+                 const QStringList &namePath,
+                 GTGlobals::UseMethod useMethod = GTGlobals::UseKey); //UseKey is needed for Ubuntu
 
-    private:
-        static void clickEsc(GUITestOpStatus &_os);
-    };
+    virtual void commonScenario();
+
+protected:
+    QStringList namePath;
+    GTGlobals::UseMethod useMethod;
+
+private:
+    static void clickEsc(GUITestOpStatus &os);
+};
 
 class HI_EXPORT PopupChooserByText : public Filler {
-    public:
-        PopupChooserByText(GUITestOpStatus &_os, const QStringList &_namePath, GTGlobals::UseMethod _useMethod = GTGlobals::UseKey, Qt::MatchFlag _matchFlag = Qt::MatchExactly) //UseKey need for Ubuntu
-            :Filler(_os, GUIDialogWaiter::WaitSettings(QString(), GUIDialogWaiter::Popup)), namePath(_namePath), useMethod(_useMethod), matchFlag(_matchFlag){}
-        virtual void commonScenario();
-    protected:
-        QStringList namePath;
-        GTGlobals::UseMethod useMethod;
-        Qt::MatchFlag matchFlag;
-    };
+public:
+    PopupChooserByText(GUITestOpStatus &os,
+                       const QStringList &namePath,
+                       GTGlobals::UseMethod useMethod = GTGlobals::UseKey,
+                       Qt::MatchFlag _matchFlag = Qt::MatchExactly); //UseKey is needed for Ubuntu
+    
+    virtual void commonScenario();
+
+protected:
+    QStringList namePath;
+    GTGlobals::UseMethod useMethod;
+    Qt::MatchFlag matchFlag;
+};
 
 class HI_EXPORT PopupChecker : public Filler {
-    public:
-        enum CheckOption{
-            NotExists = 0,
-            Exists = 1,
-            IsEnabled = 2 | Exists,
-            IsDisabled = 4 | Exists,
-            IsChecable = 8 | Exists,
-            IsChecked = 16 | Exists | IsChecable,
-            IsUnchecked = 32 | Exists | IsChecable
-        };
-        Q_DECLARE_FLAGS(CheckOptions, CheckOption)
-        PopupChecker(GUITestOpStatus &os, CustomScenario *scenario);
-        PopupChecker(GUITestOpStatus &_os, const QStringList &_namePath, CheckOptions _options = CheckOptions(IsEnabled),
-                     GTGlobals::UseMethod _useMethod = GTGlobals::UseKey) //UseKey need for Ubuntu
-            :Filler(_os, GUIDialogWaiter::WaitSettings(QString(), GUIDialogWaiter::Popup)), namePath(_namePath), options(_options), useMethod(_useMethod){}
-        virtual void commonScenario();
-    protected:
-        QStringList namePath;
-        CheckOptions options;
-        GTGlobals::UseMethod useMethod;
+public:
+    enum CheckOption{
+        NotExists = 0,
+        Exists = 1,
+        IsEnabled = 2 | Exists,
+        IsDisabled = 4 | Exists,
+        IsChecable = 8 | Exists,
+        IsChecked = 16 | Exists | IsChecable,
+        IsUnchecked = 32 | Exists | IsChecable
     };
-    Q_DECLARE_OPERATORS_FOR_FLAGS(PopupChecker::CheckOptions)
+    Q_DECLARE_FLAGS(CheckOptions, CheckOption)
+
+    PopupChecker(GUITestOpStatus &os, CustomScenario *scenario);
+    PopupChecker(GUITestOpStatus &os,
+                 const QStringList &namePath,
+                 CheckOptions options = CheckOptions(IsEnabled),
+                 GTGlobals::UseMethod _useMethod = GTGlobals::UseKey); //UseKey is needed for Ubuntu
+
+    virtual void commonScenario();
+
+protected:
+    QStringList namePath;
+    CheckOptions options;
+    GTGlobals::UseMethod useMethod;
+};
+Q_DECLARE_OPERATORS_FOR_FLAGS(PopupChecker::CheckOptions)
 
 class HI_EXPORT PopupCheckerByText : public Filler {
-    public:
-        PopupCheckerByText(GUITestOpStatus &os, CustomScenario *scenario);
-        PopupCheckerByText(GUITestOpStatus &os,
-                           const QStringList &namePath,
-                           PopupChecker::CheckOptions options = PopupChecker::CheckOptions(PopupChecker::IsEnabled),
-                           GTGlobals::UseMethod useMethod = GTGlobals::UseKey);  //UseKey need for Ubuntu
-        PopupCheckerByText(GUITestOpStatus &os, const QList<QStringList> &namePaths,
-                           PopupChecker::CheckOptions _options = PopupChecker::CheckOptions(PopupChecker::IsEnabled),
-                           GTGlobals::UseMethod useMethod = GTGlobals::UseKey);
+public:
+    PopupCheckerByText(GUITestOpStatus &os, CustomScenario *scenario);
+    PopupCheckerByText(GUITestOpStatus &os,
+                        const QStringList &namePath,
+                        PopupChecker::CheckOptions options = PopupChecker::CheckOptions(PopupChecker::IsEnabled),
+                        GTGlobals::UseMethod useMethod = GTGlobals::UseKey);  //UseKey is needed for Ubuntu
+    PopupCheckerByText(GUITestOpStatus &os,
+                       const QStringList &menuPath,
+                       const QStringList &itemsNames,
+                       PopupChecker::CheckOptions _options = PopupChecker::CheckOptions(PopupChecker::IsEnabled),
+                       GTGlobals::UseMethod useMethod = GTGlobals::UseKey);
 
-        virtual void commonScenario();
-    protected:
-        QList<QStringList> textPaths;
-        PopupChecker::CheckOptions options;
-        GTGlobals::UseMethod useMethod;
-    };
+    virtual void commonScenario();
+
+protected:
+    QStringList menuPath;
+    QStringList itemsNames;
+    PopupChecker::CheckOptions options;
+    GTGlobals::UseMethod useMethod;
+};
 }
 
 #endif

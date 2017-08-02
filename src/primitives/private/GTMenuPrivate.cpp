@@ -77,7 +77,7 @@ void GTMenuPrivate::checkMainMenuItemsState(GUITestOpStatus &os, const QStringLi
 #ifdef Q_OS_MAC
     GTMenuPrivateMac::checkMainMenuItemsState(os, menuPath, itemsNames, expectedState);
 #else
-    QStringList cutMenuPath = itemPath;
+    QStringList cutMenuPath = menuPath;
     const QString menuName = cutMenuPath.takeFirst();
     GTUtilsDialog::waitForDialog(os, new PopupCheckerByText(os, cutMenuPath, itemsNames, expectedState, GTGlobals::UseMouse));
     showMainMenu(os, menuName, GTGlobals::UseMouse);
