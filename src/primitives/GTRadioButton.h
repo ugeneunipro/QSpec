@@ -34,6 +34,8 @@ class HI_EXPORT GTRadioButton {
 public:
     // fails if the radioButton is NULL or can't click
     static void click(GUITestOpStatus& os, QRadioButton *radioButton);
+    static void click(GUITestOpStatus& os, const QString &radioButtonName, QWidget *parent = NULL);
+
     static QRadioButton* getRadioButtonByText(GUITestOpStatus& os, QString text, QWidget* parent=NULL);
     static QList<QRadioButton*> getAllButtonsByText(GUITestOpStatus &os, QString text, QWidget* parent=NULL);
 };
