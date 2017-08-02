@@ -61,7 +61,8 @@ class HI_EXPORT PopupChecker : public Filler {
             IsEnabled = 2 | Exists,
             IsDisabled = 4 | Exists,
             IsChecable = 8 | Exists,
-            IsChecked = 16 | Exists | IsChecable
+            IsChecked = 16 | Exists | IsChecable,
+            IsUnchecked = 32 | Exists | IsChecable
         };
         Q_DECLARE_FLAGS(CheckOptions, CheckOption)
         PopupChecker(GUITestOpStatus &os, CustomScenario *scenario);

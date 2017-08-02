@@ -35,6 +35,7 @@ public:
     static QMenu* showMainMenu(GUITestOpStatus &os, const QString &menuName, GTGlobals::UseMethod m = GTGlobals::UseMouse);  // should be removed in Qt5, use clickMainMenuItem instead
     static void clickMainMenuItem(GUITestOpStatus &os, const QStringList &itemPath, GTGlobals::UseMethod method = GTGlobals::UseMouse, Qt::MatchFlag matchFlag = Qt::MatchExactly);
     static void checkMainMenuItemState(GUITestOpStatus &os, const QStringList &itemPath, PopupChecker::CheckOption expectedState);
+    static void checkMainMenuItemState(GUITestOpStatus &os, const QList<QStringList> &itemPaths, PopupChecker::CheckOption expectedState);
     static QMenu* showContextMenu(GUITestOpStatus &os, QWidget *ground, GTGlobals::UseMethod m = GTGlobals::UseMouse);
 
     static void clickMenuItemByName(GUITestOpStatus &os, const QMenu *menu, const QStringList &itemPath, GTGlobals::UseMethod m = GTGlobals::UseMouse, Qt::MatchFlag matchFlag = Qt::MatchExactly);

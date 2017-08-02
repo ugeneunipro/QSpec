@@ -31,6 +31,7 @@ class GTMenuPrivate {
 public:
     static void clickMainMenuItem(GUITestOpStatus &os, const QStringList &itemPath, GTGlobals::UseMethod method = GTGlobals::UseMouse, Qt::MatchFlag matchFlag = Qt::MatchExactly);
     static void checkMainMenuItemState(GUITestOpStatus &os, const QStringList &itemPath, PopupChecker::CheckOption expectedState);
+    static void checkMainMenuItemState(GUITestOpStatus &os, const QList<QStringList> &itemPaths, PopupChecker::CheckOption expectedState);
 
 private:
     static void showMainMenu(GUITestOpStatus &os, const QString &menuName, GTGlobals::UseMethod m = GTGlobals::UseMouse);

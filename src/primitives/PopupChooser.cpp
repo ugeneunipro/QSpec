@@ -114,8 +114,12 @@ void PopupChecker::commonScenario() {
             qDebug("GT_DEBUG_MESSAGE options.testFlag(IsChecable)");
         }
         if(options.testFlag(IsChecked)){
-            GT_CHECK(act->isCheckable(), "action '" + act->objectName() + "' is not checked");
+            GT_CHECK(act->isChecked(), "action '" + act->objectName() + "' is not checked");
             qDebug("GT_DEBUG_MESSAGE options.testFlag(IsChecked)");
+        }
+        if (options.testFlag(PopupChecker::IsUnchecked)){
+            GT_CHECK(!act->isChecked(), "action '" + act->objectName() + "' is checked");
+            qDebug("GT_DEBUG_MESSAGE options.testFlag(IsUnchecked)");
         }
         for(int i = 0; i<escCount; i++){
             PopupChooser::clickEsc(os);
@@ -213,6 +217,14 @@ void PopupCheckerByText::commonScenario() {
         if(options.testFlag(PopupChecker::IsChecked)){
             GT_CHECK(act->isCheckable(), "action '" + act->objectName() + "' is not checked");
             qDebug("GT_DEBUG_MESSAGE options.testFlag(IsChecked)");
+        }
+        if (options.testFlag(PopupChecker::IsChecked)){
+            GT_CHECK(act->isChecked(), "action '" + act->objectName() + "' is not checked");
+            qDebug("GT_DEBUG_MESSAGE options.testFlag(IsChecked)");
+        } 
+        if (options.testFlag(PopupChecker::IsUnchecked)){
+            GT_CHECK(!act->isChecked(), "action '" + act->objectName() + "' is checked");
+            qDebug("GT_DEBUG_MESSAGE options.testFlag(IsUnchecked)");
         }
         for (int i = 0; i < escCount - 1; i++) {
             PopupChooser::clickEsc(os);
