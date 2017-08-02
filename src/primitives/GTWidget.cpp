@@ -181,7 +181,6 @@ void GTWidget::getAllWidgetsInfo(GUITestOpStatus &os, QWidget *parent){
 
 #define GT_METHOD_NAME "close"
 void GTWidget::close(GUITestOpStatus &os, QWidget *widget) {
-#ifndef Q_OS_MAC
     GT_CHECK(NULL != widget, "Widget is NULL");
 
     class Scenario : public CustomScenario {
@@ -204,12 +203,6 @@ void GTWidget::close(GUITestOpStatus &os, QWidget *widget) {
     };
 
     GTThread::runInMainThread(os, new Scenario(widget));
-#else
-    const QPoint closeButtonPos = GTWidget::getWidgetGlobalTopLeftPoint(os, widget) + QPoint(10, 5);
-    GTMouseDriver::moveTo(closeButtonPos);
-    GTMouseDriver::click();
-    GTGlobals::sleep(100);
-#endif
 }
 #undef GT_METHOD_NAME
 
