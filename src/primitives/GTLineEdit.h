@@ -55,6 +55,7 @@ public:
     // considering lineEdit's fontMetrics and textMargins
     static void checkTextSize(GUITestOpStatus& os, QLineEdit* lineEdit);
     static void checkText(GUITestOpStatus& os, QLineEdit* lineEdit, const QString &expectedText);
+    static void checkText(GUITestOpStatus& os, const QString &lineEditName, QWidget const * const parent, const QString &expectedText);
 
     static QString copyText(GUITestOpStatus& os, QLineEdit* lineEdit);
 

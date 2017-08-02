@@ -62,8 +62,8 @@ void GTLineEdit::setText(GUITestOpStatus& os, QLineEdit* lineEdit, const QString
     if(s!=str){
         s = lineEdit->text();
     }
-    GT_CHECK(s == str, "Can't set text, set text differs from a given string in lineEdit " + lineEdit->objectName() +
-             ". Expected: " + str + " Actual: " + s);
+    GT_CHECK(s == str, QString("Can't set text, set text differs from a given string in lineEdit '%1'. "
+                               "Expected '%2', got '%3'").arg(lineEdit->objectName()).arg(str).arg(s));
 }
 #undef GT_METHOD_NAME
 
@@ -145,6 +145,12 @@ void GTLineEdit::checkText(GUITestOpStatus &os, QLineEdit *lineEdit, const QStri
     Q_UNUSED(os);
     GT_CHECK(NULL != lineEdit, "Line edit is NULL");
     GT_CHECK(expectedText == lineEdit->text(), QString("The text differs: expect '%1', got '%2'").arg(expectedText).arg(lineEdit->text()));
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "checkText"
+void GTLineEdit::checkText(GUITestOpStatus &os, const QString &lineEditName, const QWidget * const parent, const QString &expectedText) {
+    checkText(os, GTWidget::findExactWidget<QLineEdit *>(os, lineEditName, parent), expectedText);
 }
 #undef GT_METHOD_NAME
 

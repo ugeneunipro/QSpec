@@ -67,7 +67,7 @@ public:
     GTFileDialogUtils_list(GUITestOpStatus &os, const QString &folderPath, const QStringList &fileNames);
     GTFileDialogUtils_list(GUITestOpStatus &os, const QStringList &filePaths);
 
-    void setNameList(GUITestOpStatus &os, const QStringList &filePaths);
+    void setNameList(GUITestOpStatus &os, const QStringList &filePaths, QWidget *parent);
     void commonScenario();
 
 private:

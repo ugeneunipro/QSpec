@@ -152,15 +152,15 @@ void GTFileDialogUtils_list::commonScenario() {
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(NULL != dialog && QString(dialog->metaObject()->className()) == "QFileDialog", "file dialog not found");
 
-    setNameList(os, filePaths);
+    setNameList(os, filePaths, dialog);
     GTGlobals::sleep(200);
 
-    GTKeyboardDriver::keyClick( Qt::Key_Enter);
+    GTKeyboardDriver::keyClick(Qt::Key_Enter);
 }
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "setNameList"
-void GTFileDialogUtils_list::setNameList(GUITestOpStatus &os, const QStringList &nameList) {
+void GTFileDialogUtils_list::setNameList(GUITestOpStatus &os, const QStringList &nameList, QWidget *parent) {
     QString str;
     foreach (QString name, nameList){
         if (QFileInfo(name).isRelative()) {
@@ -168,7 +168,8 @@ void GTFileDialogUtils_list::setNameList(GUITestOpStatus &os, const QStringList 
         }
         str.append('\"' + name + "\" ");
     }
-    QLineEdit* fileEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os,FILE_NAME_LINE_EDIT));
+
+    QLineEdit* fileEdit = GTWidget::findExactWidget<QLineEdit *>(os, FILE_NAME_LINE_EDIT, parent);
     GTLineEdit::setText(os, fileEdit, str, false, true);
 }
 #undef GT_METHOD_NAME

@@ -1,35 +1,34 @@
 /**
-* UGENE - Integrated Bioinformatics Tools.
-* Copyright (C) 2008-2017 UniPro <ugene@unipro.ru>
-* http://ugene.unipro.ru
-*
-* This program is free software; you can redistribute it and/or
-* modify it under the terms of the GNU General Public License
-* as published by the Free Software Foundation; either version 2
-* of the License, or (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program; if not, write to the Free Software
-* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-* MA 02110-1301, USA.
-*/
-
-
-#include <core/MainThreadRunnable.h>
-
-#include <drivers/GTMouseDriver.h>
-#include "primitives/GTWebView.h"
-#include <utils/GTThread.h>
+ * UGENE - Integrated Bioinformatics Tools.
+ * Copyright (C) 2008-2017 UniPro <ugene@unipro.ru>
+ * http://ugene.unipro.ru
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301, USA.
+ */
 
 #include <QWebFrame>
 
+#include "GTWebView.h"
+#include "core/MainThreadRunnable.h"
+#include "drivers/GTMouseDriver.h"
+#include "utils/GTThread.h"
+
 namespace HI {
 namespace {
+
 bool compare(QString s1, QString s2, bool exactMatch){
     if(exactMatch){
         return s1==s2;
@@ -45,22 +44,34 @@ HIWebElement::HIWebElement(){
     xml = QString();
 }
 
-HIWebElement::HIWebElement(const QWebElement &el){
-    rect = el.geometry();
-    text = el.toPlainText();
-    xml = el.toInnerXml();
+HIWebElement::HIWebElement(const QWebElement &el)
+    : rect(el.geometry()),
+      text(el.toPlainText()),
+      xml(el.toInnerXml()),
+      tag(el.tagName()),
+      idAttribute(el.attribute("id"))
+{
+
 }
 
-QRect HIWebElement::geometry(){
+const QRect &HIWebElement::geometry() const {
     return rect;
 }
 
-QString HIWebElement::toInnerXml(){
+const QString &HIWebElement::toInnerXml() const {
     return xml;
 }
 
-QString HIWebElement::toPlainText(){
+const QString &HIWebElement::toPlainText() const {
     return text;
+}
+
+const QString &HIWebElement::tagName() const {
+    return tag;
+}
+
+const QString &HIWebElement::id() const {
+    return idAttribute;
 }
 
 #define GT_CLASS_NAME "GTWebView"
@@ -103,6 +114,87 @@ HIWebElement GTWebView::findElement(GUITestOpStatus &os, QWebView *view, const Q
     MainThreadRunnable mainThreadRunnable(os, new Scenario(view, text, tag, exactMatch, webElement));
     mainThreadRunnable.doRequest();
     return webElement;
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "findElementById"
+HIWebElement GTWebView::findElementById(GUITestOpStatus &os, QWebView *view, const QString &id, const QString &tag) {
+    class Scenario : public CustomScenario {
+    public:
+        Scenario(QWebView *view, const QString &id, const QString &tag, HIWebElement &webElement) :
+            view(view),
+            id(id),
+            tag(tag),
+            webElement(webElement) {}
+
+        void run(GUITestOpStatus &os) {
+            Q_UNUSED(os);
+            QWebFrame* frame = view->page()->mainFrame();
+            const QString aaa = tag + (id.isEmpty() ? ""  : "[id=\"" + id + "\"]");
+            foreach (const QWebElement &el, frame->findAllElements(tag + (id.isEmpty() ? ""  : "[id=\"" + id + "\"]"))) {
+                const int width = el.geometry().width();
+
+                if (width != 0) {
+                    webElement = HIWebElement(el);
+                    return;
+                }
+            }
+            GT_CHECK(false, QString("There are no elements with id '%1' and tag '%2'").arg(id).arg(tag));
+        }
+
+    private:
+        QWebView *view;
+        const QString id;
+        const QString tag;
+        HIWebElement &webElement;
+    };
+
+    HIWebElement webElement;
+    MainThreadRunnable mainThreadRunnable(os, new Scenario(view, id, tag, webElement));
+    mainThreadRunnable.doRequest();
+    return webElement;
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "findElementsById"
+QList<HIWebElement> GTWebView::findElementsById(GUITestOpStatus &os, QWebView *view, const QString &id, const QString &tag, const HIWebElement &parentElement) {
+    class Scenario : public CustomScenario {
+    public:
+        Scenario(QWebView *view, const QString &id, const QString &tag, const HIWebElement &parentElement, QList<HIWebElement> &webElements) :
+            view(view),
+            id(id),
+            tag(tag),
+            parentElement(parentElement),
+            webElements(webElements) {}
+
+        void run(GUITestOpStatus &os) {
+            Q_UNUSED(os);
+            QWebFrame* frame = view->page()->mainFrame();
+            const QString parentQuery = parentElement.tagName().isEmpty() ? "" : parentElement.tagName() + (id.isEmpty() ? ""  : "[id=" + parentElement.id() + "]") + " ";
+            const QString elementQuery = tag + (id.isEmpty() ? ""  : "[id=" + id + "]");
+            foreach (const QWebElement &el, frame->findAllElements(parentQuery + elementQuery)) {
+                const int width = el.geometry().width();
+
+                if (width != 0) {
+                    qDebug() << "id: " << id << "; elementId:" << el.attribute("id") << "; element tag: " << el.tagName() << "; element text: " << el.toPlainText();
+                    webElements << HIWebElement(el);
+                }
+            }
+            GT_CHECK(!webElements.isEmpty(), QString("There are no elements with id '%1' and tag '%2'").arg(id).arg(tag));
+        }
+
+    private:
+        QWebView *view;
+        const QString id;
+        const QString tag;
+        const HIWebElement parentElement;
+        QList<HIWebElement> &webElements;
+    };
+
+    QList<HIWebElement> webElements;
+    MainThreadRunnable mainThreadRunnable(os, new Scenario(view, id, tag, parentElement, webElements));
+    mainThreadRunnable.doRequest();
+    return webElements;
 }
 #undef GT_METHOD_NAME
 

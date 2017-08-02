@@ -19,25 +19,24 @@
  * MA 02110-1301, USA.
  */
 
+#include <QApplication>
+#include <QComboBox>
+#include <QDesktopWidget>
+#include <QGuiApplication>
+#include <QLineEdit>
+#include <QMainWindow>
+#include <QStyle>
 
 #include "drivers/GTMouseDriver.h"
 #include "primitives/GTMainWindow.h"
 #include "primitives/GTWidget.h"
 #include "utils/GTThread.h"
 
-#include <QApplication>
-#include <QComboBox>
-#include <QDesktopWidget>
-#include <QGuiApplication>
-#include <QMainWindow>
-#include <QStyle>
-
 namespace HI {
 #define GT_CLASS_NAME "GTWidget"
 
 #define GT_METHOD_NAME "click"
 void GTWidget::click(GUITestOpStatus &os, QWidget *w, Qt::MouseButton mouseButton, QPoint p, bool safe) {
-
     GTGlobals::sleep(100);
     GT_CHECK(w != NULL, "widget is NULL");
 //    GT_CHECK(w->isEnabled() == true, "widget " + w->objectName() + "is not enabled");
@@ -51,9 +50,9 @@ void GTWidget::click(GUITestOpStatus &os, QWidget *w, Qt::MouseButton mouseButto
         }
     }
     GTMouseDriver::moveTo(w->mapToGlobal(p));
-    if(safe){
+    if (safe) {
         GTMouseDriver::click(mouseButton);
-    }else{
+    } else {
         //sometimes GTGlobals::sleep(os) should not be used after clicking
         GTMouseDriver::press(mouseButton);
         GTMouseDriver::release(mouseButton);
@@ -64,14 +63,13 @@ void GTWidget::click(GUITestOpStatus &os, QWidget *w, Qt::MouseButton mouseButto
 
 #define GT_METHOD_NAME "setFocus"
 void GTWidget::setFocus(GUITestOpStatus &os, QWidget *w) {
-
     GT_CHECK(w != NULL, "widget is NULL");
 
     GTWidget::click(os, w);
-    GTGlobals::sleep(1000);
+    GTGlobals::sleep(200);
 
     if(!qobject_cast<QComboBox*>(w)){
-        GT_CHECK(w->hasFocus(), "Can't set focus on widget " + w->objectName());
+        GT_CHECK(w->hasFocus(), QString("Can't set focus on widget '%1'").arg(w->objectName()));
     }
 
 }
@@ -89,7 +87,7 @@ QWidget* GTWidget::findWidget(GUITestOpStatus &os, const QString &widgetName, QW
             }
         }
         if (options.failIfNotFound) {
-            GT_CHECK_RESULT(list.count()!=0,"Widget " + widgetName + " not found", NULL);
+            GT_CHECK_RESULT(list.count() != 0, QString("Widget '%1' not found").arg(widgetName), NULL);
         }
         GT_CHECK_RESULT(list.count()<2, QString("There are %1 widgets with this text").arg(list.count()), NULL);
         if(list.count() == 0){
