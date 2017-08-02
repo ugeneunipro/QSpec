@@ -144,12 +144,9 @@ void GTMenu::checkMainMenuItemState(GUITestOpStatus &os, const QStringList &item
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "checkMainMenuItemState"
-void GTMenu::checkMainMenuItemState(GUITestOpStatus &os, const QList<QStringList> &itemPaths, PopupChecker::CheckOption expectedState) {
-    QList<QStringList> fixedPaths;
-    foreach(QStringList itemPath, itemPaths) {
-        fixedPaths.append(fixMenuItemPath(itemPath));
-    }
-    GTMenuPrivate::checkMainMenuItemState(os, fixedPaths, expectedState);
+void GTMenu::checkMainMenuItemsState(GUITestOpStatus &os, const QStringList &menuPath, const QStringList &itemsNames, PopupChecker::CheckOption expectedState) {
+    const QStringList fixedPath = fixMenuItemPath(menuPath);
+    GTMenuPrivate::checkMainMenuItemsState(os, fixedPath, itemsNames, expectedState);
     GTGlobals::sleep(100);
 }
 #undef GT_METHOD_NAME

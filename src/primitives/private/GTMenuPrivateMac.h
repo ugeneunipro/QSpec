@@ -39,6 +39,7 @@ class GTMenuPrivateMac {
 public:
     static void clickMainMenuItem(GUITestOpStatus &os, const QStringList &itemPath, Qt::MatchFlag matchFlag = Qt::MatchExactly);
     static void checkMainMenuItemState(GUITestOpStatus &os, const QStringList &itemPath, PopupChecker::CheckOption expectedState);
+    static void checkMainMenuItemsState(GUITestOpStatus &os, const QStringList &menuPath, const QStringList &itemsNames, PopupChecker::CheckOption expectedState);
 
 private:
 #ifdef __OBJC__

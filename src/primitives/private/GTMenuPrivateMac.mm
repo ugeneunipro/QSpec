@@ -54,6 +54,22 @@ void GTMenuPrivateMac::checkMainMenuItemState(GUITestOpStatus &os, const QString
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "checkMainMenuItemsState"
+void GTMenuPrivateMac::checkMainMenuItemsState(GUITestOpStatus &os, const QStringList &menuPath, const QStringList &itemsNames, PopupChecker::CheckOption expectedState) {
+    NSMenu *menu = [NSApp mainMenu];
+    foreach (const QString &itemTitle, menuPath) {
+        GT_CHECK(NULL != menu, QString("Menu not found: '%1'").arg(itemTitle));
+        menu = clickMenuItem(os, menu, itemTitle, Qt::MatchExactly);
+        GTGlobals::sleep(500);
+    }
+
+    foreach (const QString &itemName, itemsNames) {
+        checkMenuItemState(os, menu, itemName, expectedState);
+    }
+    [menu cancelTrackingWithoutAnimation];
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "clickMenuItem"
 NSMenu * GTMenuPrivateMac::clickMenuItem(GUITestOpStatus &os, NSMenu *menu, const QString &itemTitle, Qt::MatchFlag matchFlag) {
     NSMenuItem *item = getMenuItem(os, menu, itemTitle, matchFlag);
