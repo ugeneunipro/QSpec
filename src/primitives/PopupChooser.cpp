@@ -65,7 +65,7 @@ void PopupChooser::clickEsc(GUITestOpStatus &) {
 
 #undef GT_CLASS_NAME
 
-PopupChooserByText::PopupChooserByText(GUITestOpStatus &os, const QStringList &namePath, GTGlobals::UseMethod useMethod, Qt::MatchFlag matchFlagy)
+PopupChooserByText::PopupChooserByText(GUITestOpStatus &os, const QStringList &namePath, GTGlobals::UseMethod useMethod, Qt::MatchFlag matchFlag)
     : Filler(os, GUIDialogWaiter::WaitSettings(QString(), GUIDialogWaiter::Popup)),
       namePath(namePath),
       useMethod(useMethod),
