@@ -98,7 +98,11 @@ public:
     PopupCheckerByText(GUITestOpStatus &os,
                        const QStringList &menuPath,
                        const QStringList &itemsNames,
-                       PopupChecker::CheckOptions _options = PopupChecker::CheckOptions(PopupChecker::IsEnabled),
+                       PopupChecker::CheckOptions options = PopupChecker::CheckOptions(PopupChecker::IsEnabled),
+                       GTGlobals::UseMethod useMethod = GTGlobals::UseKey);
+    PopupCheckerByText(GUITestOpStatus &os,
+                       const QList<QStringList> &itemsPaths,
+                       PopupChecker::CheckOptions options = PopupChecker::CheckOptions(PopupChecker::IsEnabled),
                        GTGlobals::UseMethod useMethod = GTGlobals::UseKey);
 
     virtual void commonScenario();

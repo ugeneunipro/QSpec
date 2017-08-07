@@ -198,6 +198,23 @@ PopupCheckerByText::PopupCheckerByText(GUITestOpStatus &os,
 
 }
 
+PopupCheckerByText::PopupCheckerByText(GUITestOpStatus &os,
+                                       const QList<QStringList> &itemsPaths,
+                                       PopupChecker::CheckOptions options,
+                                       GTGlobals::UseMethod useMethod) :
+    Filler(os, GUIDialogWaiter::WaitSettings(QString(), GUIDialogWaiter::Popup)),
+    options(options),
+    useMethod(useMethod)
+{
+    CHECK_SET_ERR(!itemsPaths.isEmpty(), "itemsPaths is empty");
+    menuPath = itemsPaths.first().mid(0, itemsPaths.first().size() - 1);
+    foreach (const QStringList &itemPath, itemsPaths) {
+        CHECK_SET_ERR(!itemPath.isEmpty(), "itemPath is empty");
+        CHECK_SET_ERR(itemPath.mid(0, itemPath.size() - 1) == menuPath, "Items from different submenus were passed to the PopupCheckerByText constructor");
+        itemsNames << itemPath.last();
+    }
+}
+
 #define GT_METHOD_NAME "commonScenario"
 void PopupCheckerByText::commonScenario() {
     GTGlobals::sleep(1000);
