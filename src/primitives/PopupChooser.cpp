@@ -229,7 +229,10 @@ void PopupCheckerByText::commonScenario() {
         return;
     }
 
-    GTMenu::clickMenuItemByText(os, activePopupMenu, menuPath, useMethod);
+    if (!menuPath.isEmpty()) {
+        GTMenu::clickMenuItemByText(os, activePopupMenu, menuPath, useMethod);
+    }
+
     QMenu *activePopupMenuToCheck = qobject_cast<QMenu *>(QApplication::activePopupWidget());
 
     foreach (const QString &itemName, itemsNames) {

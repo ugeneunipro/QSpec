@@ -289,7 +289,7 @@ QAction* GTMenu::clickMenuItem(GUITestOpStatus &os, const QMenu *menu, const QSt
 void GTMenu::clickMenuItemPrivate(GUITestOpStatus &os, const QMenu *menu, const QStringList &itemPath, GTGlobals::UseMethod useMethod, bool byText, Qt::MatchFlag matchFlag) {
 
     GT_CHECK(menu != NULL, "menu is NULL");
-    GT_CHECK(itemPath.isEmpty() == false, "itemPath is empty");
+    GT_CHECK(!itemPath.isEmpty(), "itemPath is empty");
 
     foreach(QString itemName, itemPath) {
         GT_CHECK(menu != NULL, "menu not found for item " + itemName);
