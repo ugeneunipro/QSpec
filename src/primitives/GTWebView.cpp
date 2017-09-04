@@ -19,6 +19,7 @@
  * MA 02110-1301, USA.
  */
 
+#include <QDebug>
 #include <QWebFrame>
 
 #include "GTWebView.h"
@@ -130,7 +131,6 @@ HIWebElement GTWebView::findElementById(GUITestOpStatus &os, QWebView *view, con
         void run(GUITestOpStatus &os) {
             Q_UNUSED(os);
             QWebFrame* frame = view->page()->mainFrame();
-            const QString aaa = tag + (id.isEmpty() ? ""  : "[id=\"" + id + "\"]");
             foreach (const QWebElement &el, frame->findAllElements(tag + (id.isEmpty() ? ""  : "[id=\"" + id + "\"]"))) {
                 const int width = el.geometry().width();
 
@@ -176,7 +176,6 @@ QList<HIWebElement> GTWebView::findElementsById(GUITestOpStatus &os, QWebView *v
                 const int width = el.geometry().width();
 
                 if (width != 0) {
-                    qDebug() << "id: " << id << "; elementId:" << el.attribute("id") << "; element tag: " << el.tagName() << "; element text: " << el.toPlainText();
                     webElements << HIWebElement(el);
                 }
             }
