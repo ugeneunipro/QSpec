@@ -39,7 +39,11 @@ void GTRadioButton::click(GUITestOpStatus& os, QRadioButton *radioButton) {
     }
 
     QPoint buttonPos = radioButton->mapToGlobal(radioButton->rect().topLeft());
-    buttonPos = QPoint(buttonPos.x() + 10, buttonPos.y() + 10); // moved to clickable area
+    if (Qt::RightToLeft != radioButton->layoutDirection()) {
+        buttonPos = QPoint(buttonPos.x() + 10, buttonPos.y() + 10); // moved to clickable area
+    } else {
+        buttonPos = QPoint(radioButton->mapToGlobal(QPoint(radioButton->rect().right(), 0)).x() - 10, buttonPos.y() + 10); // moved to clickable area
+    }
 
     GTMouseDriver::moveTo(buttonPos);
     GTMouseDriver::click();
