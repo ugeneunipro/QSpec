@@ -275,7 +275,7 @@ void PopupCheckerByText::commonScenario() {
         }
     }
 
-    for (int i = 0; i < menuPath.size() - 1; i++) {
+    for (int i = 0; i < menuPath.size(); i++) {
         PopupChooser::clickEsc(os);
         GTGlobals::sleep(100);
     }
