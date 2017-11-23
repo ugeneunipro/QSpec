@@ -151,6 +151,39 @@ void GTScrollBar::moveSliderWithMouseDown(GUITestOpStatus &os, QScrollBar *scrol
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "moveSliderWithMouseToValue"
+void GTScrollBar::moveSliderWithMouseToValue(GUITestOpStatus &os, QScrollBar *scrollbar, int value) {
+    GT_CHECK_RESULT(scrollbar != NULL, "scrollbar is NULL", );
+    QStyleOptionSlider options = initScrollbarOptions(os, scrollbar);
+    QRect grooveRect = scrollbar->style()->subControlRect(QStyle::CC_ScrollBar, &options, QStyle::SC_ScrollBarGroove);
+    QRect sliderRect = scrollbar->style()->subControlRect(QStyle::CC_ScrollBar, &options, QStyle::SC_ScrollBarSlider);
+
+    value = qBound(0, value, scrollbar->maximum());
+    QPoint newPosition;
+    switch (scrollbar->orientation()) {
+    case Qt::Horizontal: {
+        int newPositionX = qBound((sliderRect.width() - 1) / 2,
+                                  (sliderRect.width() - 1) / 2 + (int)((double)value * (grooveRect.width() - sliderRect.width()) / scrollbar->maximum()),
+                                  grooveRect.width() - sliderRect.width() / 2);
+        newPosition = QPoint(newPositionX, grooveRect.height() / 2);
+        break;
+    }
+    case Qt::Vertical: {
+        int newPositionY = qBound((sliderRect.height() - 1) / 2,
+                                  (sliderRect.height() - 1) / 2 + (int)((double)value * (grooveRect.height() - sliderRect.height()) / scrollbar->maximum()),
+                                  grooveRect.height() - sliderRect.height() / 2);
+        newPosition = QPoint(grooveRect.width() / 2, newPositionY);
+        break;
+    }
+    }
+
+    GTMouseDriver::moveTo(GTScrollBar::getSliderPosition(os, scrollbar));
+    GTMouseDriver::press();
+    GTMouseDriver::moveTo(scrollbar->mapToGlobal(newPosition));
+    GTMouseDriver::release();
+}
+#undef GT_METHOD_NAME
+
 void GTScrollBar::moveSliderWithMouseWheelUp(GUITestOpStatus &os, QScrollBar *scrollbar, int nScrolls) {
     GTMouseDriver::moveTo(GTScrollBar::getSliderPosition(os, scrollbar));
     GTMouseDriver::click();

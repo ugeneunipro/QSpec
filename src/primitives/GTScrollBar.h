@@ -42,6 +42,7 @@ public:
 
     static void moveSliderWithMouseUp(GUITestOpStatus &os, QScrollBar *scrollbar, int nPix);
     static void moveSliderWithMouseDown(GUITestOpStatus &os, QScrollBar *scrollbar, int nPix);
+    static void moveSliderWithMouseToValue(GUITestOpStatus &os, QScrollBar *scrollbar, int value);
 
     static void moveSliderWithMouseWheelUp(GUITestOpStatus &os, QScrollBar *scrollbar, int nScrolls); //first moves the cursor to the slider and clicks it, then starts scrolling
     static void moveSliderWithMouseWheelDown(GUITestOpStatus &os, QScrollBar *scrollbar, int nScrolls); //first moves the cursor to the slider and clicks it, then starts scrolling
