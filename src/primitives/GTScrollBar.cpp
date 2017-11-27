@@ -165,14 +165,14 @@ void GTScrollBar::moveSliderWithMouseToValue(GUITestOpStatus &os, QScrollBar *sc
         int newPositionX = qBound((sliderRect.width() - 1) / 2,
                                   (sliderRect.width() - 1) / 2 + (int)((double)value * (grooveRect.width() - sliderRect.width()) / scrollbar->maximum()),
                                   grooveRect.width() - sliderRect.width() / 2);
-        newPosition = QPoint(newPositionX, grooveRect.height() / 2);
+        newPosition = QPoint(grooveRect.x() + newPositionX, grooveRect.height() / 2);
         break;
     }
     case Qt::Vertical: {
         int newPositionY = qBound((sliderRect.height() - 1) / 2,
                                   (sliderRect.height() - 1) / 2 + (int)((double)value * (grooveRect.height() - sliderRect.height()) / scrollbar->maximum()),
                                   grooveRect.height() - sliderRect.height() / 2);
-        newPosition = QPoint(grooveRect.width() / 2, newPositionY);
+        newPosition = QPoint(grooveRect.width() / 2, grooveRect.y() + newPositionY);
         break;
     }
     }
