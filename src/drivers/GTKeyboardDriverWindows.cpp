@@ -34,7 +34,43 @@ namespace HI {
 #ifdef _WIN32
 
 #define GT_CLASS_NAME "GTKeyboardDriver Windows"
+
 namespace{
+
+namespace {
+
+QList<int> initExtendedKeys() {
+    // The list is taken from here: https://msdn.microsoft.com/en-us/library/windows/desktop/ms646267(v=vs.85).aspx#_win32_Keystroke_Message_Flags
+    // There also sohuld be the numpad enter key in the list, but I don't know its code
+    return QList<int>() << VK_RCONTROL
+        << VK_RMENU
+        << VK_INSERT
+        << VK_DELETE
+        << VK_HOME
+        << VK_END
+        << VK_PRIOR
+        << VK_NEXT
+        << VK_UP
+        << VK_DOWN
+        << VK_RIGHT
+        << VK_LEFT
+        << VK_NUMLOCK
+        << VK_CANCEL
+        << VK_SNAPSHOT
+        << VK_DIVIDE;
+}
+
+bool isExtended(int key) {
+    static const QList<int> extendedKeys = initExtendedKeys();
+    return extendedKeys.contains(key);
+}
+
+bool isExtended(Qt::Key key) {
+    return isExtended(GTKeyboardDriver::key[key]);
+}
+
+}
+
 INPUT getKeyEvent(int key, bool keyUp = false, bool extended = false) {
 	INPUT event;
 	event.type = INPUT_KEYBOARD;
@@ -120,7 +156,7 @@ bool GTKeyboardDriver::keyPress(char key, Qt::KeyboardModifiers modifiers)
 			keyPressWindows(VK_OEM_4);
             break;
         case '/':
-			keyPressWindows(VK_DIVIDE);
+			keyPressWindows(VK_DIVIDE, 0, true);
             break;
         case '\n':
 			keyPressWindows(GTKeyboardDriver::key[Qt::Key_Enter]);
@@ -224,7 +260,7 @@ bool GTKeyboardDriver::keyRelease(char key, Qt::KeyboardModifiers modifiers)
 			keyReleaseWindows(VK_OEM_4);
             break;
         case '/':
-			keyReleaseWindows(VK_DIVIDE);
+            keyReleaseWindows(VK_DIVIDE, 0, true);
             break;
         case '\n':
 			keyReleaseWindows(GTKeyboardDriver::key[Qt::Key_Enter]);
@@ -308,18 +344,18 @@ bool GTKeyboardDriver::keyRelease(char key, Qt::KeyboardModifiers modifiers)
 bool GTKeyboardDriver::keyPress(Qt::Key key, Qt::KeyboardModifiers modifiers){
 	QList<Qt::Key> modKeys = modifiersToKeys(modifiers);
 	foreach(Qt::Key mod, modKeys){
-		keyPressWindows(GTKeyboardDriver::key[mod]);
+		keyPressWindows(GTKeyboardDriver::key[mod], 0, isExtended(key));
 	}
-	keyPressWindows(GTKeyboardDriver::key[key]);
+    keyPressWindows(GTKeyboardDriver::key[key], 0, isExtended(key));
 
 	return true;
 }
 
 bool GTKeyboardDriver::keyRelease(Qt::Key key, Qt::KeyboardModifiers modifiers){
-	keyReleaseWindows(GTKeyboardDriver::key[key]);
+    keyReleaseWindows(GTKeyboardDriver::key[key], 0, isExtended(key));
 	QList<Qt::Key> modKeys = modifiersToKeys(modifiers);
 	foreach(Qt::Key mod, modKeys){
-		keyReleaseWindows(GTKeyboardDriver::key[mod]);
+        keyReleaseWindows(GTKeyboardDriver::key[mod], 0, isExtended(key));
 	}
 
 	return true;
