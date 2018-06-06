@@ -1,12 +1,12 @@
 # include (qspec.pri)
 
-TARGET = qspec
+TARGET = QSpec
 TEMPLATE = lib
 CONFIG += debug_and_release
 CONFIG += warn_on
 QT += testlib webkitwidgets
 
-DEFINES += BUILDING_HUMIMIT_DLL
+DEFINES += BUILDING_QSPEC_DLL
 DEFINES += QT_DLL
 
 CONFIG(debug, debug|release) {
