@@ -59,7 +59,8 @@ void GTLineEdit::setText(GUITestOpStatus& os, QLineEdit* lineEdit, const QString
     }
 
     QString s = lineEdit->text();
-    if(s!=str){
+    for (int i = 0; i <= 10 && (s != str); i++) {
+        GTGlobals::sleep(500);
         s = lineEdit->text();
     }
     GT_CHECK(s == str, QString("Can't set text, set text differs from a given string in lineEdit '%1'. "
