@@ -210,18 +210,8 @@ QPoint GTScrollBar::getUpArrowPosition(GUITestOpStatus &os, QScrollBar *scrollba
     GT_CHECK_RESULT(scrollbar != NULL, "scrollbar is NULL", QPoint());
     QStyleOptionSlider options = initScrollbarOptions(os, scrollbar);
     QRect grooveRect = scrollbar->style()->subControlRect(QStyle::CC_ScrollBar, &options, QStyle::SC_ScrollBarGroove);
-    int upArrowWidth;
-    int upArrowHeight;
 
-    if (Qt::Horizontal == scrollbar->orientation()) {
-        upArrowWidth = (scrollbar->rect().width() - grooveRect.width()) / 2;
-        upArrowHeight = scrollbar->rect().height();
-    }
-    else {
-        upArrowWidth = scrollbar->rect().width();
-        upArrowHeight = scrollbar->rect().height() - grooveRect.height() / 2;
-    }
-    return scrollbar->mapToGlobal(scrollbar->rect().topLeft() + QPoint(upArrowWidth / 2, upArrowHeight / 2));
+    return scrollbar->mapToGlobal(scrollbar->rect().topLeft() + QPoint(5, 5));
 }
 #undef GT_METHOD_NAME
 
@@ -230,18 +220,8 @@ QPoint GTScrollBar::getDownArrowPosition(GUITestOpStatus &os, QScrollBar *scroll
     GT_CHECK_RESULT(scrollbar != NULL, "scrollbar is NULL", QPoint());
     QStyleOptionSlider options = initScrollbarOptions(os, scrollbar);
     QRect grooveRect = scrollbar->style()->subControlRect(QStyle::CC_ScrollBar, &options, QStyle::SC_ScrollBarGroove);
-    int downArrowWidth;
-    int downArrowHeight;
 
-    if (Qt::Horizontal == scrollbar->orientation()) {
-        downArrowWidth = (scrollbar->rect().width() - grooveRect.width()) / 2;
-        downArrowHeight = scrollbar->rect().height();
-    }
-    else {
-        downArrowWidth = scrollbar->rect().width();
-        downArrowHeight = scrollbar->rect().height() - grooveRect.height() / 2;
-    }
-    return scrollbar->mapToGlobal(scrollbar->rect().bottomRight() - QPoint(downArrowWidth / 2, downArrowHeight / 2));
+    return scrollbar->mapToGlobal(scrollbar->rect().bottomRight() - QPoint(5, 5));
 }
 #undef GT_METHOD_NAME
 
