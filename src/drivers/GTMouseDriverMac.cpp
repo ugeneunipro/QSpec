@@ -77,7 +77,7 @@ bool GTMouseDriver::moveTo(const QPoint& p)
 
     DRIVER_CHECK(isPointInsideScreen(x, y), "Invalid coordinates");
 
-    CGEventRef event = CGEventCreateMouseEvent(NULL, kCGEventMouseMoved, CGPointMake(x, y), 0 /*ignored*/);
+    CGEventRef event = CGEventCreateMouseEvent(NULL, kCGEventMouseMoved, CGPointMake(x, y), kCGMouseButtonLeft /*ignored*/);
     DRIVER_CHECK(event != NULL, "Can't create event");
 
     CGEventPost(kCGSessionEventTap, event);
@@ -96,7 +96,7 @@ bool GTMouseDriver::press(Qt::MouseButton button)
     CGEventType eventType = button == Qt::LeftButton ? kCGEventLeftMouseDown :
                                 button == Qt::RightButton ? kCGEventRightMouseDown:
                                 button == Qt::MidButton ? kCGEventOtherMouseDown : kCGEventNull;
-    CGEventRef event = CGEventCreateMouseEvent(NULL, eventType, CGPointMake(mousePos.x(), mousePos.y()), 0 /*ignored*/);
+    CGEventRef event = CGEventCreateMouseEvent(NULL, eventType, CGPointMake(mousePos.x(), mousePos.y()), kCGMouseButtonLeft /*ignored*/);
     DRIVER_CHECK(event != NULL, "Can't create event");
 
     CGEventPost(kCGSessionEventTap, event);
@@ -115,7 +115,7 @@ bool GTMouseDriver::release(Qt::MouseButton button)
     CGEventType eventType = button == Qt::LeftButton ? kCGEventLeftMouseUp :
                                 button == Qt::RightButton ? kCGEventRightMouseUp:
                                 button == Qt::MidButton ? kCGEventOtherMouseUp : kCGEventNull;
-    CGEventRef event = CGEventCreateMouseEvent(NULL, eventType, CGPointMake(mousePos.x(), mousePos.y()), 0 /*ignored*/);
+    CGEventRef event = CGEventCreateMouseEvent(NULL, eventType, CGPointMake(mousePos.x(), mousePos.y()), kCGMouseButtonLeft /*ignored*/);
     DRIVER_CHECK(event != NULL, "Can't create event");
 
     CGEventPost(kCGSessionEventTap, event);
@@ -131,11 +131,11 @@ bool GTMouseDriver::doubleClick() {
 
     QPoint mousePos = QCursor::pos();
     CGEventType eventTypeMouseDown = kCGEventLeftMouseDown ;
-    CGEventRef eventPress = CGEventCreateMouseEvent(NULL, eventTypeMouseDown, CGPointMake(mousePos.x(), mousePos.y()), 0 /*ignored*/);
+    CGEventRef eventPress = CGEventCreateMouseEvent(NULL, eventTypeMouseDown, CGPointMake(mousePos.x(), mousePos.y()), kCGMouseButtonLeft /*ignored*/);
     DRIVER_CHECK(eventPress != NULL, "Can't create event");
 
     CGEventType eventTypeMouseUp = kCGEventLeftMouseUp ;
-    CGEventRef eventRelease = CGEventCreateMouseEvent(NULL, eventTypeMouseUp, CGPointMake(mousePos.x(), mousePos.y()), 0 /*ignored*/);
+    CGEventRef eventRelease = CGEventCreateMouseEvent(NULL, eventTypeMouseUp, CGPointMake(mousePos.x(), mousePos.y()), kCGMouseButtonLeft /*ignored*/);
     DRIVER_CHECK(eventRelease != NULL, "Can't create event");
 
     CGEventPost(kCGSessionEventTap, eventPress);
