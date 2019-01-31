@@ -71,10 +71,11 @@ void GTGlobals::takeScreenShot(QString path) {
     originalPixmap.save(path);
 }
 
-GTGlobals::FindOptions::FindOptions(bool _failIfNotFound, Qt::MatchFlags _matchPolicy, int _depth) :
+GTGlobals::FindOptions::FindOptions(bool _failIfNotFound, Qt::MatchFlags _matchPolicy, int _depth, bool _searchInHidden) :
     failIfNotFound(_failIfNotFound),
     matchPolicy(_matchPolicy),
-    depth(_depth)
+    depth(_depth),
+    searchInHidden(_searchInHidden)
 {
 }
 

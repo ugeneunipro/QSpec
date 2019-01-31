@@ -52,7 +52,9 @@ HIWebElement::HIWebElement(const QWebElement &el)
       tag(el.tagName()),
       idAttribute(el.attribute("id"))
 {
-
+    foreach (const QString &name, el.attributeNames()) {
+        attributesMap.insert(name, el.attribute(name));
+    }
 }
 
 const QRect &HIWebElement::geometry() const {
@@ -75,123 +77,120 @@ const QString &HIWebElement::id() const {
     return idAttribute;
 }
 
+const QMap<QString, QString> &HIWebElement::attributes() const {
+    return attributesMap;
+}
+
+QString HIWebElement::attribute(const QString &name, const QString &defaultValue) const {
+    return attributesMap.value(name, defaultValue);
+}
+
 #define GT_CLASS_NAME "GTWebView"
 
 #define GT_METHOD_NAME "findElement"
 HIWebElement GTWebView::findElement(GUITestOpStatus &os, QWebView *view, const QString &text, const QString &tag, bool exactMatch) {
-    class Scenario : public CustomScenario {
-    public:
-        Scenario(QWebView *view, const QString &text, const QString &tag, bool exactMatch, HIWebElement &webElement) :
-            view(view),
-            text(text),
-            tag(tag),
-            exactMatch(exactMatch),
-            webElement(webElement) {}
-
-        void run(GUITestOpStatus &os) {
-            Q_UNUSED(os);
-            QWebFrame* frame = view->page()->mainFrame();
-            foreach (QWebElement el, frame->findAllElements(tag)) {
-                QString s = el.toPlainText();
-                int width = el.geometry().width();
-
-                if (compare(s, text, exactMatch) && width != 0) {
-                    webElement = HIWebElement(el);
-                    return;
-                }
-            }
-            GT_CHECK(false, QString("element with text '%1' and tag '%2' not found").arg(text).arg(tag));
+    foreach (const HIWebElement &element, findElementsBySelector(os, view, tag, GTGlobals::FindOptions())) {
+        if (compare(element.toPlainText(), text, exactMatch)) {
+            return element;
         }
+    }
 
-    private:
-        QWebView *view;
-        const QString text;
-        const QString tag;
-        bool exactMatch;
-        HIWebElement &webElement;
-    };
-
-    HIWebElement webElement;
-    MainThreadRunnable mainThreadRunnable(os, new Scenario(view, text, tag, exactMatch, webElement));
-    mainThreadRunnable.doRequest();
-    return webElement;
+    GT_CHECK_RESULT(false, QString("element with text '%1' and tag '%2' not found").arg(text).arg(tag), HIWebElement());
+    return HIWebElement();
 }
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "findElementById"
 HIWebElement GTWebView::findElementById(GUITestOpStatus &os, QWebView *view, const QString &id, const QString &tag) {
-    class Scenario : public CustomScenario {
-    public:
-        Scenario(QWebView *view, const QString &id, const QString &tag, HIWebElement &webElement) :
-            view(view),
-            id(id),
-            tag(tag),
-            webElement(webElement) {}
-
-        void run(GUITestOpStatus &os) {
-            Q_UNUSED(os);
-            QWebFrame* frame = view->page()->mainFrame();
-            foreach (const QWebElement &el, frame->findAllElements(tag + (id.isEmpty() ? ""  : "[id=\"" + id + "\"]"))) {
-                const int width = el.geometry().width();
-
-                if (width != 0) {
-                    webElement = HIWebElement(el);
-                    return;
-                }
-            }
-            GT_CHECK(false, QString("There are no elements with id '%1' and tag '%2'").arg(id).arg(tag));
-        }
-
-    private:
-        QWebView *view;
-        const QString id;
-        const QString tag;
-        HIWebElement &webElement;
-    };
-
-    HIWebElement webElement;
-    MainThreadRunnable mainThreadRunnable(os, new Scenario(view, id, tag, webElement));
-    mainThreadRunnable.doRequest();
-    return webElement;
+    const QString selector = id.isEmpty() ? tag : QString("%1 [id='%2']").arg(tag).arg(id);
+    return findElementBySelector(os, view, selector, GTGlobals::FindOptions());
 }
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "findElementsById"
 QList<HIWebElement> GTWebView::findElementsById(GUITestOpStatus &os, QWebView *view, const QString &id, const QString &tag, const HIWebElement &parentElement) {
+    const QString parentQuery = parentElement.tagName().isEmpty() ? "" : parentElement.tagName() + (id.isEmpty() ? ""  : "[id=" + parentElement.id() + "]") + " ";
+    const QString elementQuery = tag + (id.isEmpty() ? ""  : "[id=" + id + "]");
+    return findElementsBySelector(os, view, parentQuery + elementQuery, GTGlobals::FindOptions());
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "findElementBySelector"
+HIWebElement GTWebView::findElementBySelector(GUITestOpStatus &os, QWebView *view, const QString &selector, const GTGlobals::FindOptions &options) {
     class Scenario : public CustomScenario {
     public:
-        Scenario(QWebView *view, const QString &id, const QString &tag, const HIWebElement &parentElement, QList<HIWebElement> &webElements) :
+        Scenario(QWebView *view, const QString &selector, const GTGlobals::FindOptions &options, HIWebElement &webElement) :
             view(view),
-            id(id),
-            tag(tag),
-            parentElement(parentElement),
+            selector(selector),
+            options(options),
+            webElement(webElement) {}
+
+        void run(GUITestOpStatus &os) {
+            Q_UNUSED(os)
+            QWebFrame* frame = view->page()->mainFrame();
+            foreach (const QWebElement &el, frame->findAllElements(selector)) {
+                const int width = el.geometry().width();
+
+                if (options.searchInHidden || width != 0) {
+                    webElement = HIWebElement(el);
+                    return;
+                }
+            }
+
+            if (options.failIfNotFound) {
+                GT_CHECK(false, QString("There are no elements that match selector '%1'").arg(selector));
+            }
+        }
+
+    private:
+        QWebView *view;
+        const QString selector;
+        const GTGlobals::FindOptions options;
+        HIWebElement &webElement;
+    };
+
+    HIWebElement webElement;
+    MainThreadRunnable mainThreadRunnable(os, new Scenario(view, selector, options, webElement));
+    mainThreadRunnable.doRequest();
+    return webElement;
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "findElementsBySelector"
+QList<HIWebElement> GTWebView::findElementsBySelector(GUITestOpStatus &os, QWebView *view, const QString &selector, const GTGlobals::FindOptions &options) {
+    class Scenario : public CustomScenario {
+    public:
+        Scenario(QWebView *view, const QString &selector, const GTGlobals::FindOptions &options, QList<HIWebElement> &webElements) :
+            view(view),
+            selector(selector),
+            options(options),
             webElements(webElements) {}
 
         void run(GUITestOpStatus &os) {
             Q_UNUSED(os);
             QWebFrame* frame = view->page()->mainFrame();
-            const QString parentQuery = parentElement.tagName().isEmpty() ? "" : parentElement.tagName() + (id.isEmpty() ? ""  : "[id=" + parentElement.id() + "]") + " ";
-            const QString elementQuery = tag + (id.isEmpty() ? ""  : "[id=" + id + "]");
-            foreach (const QWebElement &el, frame->findAllElements(parentQuery + elementQuery)) {
+            foreach (const QWebElement &el, frame->findAllElements(selector)) {
                 const int width = el.geometry().width();
 
-                if (width != 0) {
+                if (options.searchInHidden || width != 0) {
                     webElements << HIWebElement(el);
                 }
             }
-            GT_CHECK(!webElements.isEmpty(), QString("There are no elements with id '%1' and tag '%2'").arg(id).arg(tag));
+
+            if (webElements.isEmpty() && options.failIfNotFound) {
+                GT_CHECK(!webElements.isEmpty(), QString("There are no elements that match selector '%1'").arg(selector));
+            }
         }
 
     private:
         QWebView *view;
-        const QString id;
-        const QString tag;
-        const HIWebElement parentElement;
+        const QString selector;
+        const GTGlobals::FindOptions options;
         QList<HIWebElement> &webElements;
     };
 
     QList<HIWebElement> webElements;
-    MainThreadRunnable mainThreadRunnable(os, new Scenario(view, id, tag, parentElement, webElements));
+    MainThreadRunnable mainThreadRunnable(os, new Scenario(view, selector, options, webElements));
     mainThreadRunnable.doRequest();
     return webElements;
 }
@@ -210,18 +209,42 @@ void GTWebView::checkElement(GUITestOpStatus &os, QWebView *view, QString text, 
 
 #define GT_METHOD_NAME "doesElementExist"
 bool GTWebView::doesElementExist(GUITestOpStatus &os, QWebView *view, const QString &text, const QString &tag, bool exactMatch) {
-    Q_UNUSED(os)
-    QWebFrame* frame = view->page()->mainFrame();
+    class Scenario : public CustomScenario {
+    public:
+        Scenario(QWebView *view, const QString &text, const QString &tag, bool exactMatch, bool &webElementExists) :
+            view(view),
+            text(text),
+            tag(tag),
+            exactMatch(exactMatch),
+            webElementExists(webElementExists) {}
 
-    foreach (QWebElement el, frame->findAllElements(tag)) {
-        QString s = el.toPlainText();
-        int width = el.geometry().width();
+        void run(GUITestOpStatus &os) {
+            Q_UNUSED(os);
+            webElementExists = false;
+            QWebFrame* frame = view->page()->mainFrame();
+            foreach (QWebElement el, frame->findAllElements(tag)) {
+                QString s = el.toPlainText();
+                int width = el.geometry().width();
 
-        if (compare(s, text, exactMatch) && width != 0) {
-            return true;
+                if (compare(s, text, exactMatch) && width != 0) {
+                    webElementExists = true;
+                    return;
+                }
+            }
         }
-    }
-    return false;
+
+    private:
+        QWebView *view;
+        const QString text;
+        const QString tag;
+        bool exactMatch;
+        bool &webElementExists;
+    };
+
+    bool webElementExists;
+    MainThreadRunnable mainThreadRunnable(os, new Scenario(view, text, tag, exactMatch, webElementExists));
+    mainThreadRunnable.doRequest();
+    return webElementExists;
 }
 #undef GT_METHOD_NAME
 
@@ -247,22 +270,31 @@ void GTWebView::selectElementText(GUITestOpStatus &os, QWebView *view, HIWebElem
 }
 
 void GTWebView::traceAllWebElements(GUITestOpStatus &os, QWebView *view){
-    Q_UNUSED(os)
-    QWebFrame* frame = view->page()->mainFrame();
-    QWebElement result;
-    foreach (QWebElement el, frame->findAllElements("*")) {
-        QString s = el.toPlainText();
-        QString tagName = el.tagName();
-        QString localName = el.localName();
+    class Scenario : public CustomScenario {
+    public:
+        Scenario(QWebView *view) :
+            view(view) {}
 
-        if(el.geometry().width() != 0){
-            qDebug("GT_DEBUG_MESSAGE tag: %s name: %s text: %s width: %d", tagName.toLocal8Bit().constData(), localName.toLocal8Bit().constData(), s.toLocal8Bit().constData(), el.geometry().width());
-        }
-        if (s == "Input"){
-            result = el;
-        }
-    }
+        void run(GUITestOpStatus &os) {
+            Q_UNUSED(os);
+            QWebFrame* frame = view->page()->mainFrame();
+            foreach (QWebElement el, frame->findAllElements("*")) {
+                QString s = el.toPlainText();
+                QString tagName = el.tagName();
+                QString localName = el.localName();
 
+                if (el.geometry().width() != 0){
+                    qDebug("GT_DEBUG_MESSAGE tag: %s name: %s text: %s width: %d", tagName.toLocal8Bit().constData(), localName.toLocal8Bit().constData(), s.toLocal8Bit().constData(), el.geometry().width());
+                }
+            }
+        }
+
+    private:
+        QWebView *view;
+    };
+
+    MainThreadRunnable mainThreadRunnable(os, new Scenario(view));
+    mainThreadRunnable.doRequest();
 }
 
 #undef GT_CLASS_NAME

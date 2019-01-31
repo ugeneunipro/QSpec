@@ -40,11 +40,12 @@ public:
     // if failIfNull is set to true, fails if object wasn't found
 	class HI_EXPORT FindOptions {
     public:
-        FindOptions(bool failIfNotFound = true, Qt::MatchFlags matchPolicy = Qt::MatchExactly, int depth = INFINITE_DEPTH);
+        FindOptions(bool failIfNotFound = true, Qt::MatchFlags matchPolicy = Qt::MatchExactly, int depth = INFINITE_DEPTH, bool searchInHidden = false);
 
         bool failIfNotFound;
         Qt::MatchFlags matchPolicy;
         int depth;
+        bool searchInHidden;
 
         static const int INFINITE_DEPTH = 0;
         static const bool FAIL_IF_NOT_FOUND = true;

@@ -39,6 +39,8 @@ public:
     const QString &toPlainText() const;
     const QString &tagName() const;
     const QString &id() const;
+    const QMap<QString, QString> &attributes() const;
+    QString attribute(const QString &name, const QString &defaultValue = QString()) const;
 
 private:
     QRect rect;
@@ -46,6 +48,7 @@ private:
     QString xml;
     QString tag;
     QString idAttribute;
+    QMap<QString, QString> attributesMap;
 };
 
 class HI_EXPORT GTWebView{
@@ -53,6 +56,11 @@ public:
     static HIWebElement findElement(GUITestOpStatus &os, QWebView *view, const QString &text, const QString &tag = "*", bool exactMatch = false);
     static HIWebElement findElementById(GUITestOpStatus &os, QWebView *view, const QString &id, const QString &tag = "*");
     static QList<HIWebElement> findElementsById(GUITestOpStatus &os, QWebView *view, const QString &id, const QString &tag = "*", const HIWebElement &parentElement = HIWebElement());
+
+    // Selectors: https://www.w3.org/TR/selectors/
+    static HIWebElement findElementBySelector(GUITestOpStatus &os, QWebView *view, const QString &selector, const GTGlobals::FindOptions &options = GTGlobals::FindOptions());
+    static QList<HIWebElement> findElementsBySelector(GUITestOpStatus &os, QWebView *view, const QString &selector, const GTGlobals::FindOptions &options = GTGlobals::FindOptions());
+
     static void checkElement(GUITestOpStatus &os, QWebView *view, QString text, QString tag = "*", bool exists = true, bool exactMatch = false);
     static bool doesElementExist(GUITestOpStatus &os, QWebView *view, const QString &text, const QString &tag = "*", bool exactMatch = false);
 
