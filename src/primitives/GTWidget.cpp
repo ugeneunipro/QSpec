@@ -82,17 +82,15 @@ QWidget* GTWidget::findWidget(GUITestOpStatus &os, const QString &widgetName, QW
     if (parentWidget == NULL) {
         QList<QWidget*> list;
         foreach(QWidget* parent, GTMainWindow::getMainWindowsAsWidget(os)){
-            if(parent->findChild<QWidget*>(widgetName) != NULL){
-                list.append(parent->findChild<QWidget*>(widgetName));
-            }
+            list << parent->findChildren<QWidget*>(widgetName);
         }
         if (options.failIfNotFound) {
             GT_CHECK_RESULT(list.count() != 0, QString("Widget '%1' not found").arg(widgetName), NULL);
         }
-        GT_CHECK_RESULT(list.count()<2, QString("There are %1 widgets with this text").arg(list.count()), NULL);
-        if(list.count() == 0){
+        GT_CHECK_RESULT(list.count()<2, QString("There are %1 widgets with name '%2'").arg(list.count()).arg(widgetName), NULL);
+        if (list.count() == 0) {
             return NULL;
-        }else{
+        } else {
             return list.takeFirst();
         }
     }
