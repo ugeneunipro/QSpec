@@ -93,7 +93,7 @@ public:
     CHECK_SET_ERR_RESULT(condition, errorMessage, )
 
 #define CHECK_SET_ERR_NO_MESSAGE(condition, errorMessage) \
-    if(!condition){ \
+    if(!(condition)){ \
     CHECK_SET_ERR(condition, errorMessage) \
 }
 
@@ -129,7 +129,7 @@ public:
     GT_CHECK_RESULT(!os.isCoR(), errorMessage, result)
 
 #define DRIVER_CHECK(condition, errorMessage) \
-    if(!condition){ \
+    if(!(condition)){ \
         qCritical("Driver error: '%s'",QString(errorMessage).toLocal8Bit().constData()); \
         return false; \
     } \
