@@ -1,10 +1,102 @@
-install:
-  - sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa
-  - sudo apt-get update -qq
-  - sudo apt-get install qtbase5-dev qtdeclarative5-dev libqt5webkit5-dev libsqlite3-dev
-  - sudo apt-get install qt5-default qttools5-dev-tools
-  - sudo apt-get install libxtst-dev
+sudo: required
+dist: trusty
 
 script:
-  - qmake QSpec.pro
-  - make
+  - qmake QSpec.pro QMAKE_CXX=$CXX QMAKE_CC=$CC
+  - make -j 3
+
+matrix:
+  include:
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-4.9
+      env:
+        - CC=gcc-4.9
+        - CXX=g++-4.9
+      before_install:
+        - sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa
+        - sudo apt-get update -qq
+        - sudo apt-get install qtbase5-dev qtdeclarative5-dev libqt5webkit5-dev libsqlite3-dev
+        - sudo apt-get install qt5-default qttools5-dev-tools
+        - sudo apt-get install libxtst-dev
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-5
+      env:
+        - CC=gcc-5
+        - CXX=g++-5
+      before_install:
+        - sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa
+        - sudo apt-get update -qq
+        - sudo apt-get install qtbase5-dev qtdeclarative5-dev libqt5webkit5-dev libsqlite3-dev
+        - sudo apt-get install qt5-default qttools5-dev-tools
+        - sudo apt-get install libxtst-dev
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-6
+      env:
+        - CC=gcc-6
+        - CXX=g++-6
+      before_install:
+        - sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa
+        - sudo apt-get update -qq
+        - sudo apt-get install qtbase5-dev qtdeclarative5-dev libqt5webkit5-dev libsqlite3-dev
+        - sudo apt-get install qt5-default qttools5-dev-tools
+        - sudo apt-get install libxtst-dev
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-trusty-3.8
+          packages:
+            - g++-6
+            - clang-3.8
+      env:
+        - CC=clang-3.8
+        - CXX=clang++-3.8
+      before_install:
+        - sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa
+        - sudo apt-get update -qq
+        - sudo apt-get install qtbase5-dev qtdeclarative5-dev libqt5webkit5-dev libsqlite3-dev
+        - sudo apt-get install qt5-default qttools5-dev-tools
+        - sudo apt-get install libxtst-dev
+    - os: osx
+      osx_image: xcode7.3
+      before_install:
+        - brew update
+        - brew install qt55
+      env:
+        - PATH=$PATH:/usr/local/opt/qt55/bin/
+        - CC=clang
+        - CXX=clang++
+    - os: osx
+      osx_image: xcode6.4
+      before_install:
+        - brew update
+        - brew install qt55
+      env:
+        - PATH=$PATH:/usr/local/opt/qt55/bin/
+        - CC=clang
+        - CXX=clang++
+    - os: osx
+      osx_image: beta-xcode6.1
+      before_install:
+        - brew update
+        - brew install qt55
+      env:
+        - PATH=$PATH:/usr/local/opt/qt55/bin/
+        - CC=clang
+        - CXX=clang++

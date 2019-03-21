@@ -34,6 +34,7 @@ namespace HI {
 bool GTGroupBox::getChecked(GUITestOpStatus &os, QGroupBox *groupBox) {
     GT_CHECK_RESULT(groupBox != NULL, "QGroupBox is NULL", false);
     GT_CHECK_RESULT(groupBox->isEnabled(), "QGroupBox is disabled", false);
+
     return groupBox->isChecked();
 }
 #undef GT_METHOD_NAME

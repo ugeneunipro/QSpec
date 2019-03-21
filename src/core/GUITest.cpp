@@ -1,5 +1,4 @@
 #include "GUITest.h"
-#include "core/GUITestOpStatus.h"
 
 #include <QApplication>
 #include <QDate>

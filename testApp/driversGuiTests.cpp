@@ -138,7 +138,7 @@ TEST_CLASS_DEFINITION(Test6){
 TEST_CLASS_DEFINITION(Test7){
     QWidget* recorder = getRecorder();
     GTMouseDriver::moveTo(getWidgetCenter(recorder));
-    GTMouseDriver::doubleClick(os);
+    GTMouseDriver::doubleClick();
     GTGlobals::sleep(500);
 
     QList<MouseEvent> list = MainWindow::getInstance()->eventFilter->mouseEvents;
