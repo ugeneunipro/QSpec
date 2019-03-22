@@ -30,6 +30,21 @@ namespace HI {
 
 #define GT_CLASS_NAME "GTGroupBox"
 
+#define GT_METHOD_NAME "getChecked"
+bool GTGroupBox::getChecked(GUITestOpStatus &os, QGroupBox *groupBox) {
+    GT_CHECK_RESULT(groupBox != NULL, "QGroupBox is NULL", false);
+    GT_CHECK_RESULT(groupBox->isEnabled(), "QGroupBox is disabled", false);
+
+    return groupBox->isChecked();
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getChecked"
+bool GTGroupBox::getChecked(GUITestOpStatus& os, const QString &groupBoxName, QWidget *parent) {
+    return GTGroupBox::getChecked(os, GTWidget::findExactWidget<QGroupBox *>(os, groupBoxName, parent));
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "setChecked"
 void GTGroupBox::setChecked(GUITestOpStatus &os, QGroupBox *groupBox, bool checked) {
     GT_CHECK(groupBox != NULL, "QGroupBox is NULL");
