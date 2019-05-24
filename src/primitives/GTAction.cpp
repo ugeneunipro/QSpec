@@ -37,27 +37,19 @@ QAbstractButton* GTAction::button(GUITestOpStatus &os, const QString &actionName
 
     QAction* a = findAction(os, actionName, parent);
     if (!a) {
-        a = findAction(os, actionName, NULL, GTGlobals::FindOptions(false));
+        a = findAction(os, actionName, parent, GTGlobals::FindOptions(false));
     }
     if (options.failIfNotFound) {
         GT_CHECK_RESULT(NULL != a, "Action " + actionName + " is NULL!", NULL);
     } else if (NULL == a) {
-            return NULL;
+        return NULL;
     }
 
     QList<QWidget*> associated = a->associatedWidgets();
     foreach(QWidget* w, associated) {
         QAbstractButton *tb = qobject_cast<QAbstractButton*>(w);
         if (tb) {
-            if (parent) {
-                QList<QToolButton*> childButtons = parent->findChildren<QToolButton*>(); // da. daa.
-                if (childButtons.contains(dynamic_cast<QToolButton*>(tb))) {
-                    return tb;
-                }
-            }
-            else {
-                return tb;
-            }
+            return tb;
         }
     }
 
