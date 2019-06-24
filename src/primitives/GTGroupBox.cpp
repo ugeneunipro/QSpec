@@ -55,10 +55,12 @@ void GTGroupBox::setChecked(GUITestOpStatus &os, QGroupBox *groupBox, bool check
 
     GT_CHECK(groupBox->isEnabled(), "QGroupBox is disabled");
 
-    const QRect checkBoxRect = getCheckBoxRect(groupBox);
-    const QPoint offset(5, checkBoxRect.height() / 2);
-    GTWidget::click(os, groupBox, Qt::LeftButton, checkBoxRect.center() + offset);
-    GTGlobals::sleep();
+    QStyleOptionGroupBox options;
+    options.initFrom(groupBox);
+    const QRect checkboxRect = groupBox->style()->subControlRect(QStyle::CC_GroupBox, &options, QStyle::SC_GroupBoxCheckBox);
+
+    GTWidget::click(os, groupBox, Qt::LeftButton, checkboxRect.center());
+    GTGlobals::sleep(200);
 
     GT_CHECK(checked == groupBox->isChecked(), "Can't set a new state");
 }
