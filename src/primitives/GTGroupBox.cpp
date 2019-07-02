@@ -57,6 +57,19 @@ void GTGroupBox::setChecked(GUITestOpStatus &os, QGroupBox *groupBox, bool check
 
     QStyleOptionGroupBox options;
     options.initFrom(groupBox);
+    if (groupBox->isFlat()) {
+        options.features |= QStyleOptionFrame::Flat;
+    }
+    options.lineWidth = 1;
+    options.midLineWidth = 0;
+    options.text = groupBox->title();
+    options.textAlignment = groupBox->alignment();
+    options.subControls = (QStyle::SC_GroupBoxFrame | QStyle::SC_GroupBoxCheckBox);
+    if (!groupBox->title().isEmpty()) {
+        options.subControls |= QStyle::SC_GroupBoxLabel;
+    }
+    options.state |= (groupBox->isChecked() ? QStyle::State_On : QStyle::State_Off);
+
     const QRect checkboxRect = groupBox->style()->subControlRect(QStyle::CC_GroupBox, &options, QStyle::SC_GroupBoxCheckBox);
 
     GTWidget::click(os, groupBox, Qt::LeftButton, checkboxRect.center());
