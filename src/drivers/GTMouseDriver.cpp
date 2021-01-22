@@ -19,20 +19,32 @@
  * MA 02110-1301, USA.
  */
 
-#include <QApplication>
 #include <utils/GTThread.h>
+
+#include <QApplication>
 
 #include "GTMouseDriver.h"
 
 namespace HI {
 
-bool GTMouseDriver::click(Qt::MouseButton button)
-{
+bool GTMouseDriver::click(Qt::MouseButton button) {
     DRIVER_CHECK(press(button), "Button could not be pressed");
     DRIVER_CHECK(release(button), "Button could not be released");
-    GTGlobals::sleep(500);
+    GTThread::waitForMainThread();
+    GTGlobals::sleep(100);    // Adding extra sleep to avoid occasional doubleclicks
     return true;
 }
+
+#ifndef Q_OS_MAC
+bool GTMouseDriver::click(const QPoint &p, Qt::MouseButton button) {
+    DRIVER_CHECK(moveTo(p), "Mouse move was failed");
+    DRIVER_CHECK(press(button), "Button could not be pressed");
+    DRIVER_CHECK(release(button), "Button could not be released");
+    GTThread::waitForMainThread();
+    GTGlobals::sleep(100);    // Adding extra sleep to avoid occasional doubleclicks
+    return true;
+}
+#endif
 
 namespace {
 
@@ -40,35 +52,49 @@ bool isFarEnoughToStartDnd(const QPoint &start, const QPoint &end) {
     return (end - start).manhattanLength() > 2 * QApplication::startDragDistance();
 }
 
-}
+}    // namespace
 
-bool GTMouseDriver::dragAndDrop(const QPoint& start, const QPoint& end) {
+bool GTMouseDriver::dragAndDrop(const QPoint &start, const QPoint &end) {
     DRIVER_CHECK(moveTo(start), QString("Mouse could not be moved to point (%1, %2)").arg(start.x()).arg(start.y()));
 
+    // Wait to avoid next press to be merged with a possible click in user code into a double click.
+    GTGlobals::sleep(500);
+
+// After Linux version was improved the Windows has a lot of regressions. Keeping Windows version with no changes below during investigation.
+#ifdef Q_OS_WIN
     DRIVER_CHECK(press(), "Left button could not be pressed");
-
-    const QPoint farPoint = (isFarEnoughToStartDnd(start, (end + start) / 2) ?
-                                 (end + start) / 2 :
-                                 QPoint(0, 0));
+    QPoint farPoint = (isFarEnoughToStartDnd(start, (end + start) / 2) ? (end + start) / 2 : QPoint(0, 0));
     DRIVER_CHECK(moveTo(farPoint), QString("Mouse could not be moved to point (%1, %2)").arg(farPoint.x()).arg(farPoint.y()));
-
-    DRIVER_CHECK(moveTo(end), QString("Mouse could not be moved to point (%1, %2)").arg(end.x()).arg(end.y()));;
+    DRIVER_CHECK(moveTo(end), QString("Mouse could not be moved to point (%1, %2)").arg(end.x()).arg(end.y()));
     DRIVER_CHECK(release(), "Button could not be released");
-
     GTThread::waitForMainThread();
+#else
+    DRIVER_CHECK(press(), "Left button could not be pressed");
+    GTThread::waitForMainThread();
+
+    QPoint farPoint = (isFarEnoughToStartDnd(start, (end + start) / 2) ? (end + start) / 2 : QPoint(0, 0));
+    DRIVER_CHECK(moveTo(farPoint), QString("Mouse could not be moved to point (%1, %2)").arg(farPoint.x()).arg(farPoint.y()));
+    GTThread::waitForMainThread();
+
+    DRIVER_CHECK(moveTo(end), QString("Mouse could not be moved to point (%1, %2)").arg(end.x()).arg(end.y()));
+    GTThread::waitForMainThread();
+
+    GTGlobals::sleep(500);    // Do extra wait before the release. Otherwise the method is not stable on Linux.
+    DRIVER_CHECK(release(), "Button could not be released");
+    GTThread::waitForMainThread();
+#endif
     return true;
 }
 
-bool GTMouseDriver::selectArea(const QPoint &start, const QPoint &end){
+bool GTMouseDriver::selectArea(const QPoint &start, const QPoint &end) {
     DRIVER_CHECK(dragAndDrop(start, end), "Drag and drop failed");
     return true;
 }
 
 #ifndef Q_OS_MAC
-bool GTMouseDriver::doubleClick()
-{
+bool GTMouseDriver::doubleClick() {
     DRIVER_CHECK(press(Qt::LeftButton), "Left button could not be pressed on first click");
-    DRIVER_CHECK(release(Qt::LeftButton), "Left button could not be released on first click");;
+    DRIVER_CHECK(release(Qt::LeftButton), "Left button could not be released on first click");
     GTGlobals::sleep(100);
 
     DRIVER_CHECK(press(Qt::LeftButton), "Left button could not be pressed on second click");
@@ -78,8 +104,8 @@ bool GTMouseDriver::doubleClick()
 }
 #endif
 
-QPoint GTMouseDriver::getMousePosition(){
+QPoint GTMouseDriver::getMousePosition() {
     return QCursor::pos();
 }
 
-} //namespace
+}    // namespace HI

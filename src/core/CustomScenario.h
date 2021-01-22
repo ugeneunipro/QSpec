@@ -22,11 +22,10 @@
 #ifndef _HI_CUSTOM_SCENARIO_H_
 #define _HI_CUSTOM_SCENARIO_H_
 
-#include <core/global.h>
 #include <core/GUITestOpStatus.h>
+#include <core/global.h>
 
 namespace HI {
-
 
 class HI_EXPORT CustomScenario {
 public:
@@ -34,6 +33,6 @@ public:
     virtual void run(HI::GUITestOpStatus &os) = 0;
 };
 
-}   // namespace
+}    // namespace HI
 
-#endif // _HI_CUSTOM_SCENARIO_H_
+#endif    // _HI_CUSTOM_SCENARIO_H_

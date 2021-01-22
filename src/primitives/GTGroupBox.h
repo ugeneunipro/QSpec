@@ -22,8 +22,9 @@
 #ifndef _HI_GT_GROUP_BOX_H_
 #define _HI_GT_GROUP_BOX_H_
 
-#include "GTGlobals.h"
 #include <QGroupBox>
+
+#include "GTGlobals.h"
 
 namespace HI {
 /*!
@@ -32,16 +33,16 @@ namespace HI {
 class HI_EXPORT GTGroupBox {
 public:
     static bool getChecked(GUITestOpStatus &os, QGroupBox *groupBox);
-    static bool getChecked(GUITestOpStatus& os, const QString &groupBoxName, QWidget *parent = NULL);
+    static bool getChecked(GUITestOpStatus &os, const QString &groupBoxName, QWidget *parent = NULL);
 
     static void setChecked(GUITestOpStatus &os, QGroupBox *groupBox, bool checked = true);
-    static void setChecked(GUITestOpStatus& os, const QString &groupBoxName, bool checked = true, QWidget *parent = NULL);
-    static void setChecked(GUITestOpStatus& os, const QString &groupBoxName, QWidget *parent = NULL);
+    static void setChecked(GUITestOpStatus &os, const QString &groupBoxName, bool checked = true, QWidget *parent = NULL);
+    static void setChecked(GUITestOpStatus &os, const QString &groupBoxName, QWidget *parent = NULL);
 
 private:
     static QRect getCheckBoxRect(QGroupBox *groupBox);
 };
 
-}
+}    // namespace HI
 
 #endif

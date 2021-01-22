@@ -22,9 +22,9 @@
 #ifndef _HI_GT_RADIOBUTTON_H_
 #define _HI_GT_RADIOBUTTON_H_
 
-#include "GTGlobals.h"
-
 #include <QRadioButton>
+
+#include "GTGlobals.h"
 
 namespace HI {
 /*!
@@ -33,12 +33,12 @@ namespace HI {
 class HI_EXPORT GTRadioButton {
 public:
     // fails if the radioButton is NULL or can't click
-    static void click(GUITestOpStatus& os, QRadioButton *radioButton);
-    static void click(GUITestOpStatus& os, const QString &radioButtonName, QWidget *parent = NULL);
+    static void click(GUITestOpStatus &os, QRadioButton *radioButton);
+    static void click(GUITestOpStatus &os, const QString &radioButtonName, QWidget *parent = NULL);
 
-    static QRadioButton* getRadioButtonByText(GUITestOpStatus& os, QString text, QWidget* parent=NULL);
-    static QList<QRadioButton*> getAllButtonsByText(GUITestOpStatus &os, QString text, QWidget* parent=NULL);
+    static QRadioButton *getRadioButtonByText(GUITestOpStatus &os, QString text, QWidget *parent = NULL);
+    static QList<QRadioButton *> getAllButtonsByText(GUITestOpStatus &os, QString text, QWidget *parent = NULL);
 };
 
-}
-#endif // _HI_GT_RADIOBUTTON_H_
+}    // namespace HI
+#endif    // _HI_GT_RADIOBUTTON_H_

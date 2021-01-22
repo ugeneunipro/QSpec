@@ -19,23 +19,27 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef HI_GUI_GTMOUSE_H_
-#define HI_GUI_GTMOUSE_H_
+#ifndef GTWEBKITVIEW_H
+#define GTWEBKITVIEW_H
+
+#include <QWebElement>
+#include <QWebView>
 
 #include "GTGlobals.h"
-#if (QT_VERSION < 0x050000)    //Qt 5
-#    include <QtGui/QWidget>
-#else
-#    include <QtWidgets/QWidget>
-#endif
+#include "GTWebView.h"
 
 namespace HI {
 
-class HI_EXPORT GTMouseUtils {
+class HI_EXPORT GTWebkitView {
 public:
-    static void moveCursorToWidget(GUITestOpStatus &os, QWidget *widget);
-    static void moveCursorOutOfWidget(GUITestOpStatus &os, QWidget *widget);
+    static QList<HIWebElement> findElementsBySelector(GUITestOpStatus &os, QWebView *view, const QString &selector, const GTGlobals::FindOptions &options = GTGlobals::FindOptions());
+
+private:
+    static HIWebElement toHiWebElement(const QWebElement &element);
 };
 
+typedef class GTWebkitView GTWebViewPrivate;
+
 }    // namespace HI
-#endif
+
+#endif    // GTWEBKITVIEW_H

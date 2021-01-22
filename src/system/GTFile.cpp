@@ -19,86 +19,86 @@
  * MA 02110-1301, USA.
  */
 
-#include "system/GTFile.h"
+#include <system/GTClipboard.h>
+
+#include <QDebug>
 #include <QDir>
-#include<QDebug>
+
+#include "system/GTFile.h"
 
 #ifdef Q_OS_WIN
 
 // Microsoft's example of how to change file system permissions is used below.
 // See http://msdn.microsoft.com/en-us/library/windows/desktop/aa379283%28v=vs.85%29.aspx for details.
 
-#include <Aclapi.h>
+#    include <Aclapi.h>
 
 // Sets NTFS security rights of the current user for the specified file or directory,
 // either to allow or deny writing to the file or creating files/subfolders in the directory.
 // In case of a directory, rights to delete files/subfolders are not affected.
 // NB: Only works for NTFS, has no effect on FAT objects.
-static DWORD SetFileWriteACL (
-    LPTSTR pszObjName,          // name of object
-    BOOL allowWrite             // zero to deny file modification
-    )
-{
+static DWORD SetFileWriteACL(
+    LPTSTR pszObjName,    // name of object
+    BOOL allowWrite    // zero to deny file modification
+) {
     DWORD dwRes = 0;
     PACL pNewDACL = NULL;
     EXPLICIT_ACCESS ea[2];
-    SE_OBJECT_TYPE ObjectType = SE_FILE_OBJECT; // type of object
+    SE_OBJECT_TYPE ObjectType = SE_FILE_OBJECT;    // type of object
     TRUSTEE_FORM TrusteeForm = TRUSTEE_IS_NAME;    // format of trustee structure
 
-#ifdef UNICODE
-    LPWSTR pszTrustee = const_cast<LPWSTR>( L"CURRENT_USER" ); // trustee for new ACE
-#else
-    LPSTR pszTrustee = const_cast<LPSTR>( "CURRENT_USER" );
-#endif
+#    ifdef UNICODE
+    LPWSTR pszTrustee = const_cast<LPWSTR>(L"CURRENT_USER");    // trustee for new ACE
+#    else
+    LPSTR pszTrustee = const_cast<LPSTR>("CURRENT_USER");
+#    endif
 
-    if ( NULL == pszObjName ) {
+    if (NULL == pszObjName) {
         return ERROR_INVALID_PARAMETER;
     }
 
     // Initialize an EXPLICIT_ACCESS structure for the new ACE.
 
-    ZeroMemory( &ea, 2 * sizeof( EXPLICIT_ACCESS ) );
+    ZeroMemory(&ea, 2 * sizeof(EXPLICIT_ACCESS));
     ea[0].grfAccessMode = GRANT_ACCESS;
-    ea[0].grfInheritance= NO_INHERITANCE;
+    ea[0].grfInheritance = NO_INHERITANCE;
     ea[0].Trustee.TrusteeForm = TrusteeForm;
     ea[0].Trustee.ptstrName = pszTrustee;
 
     ULONG aclCount;
-    if ( allowWrite )
-    {
+    if (allowWrite) {
         aclCount = 1;
         ea[0].grfAccessPermissions = FILE_ALL_ACCESS;
     } else {
         aclCount = 2;
-        ea[0].grfAccessPermissions = ( FILE_GENERIC_READ | GENERIC_EXECUTE );
+        ea[0].grfAccessPermissions = (FILE_GENERIC_READ | GENERIC_EXECUTE);
 
         // All generic rights have common bits (READ_CONTROL etc) and we do not want to deny them
         ea[1].grfAccessPermissions = (FILE_GENERIC_WRITE & ~FILE_GENERIC_READ);
         ea[1].grfAccessMode = DENY_ACCESS;
-        ea[1].grfInheritance= NO_INHERITANCE;
+        ea[1].grfInheritance = NO_INHERITANCE;
         ea[1].Trustee.TrusteeForm = TrusteeForm;
         ea[1].Trustee.ptstrName = pszTrustee;
     }
 
     // Create a new ACL
-    dwRes = SetEntriesInAcl( aclCount, ea, NULL, &pNewDACL );
-    if ( ERROR_SUCCESS != dwRes ) {
-        printf( "SetEntriesInAcl Error %u\n", dwRes );
+    dwRes = SetEntriesInAcl(aclCount, ea, NULL, &pNewDACL);
+    if (ERROR_SUCCESS != dwRes) {
+        printf("SetEntriesInAcl Error %u\n", dwRes);
         goto Cleanup;
     }
 
     // Attach the new ACL as the object's DACL.
-    dwRes = SetNamedSecurityInfo( pszObjName, ObjectType, DACL_SECURITY_INFORMATION, NULL, NULL,
-        pNewDACL, NULL );
-    if ( ERROR_SUCCESS != dwRes ) {
-        printf( "SetNamedSecurityInfo Error %u\n", dwRes );
+    dwRes = SetNamedSecurityInfo(pszObjName, ObjectType, DACL_SECURITY_INFORMATION, NULL, NULL, pNewDACL, NULL);
+    if (ERROR_SUCCESS != dwRes) {
+        printf("SetNamedSecurityInfo Error %u\n", dwRes);
         goto Cleanup;
     }
 
 Cleanup:
 
     if (pNewDACL != NULL) {
-        LocalFree( static_cast<HLOCAL>( pNewDACL ) );
+        LocalFree(static_cast<HLOCAL>(pNewDACL));
     }
 
     return dwRes;
@@ -109,14 +109,13 @@ Cleanup:
 namespace HI {
 
 static const QFile::Permissions GenericReadPermissions = QFile::ReadOwner | QFile::ExeOwner |
-        QFile::ReadUser | QFile::ExeUser | QFile::ReadGroup | QFile::ExeGroup |
-        QFile::ReadOther | QFile::ExeOther;
+                                                         QFile::ReadUser | QFile::ExeUser | QFile::ReadGroup | QFile::ExeGroup |
+                                                         QFile::ReadOther | QFile::ExeOther;
 
 static const QFile::Permissions GenericWritePermissions = QFile::WriteOwner |
-        QFile::WriteUser | QFile::WriteGroup | QFile::WriteOther;
+                                                          QFile::WriteUser | QFile::WriteGroup | QFile::WriteOther;
 
-static bool setFilePermissions(const QString &path, bool allowWrite, bool recursive)
-{
+static bool setFilePermissions(const QString &path, bool allowWrite, bool recursive) {
     QFileInfo fileInfo(path);
     if (!(fileInfo.exists())) {
         return false;
@@ -128,42 +127,41 @@ static bool setFilePermissions(const QString &path, bool allowWrite, bool recurs
     bool res = true;
     if (recursive && fileInfo.isDir()) {
         QDir dir(path);
-        foreach (const QString& entryPath, dir.entryList(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot | QDir::NoSymLinks)) {
+        foreach (const QString &entryPath, dir.entryList(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot | QDir::NoSymLinks)) {
             res &= setFilePermissions(path + "/" + entryPath, allowWrite, recursive);
         }
     }
 
     QFile::Permissions perm = GenericReadPermissions;
-    if ( allowWrite ) {
+    if (allowWrite) {
         perm |= GenericWritePermissions;
     }
     // On Windows, Qt permissions partially work (e.g. FAT respects read-only attribute for ordinary files),
     // so try it anyway.
     // And the case of FAT folders is hopeless, there's no way to control access to a folder content.
-    bool qtRes = QFile( path ).setPermissions( perm );
+    bool qtRes = QFile(path).setPermissions(perm);
 
 #ifdef Q_OS_WIN
     // Probably, could skip this NTFS-specific branch if the qtRes is OK, assuming it worked nicely on FAT
     // But Qt did not really documented this, so let's go for the most guarantee
-    if ( fileInfo.isRelative( ) && !fileInfo.makeAbsolute( ) ) {
+    if (fileInfo.isRelative() && !fileInfo.makeAbsolute()) {
         return false;
     }
-    const QString windowsPath = QDir::toNativeSeparators( fileInfo.filePath( ) );
+    const QString windowsPath = QDir::toNativeSeparators(fileInfo.filePath());
 
-    const int pathLength = windowsPath.size( );
-    QScopedArrayPointer<wchar_t> pathString( new wchar_t[pathLength + 1] );
+    const int pathLength = windowsPath.size();
+    QScopedArrayPointer<wchar_t> pathString(new wchar_t[pathLength + 1]);
 
-    windowsPath.toWCharArray( pathString.data( ) );
+    windowsPath.toWCharArray(pathString.data());
     pathString[pathLength] = '\0';
 
-    DWORD dwRes = SetFileWriteACL( pathString.data(), allowWrite );
-    if ( allowWrite )
-    {
+    DWORD dwRes = SetFileWriteACL(pathString.data(), allowWrite);
+    if (allowWrite) {
         // workaround Qt's quirk on NTFS, force clearing RO attr
-        SetFileAttributesW(/*reinterpret_cast<LPCWSTR>*/(pathString.data()), FILE_ATTRIBUTE_NORMAL );
+        SetFileAttributesW(/*reinterpret_cast<LPCWSTR>*/ (pathString.data()), FILE_ATTRIBUTE_NORMAL);
     }
 
-    qtRes = ( ERROR_SUCCESS == dwRes );
+    qtRes = (ERROR_SUCCESS == dwRes);
 #endif
 
     return res & qtRes;
@@ -172,16 +170,14 @@ static bool setFilePermissions(const QString &path, bool allowWrite, bool recurs
 #define GT_CLASS_NAME "GTFile"
 
 #define GT_METHOD_NAME "setReadWrite"
-void GTFile::setReadWrite(GUITestOpStatus &os, const QString &path, bool recursive)
-{
+void GTFile::setReadWrite(GUITestOpStatus &os, const QString &path, bool recursive) {
     bool set = setFilePermissions(path, true, recursive);
     GT_CHECK(set, "read-write permission could not be set")
 }
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "setReadOnly"
-void GTFile::setReadOnly(GUITestOpStatus &os, const QString &path, bool recursive)
-{
+void GTFile::setReadOnly(GUITestOpStatus &os, const QString &path, bool recursive) {
     bool set = setFilePermissions(path, false, recursive);
     GT_CHECK(set, "read-only permission could not be set")
 }
@@ -190,8 +186,7 @@ void GTFile::setReadOnly(GUITestOpStatus &os, const QString &path, bool recursiv
 const QString GTFile::backupPostfix = "_GT_backup";
 
 #define GT_METHOD_NAME "equals"
-bool GTFile::equals(GUITestOpStatus &os, const QString& path1, const QString& path2) {
-
+bool GTFile::equals(GUITestOpStatus &os, const QString &path1, const QString &path2) {
     QFile f1(path1);
     QFile f2(path2);
 
@@ -207,21 +202,32 @@ bool GTFile::equals(GUITestOpStatus &os, const QString& path1, const QString& pa
 }
 #undef GT_METHOD_NAME
 
-#define GT_METHOD_NAME "getSize"
-qint64 GTFile::getSize(GUITestOpStatus &os, const QString &path){
-    QFile f(path);
-    bool ok = f.open(QIODevice::ReadOnly);
-    GT_CHECK_RESULT(ok, "file " + path + "not found",-1);
+#define GT_METHOD_NAME "equals"
+bool GTFile::equals(GUITestOpStatus &os, const QString &path1) {
+    QFile f1(path1);
 
-    int size = f.size();
-    f.close();
-    return size;
+    bool ok = f1.open(QIODevice::ReadOnly);
+    GT_CHECK_RESULT(ok, f1.errorString(), false);
+
+    QByteArray byteArray1 = f1.readAll();
+    QByteArray byteArray2 = GTClipboard::text(os).toLocal8Bit();
+
+    GT_CHECK_RESULT(f1.error() == QFile::NoError, f1.errorString(), false);
+
+    return byteArray1 == byteArray2;
+}
+#undef GT_METHOD_NAME
+#define GT_METHOD_NAME "getSize"
+qint64 GTFile::getSize(GUITestOpStatus &os, const QString &path) {
+    QFile file(path);
+    bool ok = file.open(QIODevice::ReadOnly);
+    GT_CHECK_RESULT(ok, "file '" + path + "' is not found", -1);
+    return file.size();
 }
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "copy"
-void GTFile::copy(GUITestOpStatus &os, const QString& from, const QString& to) {
-
+void GTFile::copy(GUITestOpStatus &os, const QString &from, const QString &to) {
     QFile f2(to);
     bool ok = f2.open(QIODevice::ReadOnly);
     if (ok) {
@@ -234,8 +240,7 @@ void GTFile::copy(GUITestOpStatus &os, const QString& from, const QString& to) {
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "copyDir"
-void GTFile::copyDir(GUITestOpStatus &os, const QString& dirToCopy, const QString& dirToPaste) {
-
+void GTFile::copyDir(GUITestOpStatus &os, const QString &dirToCopy, const QString &dirToPaste) {
     QDir from;
     from.setFilter(QDir::Hidden | QDir::AllDirs | QDir::Files);
     from.setPath(dirToCopy);
@@ -245,24 +250,22 @@ void GTFile::copyDir(GUITestOpStatus &os, const QString& dirToCopy, const QStrin
     GT_CHECK(ok, "could not create directory: " + pastePath);
 
     QFileInfoList list = from.entryInfoList();
-    foreach(QFileInfo info, list){
-        if(info.fileName()=="." || info.fileName()==".."){
+    foreach (QFileInfo info, list) {
+        if (info.fileName() == "." || info.fileName() == "..") {
             continue;
         }
-        if (info.isFile()){
-            copy(os, info.filePath(), pastePath  + '/' + info.fileName());
-        }else if(info.isDir()){
-            copyDir(os, info.filePath(), pastePath  + '/' + info.fileName());
+        if (info.isFile()) {
+            copy(os, info.filePath(), pastePath + '/' + info.fileName());
+        } else if (info.isDir()) {
+            copyDir(os, info.filePath(), pastePath + '/' + info.fileName());
         }
-
     }
 }
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "removeDir"
 #ifdef Q_OS_WIN
-void GTFile::removeDir(QString dirName)
-{
+void GTFile::removeDir(QString dirName) {
     QDir dir(dirName);
     dir.setFilter(QDir::Hidden | QDir::AllDirs | QDir::Files);
 
@@ -272,9 +275,9 @@ void GTFile::removeDir(QString dirName)
         if (fileName != "." && fileName != "..") {
             QFile file(filePath);
             file.setPermissions(QFile::ReadOther | QFile::WriteOther);
-            if(!file.remove(filePath)){
+            if (!file.remove(filePath)) {
                 QDir dir(filePath);
-                if(!dir.rmdir(filePath)){
+                if (!dir.rmdir(filePath)) {
                     removeDir(filePath);
                 }
             }
@@ -283,8 +286,7 @@ void GTFile::removeDir(QString dirName)
     dir.rmdir(dir.absoluteFilePath(dirName));
 }
 #else
-void GTFile::removeDir(QString dirName)
-{
+void GTFile::removeDir(QString dirName) {
     QDir dir(dirName);
     qDebug("GT_DEBUG_MESSAGE removing dir: %s", dirName.toLocal8Bit().constData());
 
@@ -292,11 +294,11 @@ void GTFile::removeDir(QString dirName)
         QString fileName = fileInfo.fileName();
         QString filePath = fileInfo.filePath();
         if (fileName != "." && fileName != "..") {
-            if(QFile::remove(filePath))
+            if (QFile::remove(filePath))
                 continue;
-            else{
+            else {
                 QDir dir(filePath);
-                if(dir.rmdir(filePath))
+                if (dir.rmdir(filePath))
                     continue;
                 else
                     removeDir(filePath);
@@ -306,29 +308,31 @@ void GTFile::removeDir(QString dirName)
     dir.rmdir(dir.absoluteFilePath(dirName));
 
     qDebug("GT_DEBUG_MESSAGE directory removed: %s", dirName.toLocal8Bit().constData());
-
 }
 #endif
 
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "backup"
-void GTFile::backup(GUITestOpStatus &os, const QString& path) {
-
-    copy(os, path, path + backupPostfix);
+void GTFile::backup(GUITestOpStatus &os, const QString &path) {
+    qDebug("Backup file %s", path.toLocal8Bit().constData());
+    if (QFile(path).exists()) {
+        copy(os, path, path + backupPostfix);
+    } else {
+        qDebug("Failed to backup. Files does not exist: %s", path.toLocal8Bit().constData());
+    }
 }
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "backupDir"
-void GTFile::backupDir(GUITestOpStatus &os, const QString& path) {
-
+void GTFile::backupDir(GUITestOpStatus &os, const QString &path) {
     copyDir(os, path, path + backupPostfix);
 }
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "restore"
-void GTFile::restore(GUITestOpStatus &os, const QString& path) {
-
+void GTFile::restore(GUITestOpStatus &os, const QString &path) {
+    qDebug("Restoring file %s", path.toLocal8Bit().constData());
     QFile backupFile(path + backupPostfix);
 
     bool ok = backupFile.open(QIODevice::ReadOnly);
@@ -346,10 +350,10 @@ void GTFile::restore(GUITestOpStatus &os, const QString& path) {
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "restoreDir"
-void GTFile::restoreDir(GUITestOpStatus &os, const QString& path) {
+void GTFile::restoreDir(GUITestOpStatus &os, const QString &path) {
     QDir backupDir(path + backupPostfix);
     bool exists = backupDir.exists();
-    if(!exists){
+    if (!exists) {
         return;
     }
 
@@ -365,7 +369,7 @@ void GTFile::restoreDir(GUITestOpStatus &os, const QString& path) {
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "check"
-bool GTFile::check(GUITestOpStatus &/*os*/, const QString& path) {
+bool GTFile::check(GUITestOpStatus & /*os*/, const QString &path) {
     QFile file(path);
     return file.exists();
 }
@@ -391,4 +395,4 @@ QByteArray GTFile::readAll(GUITestOpStatus &os, const QString &filePath) {
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
 
-} //namespace
+}    // namespace HI

@@ -22,8 +22,8 @@
 #ifndef GTKEYBOARD_UTILS_H
 #define GTKEYBOARD_UTILS_H
 
-#include "drivers/GTKeyboardDriver.h"
 #include "GTGlobals.h"
+#include "drivers/GTKeyboardDriver.h"
 
 namespace HI {
 /*!
@@ -31,12 +31,12 @@ namespace HI {
  */
 class HI_EXPORT GTKeyboardUtils {
 public:
-    static void selectAll(GUITestOpStatus&); // ctrl (or cmd on MacOS) + A
-    static void copy(GUITestOpStatus&);      // ctrl (or cmd on MacOS) + C
-    static void paste(GUITestOpStatus&);     // ctrl (or cmd on MacOS) + V
-    static void cut(GUITestOpStatus&);       // ctrl (or cmd on MacOS) + X
+    static void selectAll(GUITestOpStatus &);    // ctrl (or cmd on MacOS) + A
+    static void copy(GUITestOpStatus &);    // ctrl (or cmd on MacOS) + C
+    static void paste(GUITestOpStatus &);    // ctrl (or cmd on MacOS) + V
+    static void cut(GUITestOpStatus &);    // ctrl (or cmd on MacOS) + X
 };
 
-} // namespace
+}    // namespace HI
 
 #endif

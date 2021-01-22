@@ -21,16 +21,17 @@
 
 #include "GTMenuPrivate.h"
 #ifdef Q_OS_MAC
-#include "GTMenuPrivateMac.h"
+#    include "GTMenuPrivateMac.h"
 #endif
+#include <QMainWindow>
+#include <QMenuBar>
+
 #include "drivers/GTKeyboardDriver.h"
 #include "drivers/GTMouseDriver.h"
 #include "primitives/GTAction.h"
 #include "primitives/GTMainWindow.h"
+#include "primitives/PopupChooser.h"
 #include "utils/GTUtilsDialog.h"
-
-#include <QMainWindow>
-#include <QMenuBar>
 
 namespace HI {
 
@@ -40,15 +41,11 @@ namespace HI {
 void GTMenuPrivate::clickMainMenuItem(GUITestOpStatus &os, const QStringList &itemPath, GTGlobals::UseMethod method, Qt::MatchFlag matchFlag) {
     GT_CHECK(itemPath.count() > 1, QString("Menu item path is too short: { %1 }").arg(itemPath.join(" -> ")));
     qWarning("clickMainMenuItem is going to click menu: '%s'", itemPath.join(" -> ").toLocal8Bit().constData());
-#ifdef Q_OS_MAC
-    Q_UNUSED(method);
-    GTMenuPrivateMac::clickMainMenuItem(os, itemPath, matchFlag);
-#else
+
     QStringList cuttedItemPath = itemPath;
     const QString menuName = cuttedItemPath.takeFirst();
     GTUtilsDialog::waitForDialog(os, new PopupChooserByText(os, cuttedItemPath, method, matchFlag));
     showMainMenu(os, menuName, method);
-#endif
 }
 #undef GT_METHOD_NAME
 
@@ -87,25 +84,24 @@ void GTMenuPrivate::checkMainMenuItemsState(GUITestOpStatus &os, const QStringLi
 
 #define GT_METHOD_NAME "showMainMenu"
 void GTMenuPrivate::showMainMenu(GUITestOpStatus &os, const QString &menuName, GTGlobals::UseMethod m) {
-
-    QMainWindow* mainWindow = NULL;
-    QList<QAction*> resultList;
-    foreach(QWidget* parent, GTMainWindow::getMainWindowsAsWidget(os)){
-        QList<QAction*> list = parent->findChildren<QAction*>();
+    QMainWindow *mainWindow = NULL;
+    QList<QAction *> resultList;
+    foreach (QWidget *parent, GTMainWindow::getMainWindowsAsWidget(os)) {
+        QList<QAction *> list = parent->findChildren<QAction *>();
         bool isContainMenu = false;
-        foreach(QAction* act, list){
-            QString name = act->text().replace('&',"");
-            if(name == menuName){
-                resultList<<act;
+        foreach (QAction *act, list) {
+            QString name = act->text().replace('&', "");
+            if (name == menuName) {
+                resultList << act;
                 isContainMenu = true;
             }
         }
-        if (isContainMenu){
-            mainWindow = qobject_cast<QMainWindow*>(parent);
+        if (isContainMenu) {
+            mainWindow = qobject_cast<QMainWindow *>(parent);
         }
     }
-    GT_CHECK_RESULT(resultList.count()!=0,"action not found", );
-    GT_CHECK_RESULT(resultList.count()<2, QString("There are %1 actions with this text").arg(resultList.count()), );
+    GT_CHECK_RESULT(resultList.count() != 0, "action not found", );
+    GT_CHECK_RESULT(resultList.count() < 2, QString("There are %1 actions with this text").arg(resultList.count()), );
 
     QAction *menu = resultList.takeFirst();
 
@@ -115,13 +111,17 @@ void GTMenuPrivate::showMainMenu(GUITestOpStatus &os, const QString &menuName, G
     int key = 0;
     int key_pos = 0;
 
-    switch(m) {
+#ifdef Q_OS_MAC
+    // TODO: workaround for MacOS
+    //      menubar's submenu can't be opened by keyboard in non-native mode
+    m = GTGlobals::UseMouse;
+#endif
+    switch (m) {
     case GTGlobals::UseMouse:
         pos = mainWindow->menuBar()->actionGeometry(menu).center();
         gPos = mainWindow->menuBar()->mapToGlobal(pos);
 
-        GTMouseDriver::moveTo(gPos);
-        GTMouseDriver::click();
+        GTMouseDriver::click(gPos);
         break;
 
     case GTGlobals::UseKey:
@@ -129,7 +129,7 @@ void GTMenuPrivate::showMainMenu(GUITestOpStatus &os, const QString &menuName, G
         key_pos = menuText.indexOf('&');
         key = (menuText.at(key_pos + 1)).toLatin1();
 
-        GTKeyboardDriver::keyClick( key, Qt::AltModifier);
+        GTKeyboardDriver::keyClick(key, Qt::AltModifier);
         break;
 
     default:
@@ -142,4 +142,4 @@ void GTMenuPrivate::showMainMenu(GUITestOpStatus &os, const QString &menuName, G
 
 #undef GT_CLASS_NAME
 
-}   // namespace
+}    // namespace HI

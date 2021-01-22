@@ -19,26 +19,32 @@
  * MA 02110-1301, USA.
  */
 
-#include "GTMouseDriver.h"
 #include <QByteArray>
 
+#include "GTMouseDriver.h"
+
 #ifdef __linux__
-    #include <X11/extensions/XTest.h>
+#    include <X11/extensions/XTest.h>
 #endif
 
 namespace HI {
 
 #ifdef __linux__
 
-#define GT_CLASS_NAME "GTMouseDriver Linux"
+#    define GT_CLASS_NAME "GTMouseDriver Linux"
 QPoint GTMouseDriver::mousePos = QPoint(-1, -1);
 
-#define GT_METHOD_NAME "moveTo"
-bool GTMouseDriver::moveTo(const QPoint& p)
-{
-    //mousePos = p;
-    int x = p.x();
-    int y = p.y();
+#    define DELAY_ON_EVERY_N_PX 16
+/**
+ * Returns delay = 1 millisecond for every DELAY_ON_EVERY_N_PX pixel or 0 otherwise.
+ * Part of the GTMouseDriver::moveTo internal logic.
+ */
+static int getMouseMoveDelayMillis(int pos) {
+    return pos % DELAY_ON_EVERY_N_PX == 0 ? 1 : 0;
+}
+
+#    define GT_METHOD_NAME "moveTo"
+bool GTMouseDriver::moveTo(const QPoint &p) {
     QByteArray display_name = qgetenv("DISPLAY");
     DRIVER_CHECK(!display_name.isEmpty(), "Environment variable \"DISPLAY\" not found");
 
@@ -48,77 +54,51 @@ bool GTMouseDriver::moveTo(const QPoint& p)
     int horres = XDisplayWidth(display, 0);
     int vertres = XDisplayHeight(display, 0);
 
-    QRect screen(0, 0, horres-1, vertres-1);
-    DRIVER_CHECK(screen.contains(QPoint(x, y)), "Invalid coordinates");
+    QRect screen(0, 0, horres - 1, vertres - 1);
+    DRIVER_CHECK(screen.contains(p), "Invalid coordinates");
 
     Window root, child;
     int root_x, root_y, pos_x, pos_y;
     unsigned mask;
-    XQueryPointer(display, RootWindow(display, DefaultScreen(display)),
-                  &root, &child, &root_x, &root_y,
-                  &pos_x, &pos_y, &mask);
+    XQueryPointer(display, RootWindow(display, DefaultScreen(display)), &root, &child, &root_x, &root_y, &pos_x, &pos_y, &mask);
 
-    const int delay = 0;// msec
-    int x0 = pos_x;
-    int y0 = pos_y;
-    int x1 = x;
-    int y1 = y;
+    int x = pos_x;
+    int y = pos_y;
 
-    if (x0 == x1) {
-        while(y0 != y1) {
-            if (y0 < y1) {
-                ++y0;
-            } else {
-                --y0;
-            }
-
-            XTestFakeMotionEvent(display, -1, x1, y0, delay);
+    if (x == p.x()) {
+        while (y != p.y()) {
+            y += (y < p.y()) ? 1 : -1;
+            XTestFakeMotionEvent(display, -1, p.x(), y, getMouseMoveDelayMillis(y));
             XFlush(display);
         }
-    } else if (y0 == y1) {
-        while(x0 != x1) {
-            if (x0 < x1) {
-                ++x0;
-            } else {
-                --x0;
-            }
-            XTestFakeMotionEvent(display, -1, x0, y1, delay);
+    } else if (y == p.y()) {
+        while (x != p.x()) {
+            x += (x < p.x()) ? 1 : -1;
+            XTestFakeMotionEvent(display, -1, x, p.y(), getMouseMoveDelayMillis(x));
             XFlush(display);
         }
     } else {
         // moved by the shortest way
         // equation of the line by two points y = (-(x0 * y1 - x1 * y0) - x*(y0 - y1)) / (x1 - x0)
-        int diff_x = x1 - x0;
-        int diff_y = y0 - y1;
-        int diff_xy = -(x0 * y1 - x1 * y0);
-        int current_x = x0, current_y;
-
-        while (current_x != x1) {
-            if (x1 > x0) {
-                ++current_x;
-            } else {
-                -- current_x;
-            }
-
-            current_y = (diff_xy - current_x * diff_y) / diff_x;
-            XTestFakeMotionEvent(display, -1, current_x, current_y, delay);
+        int diff_x = p.x() - x;
+        int diff_y = y - p.y();
+        int diff_xy = -(x * p.y() - p.x() * y);
+        while (x != p.x()) {
+            x += (x < p.x()) ? 1 : -1;
+            y = (diff_xy - x * diff_y) / diff_x;
+            XTestFakeMotionEvent(display, -1, x, y, getMouseMoveDelayMillis(x));
             XFlush(display);
         }
     }
 
     XCloseDisplay(display);
-#ifdef _DEBUG
-    GTGlobals::sleep(500);
-#else
-    GTGlobals::sleep(100); //May be not needed
-#endif
+    GTGlobals::sleep(100);
     return true;
 }
-#undef GT_METHOD_NAME
+#    undef GT_METHOD_NAME
 
-#define GT_METHOD_NAME "press"
-bool GTMouseDriver::press(Qt::MouseButton button)
-{
+#    define GT_METHOD_NAME "press"
+bool GTMouseDriver::press(Qt::MouseButton button) {
     QByteArray display_name = qgetenv("DISPLAY");
     DRIVER_CHECK(!display_name.isEmpty(), "Environment variable \"DISPLAY\" not found");
 
@@ -126,9 +106,10 @@ bool GTMouseDriver::press(Qt::MouseButton button)
     DRIVER_CHECK(display != 0, "display is NULL");
 
     //1 = Left, 2 = Middle, 3 = Right
-    unsigned int btn = button == Qt::LeftButton ? 1 :
+    unsigned int btn = button == Qt::LeftButton  ? 1 :
                        button == Qt::RightButton ? 3 :
-                       button == Qt::MidButton ? 2 : 0;
+                       button == Qt::MidButton   ? 2 :
+                                                   0;
     DRIVER_CHECK(btn != 0, "button is 0");
 
     XTestFakeButtonEvent(display, btn, True, 0);
@@ -138,11 +119,10 @@ bool GTMouseDriver::press(Qt::MouseButton button)
 
     return true;
 }
-#undef GT_METHOD_NAME
+#    undef GT_METHOD_NAME
 
-#define GT_METHOD_NAME "release"
-bool GTMouseDriver::release(Qt::MouseButton button)
-{
+#    define GT_METHOD_NAME "release"
+bool GTMouseDriver::release(Qt::MouseButton button) {
     // TODO: check if this key has been already pressed
     QByteArray display_name = qgetenv("DISPLAY");
     DRIVER_CHECK(!display_name.isEmpty(), "Environment variable \"DISPLAY\" not found");
@@ -150,9 +130,10 @@ bool GTMouseDriver::release(Qt::MouseButton button)
     Display *display = XOpenDisplay(display_name.constData());
     DRIVER_CHECK(display != 0, "display is NULL");
 
-    unsigned int btn = button == Qt::LeftButton ? 1 :
+    unsigned int btn = button == Qt::LeftButton  ? 1 :
                        button == Qt::RightButton ? 3 :
-                       button == Qt::MidButton ? 2 : 0;
+                       button == Qt::MidButton   ? 2 :
+                                                   0;
     DRIVER_CHECK(btn != 0, "button is 0");
 
     XTestFakeButtonEvent(display, btn, False, 0);
@@ -162,18 +143,17 @@ bool GTMouseDriver::release(Qt::MouseButton button)
 
     return true;
 }
-#undef GT_METHOD_NAME
+#    undef GT_METHOD_NAME
 
-#define GT_METHOD_NAME "scroll"
-bool GTMouseDriver::scroll(int value)
-{
+#    define GT_METHOD_NAME "scroll"
+bool GTMouseDriver::scroll(int value) {
     QByteArray display_name = qgetenv("DISPLAY");
     DRIVER_CHECK(!display_name.isEmpty(), "Environment variable \"DISPLAY\" not found");
 
     Display *display = XOpenDisplay(display_name.constData());
     DRIVER_CHECK(display != 0, "display is NULL");
 
-    unsigned button =  value > 0 ? Button4 : Button5; //Button4 - scroll up, Button5 - scroll down
+    unsigned button = value > 0 ? Button4 : Button5;    //Button4 - scroll up, Button5 - scroll down
     value = value > 0 ? value : -value;
 
     for (int i = 0; i < value; i++) {
@@ -186,10 +166,9 @@ bool GTMouseDriver::scroll(int value)
 
     return true;
 }
-#undef GT_METHOD_NAME
+#    undef GT_METHOD_NAME
 
-
-#undef GT_CLASS_NAME
+#    undef GT_CLASS_NAME
 
 #endif
-} // namespace
+}    // namespace HI

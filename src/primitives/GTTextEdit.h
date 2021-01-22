@@ -22,8 +22,9 @@
 #ifndef _HI_GT_TEXTEDIT_H_
 #define _HI_GT_TEXTEDIT_H_
 
-#include "GTGlobals.h"
 #include <QTextEdit>
+
+#include "GTGlobals.h"
 
 namespace HI {
 
@@ -31,14 +32,14 @@ class HI_EXPORT GTTextEdit {
 public:
     // fails if textEdit is NULL
     // or a set text differs from a given text
-    static void setText(GUITestOpStatus& os, QTextEdit* textEdit, const QString &text);
-    static QString getText(GUITestOpStatus &os, QTextEdit* textEdit);
+    static void setText(GUITestOpStatus &os, QTextEdit *textEdit, const QString &text);
+    static QString getText(GUITestOpStatus &os, QTextEdit *textEdit);
 
     static bool containsString(GUITestOpStatus &os, QTextEdit *textEdit, const QString &string);
 
-    static void clear(GUITestOpStatus& os, QTextEdit* textEdit);
+    static void clear(GUITestOpStatus &os, QTextEdit *textEdit);
 };
 
-}
+}    // namespace HI
 
-#endif // _HI_GT_TEXTEDIT_H_
+#endif    // _HI_GT_TEXTEDIT_H_

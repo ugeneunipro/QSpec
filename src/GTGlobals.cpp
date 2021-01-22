@@ -23,43 +23,44 @@
 #include <QtCore/QTimer>
 #include <QtTest/QSpontaneKeyEvent>
 #include <QtTest>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QApplication>
-#include <QtGui/QDesktopWidget>
-#include <QtGui/QPixmap>
+#if (QT_VERSION < 0x050000)    //Qt 5
+#    include <QtGui/QApplication>
+#    include <QtGui/QDesktopWidget>
+#    include <QtGui/QPixmap>
 #else
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QDesktopWidget>
-#include <QtGui/QScreen>
+#    include <QtGui/QScreen>
+#    include <QtWidgets/QApplication>
+#    include <QtWidgets/QDesktopWidget>
 #endif
 
 #include "GTGlobals.h"
 
 #ifdef Q_OS_WIN
-#include <windows.h>
+#    include <windows.h>
 #else
-#include <unistd.h>
+#    include <unistd.h>
 #endif
 
 namespace HI {
 namespace {
-    void sysSleep(int sec) {
+void sysSleep(int sec) {
 #ifdef Q_OS_WIN
-        Sleep(1000*sec);
+    Sleep(1000 * sec);
 #else
-        sleep(sec);
+    sleep(sec);
 #endif
-    }
 }
+}    // namespace
 
 void GTGlobals::sleep(int msec) {
-    QTest::qWait((msec));
+    if (msec > 0) {
+        QTest::qWait(msec);
+    }
 }
 
 void GTGlobals::systemSleep(int sec) {
     sysSleep(sec);
 }
-
 
 void GTGlobals::sendEvent(QObject *obj, QEvent *e) {
     QSpontaneKeyEvent::setSpontaneous(e);
@@ -71,17 +72,20 @@ void GTGlobals::takeScreenShot(QString path) {
     originalPixmap.save(path);
 }
 
-GTGlobals::FindOptions::FindOptions(bool _failIfNotFound, Qt::MatchFlags _matchPolicy, int _depth, bool _searchInHidden) :
-    failIfNotFound(_failIfNotFound),
-    matchPolicy(_matchPolicy),
-    depth(_depth),
-    searchInHidden(_searchInHidden)
-{
+GTGlobals::FindOptions::FindOptions(bool _failIfNotFound, Qt::MatchFlags _matchPolicy, int _depth, bool _searchInHidden)
+    : failIfNotFound(_failIfNotFound),
+      matchPolicy(_matchPolicy),
+      depth(_depth),
+      searchInHidden(_searchInHidden) {
 }
 
-void GTGlobals::GUITestFail(){
+void GTGlobals::GUITestFail() {
     qCritical("\nGT_DEBUG_MESSAGE !!!FIRST FAIL");
 }
 
-} //namespace
+void GTLog::debug(const QString &message) {
+    QByteArray time = QTime::currentTime().toString().toLocal8Bit();
+    qDebug("[%s] GT_DEBUG: %s", time.constData(), message.toLocal8Bit().constData());
+}
 
+}    // namespace HI

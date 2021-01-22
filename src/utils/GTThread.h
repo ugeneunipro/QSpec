@@ -22,9 +22,10 @@
 #ifndef _HI_GT_THREAD_H_
 #define _HI_GT_THREAD_H_
 
-#include <QTimer>
 #include <GTGlobals.h>
 #include <core/CustomScenario.h>
+
+#include <QTimer>
 
 namespace HI {
 
@@ -47,6 +48,6 @@ public:
     static void runInMainThread(GUITestOpStatus &os, CustomScenario *scenario);
 };
 
-}   // namespace
+}    // namespace HI
 
-#endif // _HI_GT_THREAD_H_
+#endif    // _HI_GT_THREAD_H_

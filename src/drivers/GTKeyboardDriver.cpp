@@ -20,8 +20,9 @@
  */
 
 #include <cctype>
-#include "GTKeyboardDriver.h"
 #include <utils/GTThread.h>
+
+#include "GTKeyboardDriver.h"
 
 namespace HI {
 
@@ -29,45 +30,56 @@ namespace HI {
 
 #define GT_METHOD_NAME "keyClick"
 
-QList<Qt::Key> GTKeyboardDriver::modifiersToKeys(Qt::KeyboardModifiers mod){
+QList<Qt::Key> GTKeyboardDriver::modifiersToKeys(Qt::KeyboardModifiers mod) {
     QList<Qt::Key> result;
-    if(mod.testFlag(Qt::ShiftModifier)){result.append(Qt::Key_Shift);}
-    if(mod.testFlag(Qt::AltModifier)){result.append(Qt::Key_Alt);}
-    if(mod.testFlag(Qt::ControlModifier)){result.append(Qt::Key_Control);}
-    if(mod.testFlag(Qt::MetaModifier)){result.append(Qt::Key_Meta);}
+    if (mod.testFlag(Qt::ShiftModifier)) {
+        result.append(Qt::Key_Shift);
+    }
+    if (mod.testFlag(Qt::AltModifier)) {
+        result.append(Qt::Key_Alt);
+    }
+    if (mod.testFlag(Qt::ControlModifier)) {
+        result.append(Qt::Key_Control);
+    }
+    if (mod.testFlag(Qt::MetaModifier)) {
+        result.append(Qt::Key_Meta);
+    }
     return result;
 }
 
-bool GTKeyboardDriver::keyClick(char key, Qt::KeyboardModifiers modifiers)
-{
+bool GTKeyboardDriver::keyClick(char key, Qt::KeyboardModifiers modifiers, bool waitForMainThread) {
     DRIVER_CHECK(key != 0, "key = 0");
     DRIVER_CHECK(keyPress(key, modifiers), "key could not be pressed");
     DRIVER_CHECK(keyRelease(key, modifiers), "key could not be released");
+    if (waitForMainThread) {
+        GTThread::waitForMainThread();
+    }
     return true;
 }
 
-bool GTKeyboardDriver::keyClick(Qt::Key key, Qt::KeyboardModifiers modifiers)
-{
+bool GTKeyboardDriver::keyClick(Qt::Key key, Qt::KeyboardModifiers modifiers, bool waitForMainThread) {
     DRIVER_CHECK(key != 0, "key = 0");
     DRIVER_CHECK(keyPress(key, modifiers), "key could not be pressed");
     DRIVER_CHECK(keyRelease(key, modifiers), "key could not be released");
+    if (waitForMainThread) {
+        GTThread::waitForMainThread();
+    }
     return true;
 }
 #undef GT_METHOD_NAME
 
-bool GTKeyboardDriver::keySequence(const QString &str, Qt::KeyboardModifiers modifiers)
-{
+bool GTKeyboardDriver::keySequence(const QString &str, Qt::KeyboardModifiers modifiers) {
     QList<Qt::Key> modifierKeys = modifiersToKeys(modifiers);
     foreach (Qt::Key mod, modifierKeys) {
         DRIVER_CHECK(keyPress(mod), "modifier could not be pressed");
     }
 
-    foreach(QChar ch, str) {
+    foreach (QChar ch, str) {
         char asciiChar = ch.toLatin1();
-        if(isalpha(asciiChar) && !islower(asciiChar)) {
-            DRIVER_CHECK(keyClick( asciiChar, Qt::ShiftModifier), QString("%1 char could not be clicked with shift modifier").arg(asciiChar));
+        if (isalpha(asciiChar) && !islower(asciiChar)) {
+            DRIVER_CHECK(keyClick(asciiChar, Qt::ShiftModifier, false), QString("%1 char could not be clicked with shift modifier").arg(asciiChar));
         } else {
-            DRIVER_CHECK(keyClick( asciiChar), QString("%1 char could not be clicked").arg(asciiChar));
+            DRIVER_CHECK(keyClick(asciiChar, Qt::NoModifier, false), QString("%1 char could not be clicked").arg(asciiChar));
         }
         GTGlobals::sleep(10);
     }
@@ -80,8 +92,7 @@ bool GTKeyboardDriver::keySequence(const QString &str, Qt::KeyboardModifiers mod
 }
 
 /******************************************************************************/
-int GTKeyboardDriver::keys::operator [] (const Qt::Key &key) const
-{
+int GTKeyboardDriver::keys::operator[](const Qt::Key &key) const {
     return value(key);
 }
 
@@ -89,4 +100,4 @@ GTKeyboardDriver::keys GTKeyboardDriver::key;
 
 #undef GT_CLASS_NAME
 
-} //namespace
+}    // namespace HI

@@ -22,18 +22,19 @@
 #ifndef _HI_GUI_TOOLTIP_UTILS_H_
 #define _HI_GUI_TOOLTIP_UTILS_H_
 
-#include "GTGlobals.h"
 #include <QToolTip>
+
+#include "GTGlobals.h"
 
 namespace HI {
 
 class HI_EXPORT GTUtilsToolTip {
 public:
-    static void checkExistingToolTip(GUITestOpStatus &os, const QString& tooltip);
+    static void checkExistingToolTip(GUITestOpStatus &os, const QString &tooltip);
 
     static QString getToolTip();
 };
 
-} // namespace
+}    // namespace HI
 
 #endif

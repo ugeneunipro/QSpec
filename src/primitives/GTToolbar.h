@@ -22,29 +22,26 @@
 #ifndef _HI_GUI_GTTOOLBAR_H_
 #define _HI_GUI_GTTOOLBAR_H_
 
-#include "GTGlobals.h"
 #include <QToolBar>
+
+#include "GTGlobals.h"
 
 namespace HI {
 
 class HI_EXPORT GTToolbar {
 public:
+    static QToolBar *getToolbar(GUITestOpStatus &os, const QString &toolbarSysName);
 
-    static QToolBar* getToolbar(GUITestOpStatus &os, const QString &toolbarSysName);
-
-    static QWidget* getWidgetForAction(GUITestOpStatus &os, const QToolBar *toolbar, QAction *action);
-    static QWidget* getWidgetForActionName(GUITestOpStatus &os, const QToolBar *toolbar, const QString &actionName);
-    static QWidget* getWidgetForActionTooltip(GUITestOpStatus &os, const QToolBar *toolbar, const QString &tooltip);
+    static QWidget *getWidgetForAction(GUITestOpStatus &os, const QToolBar *toolbar, QAction *action);
+    static QWidget *getWidgetForActionObjectName(GUITestOpStatus &os, const QToolBar *toolbar, const QString &actionName);
+    static QWidget *getWidgetForActionTooltip(GUITestOpStatus &os, const QToolBar *toolbar, const QString &tooltip);
 
     static void clickButtonByTooltipOnToolbar(GUITestOpStatus &os, const QString &toolbarSysName, const QString &tooltip);
 
 private:
-
-    static QAction* getToolbarAction(GUITestOpStatus &os, const QString &actionName, const QToolBar *toolbar);
-
-
+    static QAction *getActionByObjectName(GUITestOpStatus &os, const QString &actionName, const QToolBar *toolbar);
 };
 
-} // namespace
+}    // namespace HI
 
 #endif

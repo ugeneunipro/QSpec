@@ -27,10 +27,11 @@
 namespace HI {
 
 class HI_EXPORT FontDialogFiller : public Filler {
-    public:
-        FontDialogFiller(GUITestOpStatus &_os)
-            :Filler(_os, ""){}
-        void commonScenario();
-    };
-}
-#endif //_HI_GT_FONT_DIALOG_FILLER_H_
+public:
+    FontDialogFiller(GUITestOpStatus &_os)
+        : Filler(_os, "") {
+    }
+    void commonScenario();
+};
+}    // namespace HI
+#endif    //_HI_GT_FONT_DIALOG_FILLER_H_

@@ -22,8 +22,9 @@
 #ifndef _HI_GUI_GTACTION_H_
 #define _HI_GUI_GTACTION_H_
 
-#include "GTGlobals.h"
 #include <QAction>
+
+#include "GTGlobals.h"
 
 class QAbstractButton;
 namespace HI {
@@ -31,15 +32,15 @@ namespace HI {
 class HI_EXPORT GTAction {
 public:
     // returns first QAbstractButton associated with an action with a given name
-    static QAbstractButton* button(GUITestOpStatus &os, const QString &actionName, QObject *parent = NULL, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
+    static QAbstractButton *button(GUITestOpStatus &os, const QString &actionName, QObject *parent = NULL, const GTGlobals::FindOptions & = GTGlobals::FindOptions());
 
-    static QAbstractButton* button(GUITestOpStatus &os, const QAction* a, QObject *parent = NULL);
+    static QAbstractButton *button(GUITestOpStatus &os, const QAction *a, QObject *parent = NULL);
 
-    static QAction* findAction(GUITestOpStatus &os, const QString &actionName, QObject *parent = NULL, const GTGlobals::FindOptions& options = GTGlobals::FindOptions());
+    static QAction *findAction(GUITestOpStatus &os, const QString &actionName, QObject *parent = NULL, const GTGlobals::FindOptions &options = GTGlobals::FindOptions());
 
-    static QAction* findActionByText(GUITestOpStatus &os, const QString &text, QWidget *parent = NULL);
+    static QAction *findActionByText(GUITestOpStatus &os, const QString &text, QWidget *parent = NULL);
 };
 
-} //namespace
+}    // namespace HI
 
 #endif

@@ -22,28 +22,27 @@
 #include "GTMouseDriver.h"
 
 #ifdef _WIN32
-    #include <windows.h>
+#    include <windows.h>
 #endif
 
 namespace HI {
 
 #ifdef _WIN32
 
-#define GT_CLASS_NAME "GTMouseDriver Windows"
+#    define GT_CLASS_NAME "GTMouseDriver Windows"
 QPoint GTMouseDriver::mousePos = QPoint(-1, -1);
 
-#define GT_METHOD_NAME "moveToP"
-bool GTMouseDriver::moveTo(const QPoint& p)
-{
-	int x = p.x();
-	int y = p.y();
+#    define GT_METHOD_NAME "moveToP"
+bool GTMouseDriver::moveTo(const QPoint &p) {
+    int x = p.x();
+    int y = p.y();
     // get screen resolution
     HDC hDCScreen = GetDC(NULL);
     int horres = GetDeviceCaps(hDCScreen, HORZRES);
     int vertres = GetDeviceCaps(hDCScreen, VERTRES);
     ReleaseDC(NULL, hDCScreen);
 
-    QRect screen(0, 0, horres-1, vertres-1);
+    QRect screen(0, 0, horres - 1, vertres - 1);
     DRIVER_CHECK(screen.contains(QPoint(x, y)), "Invalid coordinates");
 
     const int points_in_line = 65535;
@@ -63,13 +62,13 @@ bool GTMouseDriver::moveTo(const QPoint& p)
     event.mi.dx = 0;
     event.mi.dy = 0;
     event.mi.mouseData = 0;
-    event.mi.dwFlags =  MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_MOVE;
+    event.mi.dwFlags = MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_MOVE;
     event.mi.time = 0;
     event.mi.dwExtraInfo = 0;
 
     if (x0 == x1) {
         event.mi.dx = x0 * points_in_x_pixel + 0.5;
-        while(y0 != y1) {
+        while (y0 != y1) {
             if (y0 < y1) {
                 ++y0;
             } else {
@@ -80,7 +79,7 @@ bool GTMouseDriver::moveTo(const QPoint& p)
         }
     } else if (y0 == y1) {
         event.mi.dy = y0 * points_in_y_pixel + 0.5;
-        while(x0 != x1) {
+        while (x0 != x1) {
             if (x0 < x1) {
                 ++x0;
             } else {
@@ -101,7 +100,7 @@ bool GTMouseDriver::moveTo(const QPoint& p)
             if (x1 > x0) {
                 ++current_x;
             } else {
-                -- current_x;
+                --current_x;
             }
 
             current_y = (diff_xy - current_x * diff_y) / diff_x;
@@ -111,22 +110,22 @@ bool GTMouseDriver::moveTo(const QPoint& p)
         }
     }
 
-#ifdef _DEBUG
+#    ifdef _DEBUG
     GTGlobals::sleep(500);
-#else
-    GTGlobals::sleep(100); //May be not needed
-#endif
+#    else
+    GTGlobals::sleep(100);    //May be not needed
+#    endif
 
-	return true;
+    return true;
 }
-#undef GT_METHOD_NAME
+#    undef GT_METHOD_NAME
 
-#define GT_METHOD_NAME "press"
-bool GTMouseDriver::press(Qt::MouseButton button)
-{
-    unsigned int btn = button == Qt::LeftButton ? MOUSEEVENTF_LEFTDOWN :
+#    define GT_METHOD_NAME "press"
+bool GTMouseDriver::press(Qt::MouseButton button) {
+    unsigned int btn = button == Qt::LeftButton  ? MOUSEEVENTF_LEFTDOWN :
                        button == Qt::RightButton ? MOUSEEVENTF_RIGHTDOWN :
-                       button == Qt::MidButton ? MOUSEEVENTF_MIDDLEDOWN : 0;
+                       button == Qt::MidButton   ? MOUSEEVENTF_MIDDLEDOWN :
+                                                   0;
     DRIVER_CHECK(btn != 0, "button is 0");
 
     INPUT event;
@@ -140,18 +139,18 @@ bool GTMouseDriver::press(Qt::MouseButton button)
 
     SendInput(1, &event, sizeof(event));
 
-	return true;
+    return true;
 }
-#undef GT_METHOD_NAME
+#    undef GT_METHOD_NAME
 
-#define GT_METHOD_NAME "release"
-bool GTMouseDriver::release(Qt::MouseButton button)
-{
+#    define GT_METHOD_NAME "release"
+bool GTMouseDriver::release(Qt::MouseButton button) {
     // TODO: check if this key has been already pressed
     //unsigned int buttons[3] = {MOUSEEVENTF_LEFTUP, MOUSEEVENTF_RIGHTUP, MOUSEEVENTF_MIDDLEUP};
-    unsigned int btn = button == Qt::LeftButton ? MOUSEEVENTF_LEFTUP :
+    unsigned int btn = button == Qt::LeftButton  ? MOUSEEVENTF_LEFTUP :
                        button == Qt::RightButton ? MOUSEEVENTF_RIGHTUP :
-                       button == Qt::MidButton ? MOUSEEVENTF_MIDDLEUP : 0;
+                       button == Qt::MidButton   ? MOUSEEVENTF_MIDDLEUP :
+                                                   0;
     DRIVER_CHECK(btn != 0, "button is 0");
 
     INPUT event;
@@ -165,12 +164,11 @@ bool GTMouseDriver::release(Qt::MouseButton button)
 
     SendInput(1, &event, sizeof(event));
 
-	return true;
+    return true;
 }
-#undef GT_METHOD_NAME
+#    undef GT_METHOD_NAME
 
-bool GTMouseDriver::scroll(int value)
-{
+bool GTMouseDriver::scroll(int value) {
     INPUT event;
     event.type = INPUT_MOUSE;
     event.mi.dx = 0;
@@ -182,10 +180,10 @@ bool GTMouseDriver::scroll(int value)
 
     SendInput(1, &event, sizeof(event));
 
-	return true;
+    return true;
 }
 
-#undef GT_CLASS_NAME
+#    undef GT_CLASS_NAME
 
 #endif
-} // namespace
+}    // namespace HI

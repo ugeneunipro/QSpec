@@ -19,31 +19,39 @@
  * MA 02110-1301, USA.
  */
 
-
 #ifndef _HI_GUI_TEST_OP_STATUS_H_
 #define _HI_GUI_TEST_OP_STATUS_H_
 
-#include "core/global.h"
-
 #include <QString>
+
+#include "core/global.h"
 
 namespace HI {
 
-class HI_EXPORT GUITestOpStatus
-{
+class HI_EXPORT GUITestOpStatus {
 public:
-    GUITestOpStatus(){}
+    GUITestOpStatus() {
+    }
 
-    virtual void setError(const QString & err){error = err; throw  this;}
-    virtual QString getError() const {return error;}
-    virtual bool hasError() const {return !error.isEmpty();}
+    virtual void setError(const QString &err) {
+        error = err;
+        throw this;
+    }
 
-    //TODO:Remove this methods
-    virtual bool isCanceled() const {return false;}
-    virtual bool isCoR() const  {return isCanceled() || hasError();}
+    virtual QString getError() const {
+        return error;
+    }
+
+    virtual bool hasError() const {
+        return !error.isEmpty();
+    }
+
+    virtual bool isCoR() const {
+        return hasError();
+    }
 
 private:
     QString error;
 };
-}
-#endif // GUITESTOPSTATUS_H
+}    // namespace HI
+#endif    // GUITESTOPSTATUS_H

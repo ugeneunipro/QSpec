@@ -35,9 +35,8 @@ public:
 
 private:
     static void showMainMenu(GUITestOpStatus &os, const QString &menuName, GTGlobals::UseMethod m = GTGlobals::UseMouse);
-
 };
 
-}   // namespace
+}    // namespace HI
 
 #endif

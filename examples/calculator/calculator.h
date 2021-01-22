@@ -49,8 +49,7 @@ QT_END_NAMESPACE
 class Button;
 
 //! [0]
-class Calculator : public QWidget
-{
+class Calculator : public QWidget {
     Q_OBJECT
 
 public:
@@ -73,33 +72,33 @@ private slots:
     void readMemory();
     void setMemory();
     void addToMemory();
-//! [0]
+    //! [0]
 
-//! [1]
+    //! [1]
 private:
-//! [1] //! [2]
+    //! [1] //! [2]
     Button *createButton(const QString &text, const char *member);
     void abortOperation();
     bool calculate(double rightOperand, const QString &pendingOperator);
-//! [2]
+    //! [2]
 
-//! [3]
+    //! [3]
     double sumInMemory;
-//! [3] //! [4]
+    //! [3] //! [4]
     double sumSoFar;
-//! [4] //! [5]
+    //! [4] //! [5]
     double factorSoFar;
-//! [5] //! [6]
+    //! [5] //! [6]
     QString pendingAdditiveOperator;
-//! [6] //! [7]
+    //! [6] //! [7]
     QString pendingMultiplicativeOperator;
-//! [7] //! [8]
+    //! [7] //! [8]
     bool waitingForOperand;
-//! [8]
+    //! [8]
 
-//! [9]
+    //! [9]
     QLineEdit *display;
-//! [9] //! [10]
+    //! [9] //! [10]
 
     enum { NumDigitButtons = 10 };
     Button *digitButtons[NumDigitButtons];

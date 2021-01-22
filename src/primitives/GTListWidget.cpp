@@ -19,20 +19,21 @@
  * MA 02110-1301, USA.
  */
 
-#include "drivers/GTKeyboardDriver.h"
-#include "drivers/GTMouseDriver.h"
 #include "primitives/GTListWidget.h"
 
-namespace HI{
+#include "drivers/GTKeyboardDriver.h"
+#include "drivers/GTMouseDriver.h"
+
+namespace HI {
 
 #define GT_CLASS_NAME "GTListWidget"
 
 #define GT_METHOD_NAME "click"
-void GTListWidget::click(GUITestOpStatus &os, QListWidget *listWidget, const QString &text, Qt::MouseButton button){
-    QList<QListWidgetItem*> list = listWidget->findItems(text, Qt::MatchExactly);
-    GT_CHECK(!list.isEmpty(), QString("item %1 not found").arg(text));
+void GTListWidget::click(GUITestOpStatus &os, QListWidget *listWidget, const QString &text, Qt::MouseButton button, int foundItemsNum) {
+    QList<QListWidgetItem *> list = listWidget->findItems(text, Qt::MatchExactly);
+    GT_CHECK(0 <= foundItemsNum && foundItemsNum < list.size(), QString("item %1 not found").arg(text));
 
-    QListWidgetItem* item = list.first();
+    QListWidgetItem *item = list.at(foundItemsNum);
     listWidget->scrollToItem(item);
 
     QRect r = listWidget->visualItemRect(item);
@@ -62,7 +63,7 @@ void GTListWidget::checkItem(GUITestOpStatus &os, QListWidget *listWidget, const
     GT_CHECK(NULL != listWidget, "List widget is NULL");
     if (newState != isItemChecked(os, listWidget, text)) {
         click(os, listWidget, text);
-        GTKeyboardDriver::keyClick( Qt::Key_Space);
+        GTKeyboardDriver::keyClick(Qt::Key_Space);
     }
 }
 #undef GT_METHOD_NAME
@@ -112,4 +113,4 @@ QStringList GTListWidget::getItems(GUITestOpStatus &os, QListWidget *listWidget)
 #undef GT_METHOD_NAME
 
 #undef GT_CLASS_NAME
-}
+}    // namespace HI

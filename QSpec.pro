@@ -1,8 +1,4 @@
-exists(./custom.pri) {
-    include (custom.pri)
-} else {
-    include (QSpec.pri)
-}
+include (QSpec.pri)
 
 # Check the Qt version. If QT_VERSION is not set, it is probably Qt 3.
 isEmpty(QT_VERSION) {
@@ -20,7 +16,6 @@ HEADERS += \
            src/base_dialogs/ColorDialogFiller.h \
            src/base_dialogs/DefaultDialogFiller.h \
            src/base_dialogs/FontDialogFiller.h \
-           src/base_dialogs/GTFileDialog.h \
            src/base_dialogs/MessageBoxFiller.h \
            src/drivers/GTKeyboardDriver.h \
            src/drivers/GTMouseDriver.h \
@@ -39,6 +34,7 @@ HEADERS += \
            src/primitives/GTScrollBar.h \
            src/primitives/GTSlider.h \
            src/primitives/GTSpinBox.h \
+           src/primitives/GTSplitter.h \
            src/primitives/GTTabBar.h \
            src/primitives/GTTableView.h \
            src/primitives/GTTabWidget.h \
@@ -46,7 +42,6 @@ HEADERS += \
            src/primitives/GTToolbar.h \
            src/primitives/GTTreeView.h \
            src/primitives/GTTreeWidget.h \
-           src/primitives/GTWebView.h \
            src/primitives/GTWidget.h \
            src/primitives/PopupChooser.h \
            src/primitives/private/GTMenuPrivate.h \
@@ -64,15 +59,15 @@ HEADERS += \
            src/core/GUITest.h \
            src/core/MainThreadRunnable.h \
            src/core/MainThreadTimer.h \
-    src/core/GUITestBase.h \
-    src/core/TestThread.h \
-    src/core/GUITestsLauncher.h
+           src/core/GUITestBase.h \
+           src/core/TestThread.h \
+           src/core/GUITestsLauncher.h
+
 SOURCES += \
            src/GTGlobals.cpp \
            src/base_dialogs/ColorDialogFiller.cpp \
            src/base_dialogs/DefaultDialogFiller.cpp \
            src/base_dialogs/FontDialogFiller.cpp \
-           src/base_dialogs/GTFileDialog.cpp \
            src/base_dialogs/MessageBoxFiller.cpp \
            src/drivers/GTKeyboardDriver.cpp \
            src/drivers/GTKeyboardDriverLinux.cpp \
@@ -97,6 +92,7 @@ SOURCES += \
            src/primitives/GTScrollBar.cpp \
            src/primitives/GTSlider.cpp \
            src/primitives/GTSpinBox.cpp \
+           src/primitives/GTSplitter.cpp \
            src/primitives/GTTabBar.cpp \
            src/primitives/GTTableView.cpp \
            src/primitives/GTTabWidget.cpp \
@@ -104,7 +100,6 @@ SOURCES += \
            src/primitives/GTToolbar.cpp \
            src/primitives/GTTreeView.cpp \
            src/primitives/GTTreeWidget.cpp \
-           src/primitives/GTWebView.cpp \
            src/primitives/GTWidget.cpp \
            src/primitives/PopupChooser.cpp \
            src/primitives/private/GTMenuPrivate.cpp \
@@ -120,9 +115,19 @@ SOURCES += \
            src/core/GUITest.cpp \
            src/core/MainThreadRunnable.cpp \
            src/core/MainThreadTimer.cpp \
-    src/core/GUITestBase.cpp \
-    src/core/TestThread.cpp \
-    src/core/GUITestsLauncher.cpp
+           src/core/GUITestBase.cpp \
+           src/core/TestThread.cpp \
+           src/core/GUITestsLauncher.cpp
+
+# UGENE does not use either WebKit nor WebEngine anymore.
+# If the helper files below are needed add a special qmake parameter to include them into QSpec.
+#useWebKit() {
+#    HEADERS += src/primitives/GTWebkitView.h src/primitives/GTWebView.h
+#    SOURCES += src/primitives/GTWebkitView.cpp src/primitives/GTWebView.cpp
+#} else {
+#    HEADERS += src/primitives/GTWebEngineView.h src/primitives/GTWebView.h
+#    SOURCES += src/primitives/GTWebEngineView.cpp src/primitives/GTWebView.cpp
+#}
 
 macx {
 OBJECTIVE_HEADERS += src/primitives/private/GTMenuPrivateMac.h

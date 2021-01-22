@@ -19,10 +19,11 @@
  * MA 02110-1301, USA.
  */
 
-#include "primitives/GTMainWindow.h"
 #include "utils/GTUtilsApp.h"
 
 #include <QMainWindow>
+
+#include "primitives/GTMainWindow.h"
 
 namespace HI {
 
@@ -30,11 +31,10 @@ namespace HI {
 
 #define GT_METHOD_NAME "checkUGENETitle"
 void GTUtilsApp::checkUGENETitle(GUITestOpStatus &os, const QString &title) {
-
     bool isTitleGood = false;
-    foreach(QWidget* w, GTMainWindow::getMainWindowsAsWidget(os)){
+    foreach (QWidget *w, GTMainWindow::getMainWindowsAsWidget(os)) {
         QString ugeneTitle = w->windowTitle();
-        if(ugeneTitle == title){
+        if (ugeneTitle == title) {
             isTitleGood = true;
         }
     }
@@ -49,12 +49,11 @@ void GTUtilsApp::checkUGENETitle(GUITestOpStatus &os, const QString &title) {
 #define GT_CLASS_NAME "GTUtilsApp"
 
 #define GT_METHOD_NAME "checkUGENETitleContains"
-void GTUtilsApp::checkUGENETitleContains(GUITestOpStatus &os, const QString& string) {
-
+void GTUtilsApp::checkUGENETitleContains(GUITestOpStatus &os, const QString &string) {
     bool isTitleContains = false;
-    foreach(QWidget* w, GTMainWindow::getMainWindowsAsWidget(os)){
+    foreach (QWidget *w, GTMainWindow::getMainWindowsAsWidget(os)) {
         QString ugeneTitle = w->windowTitle();
-        if(ugeneTitle.contains(string)){
+        if (ugeneTitle.contains(string)) {
             isTitleContains = true;
         }
     }
@@ -65,4 +64,4 @@ void GTUtilsApp::checkUGENETitleContains(GUITestOpStatus &os, const QString& str
 
 #undef GT_CLASS_NAME
 
-}
+}    // namespace HI

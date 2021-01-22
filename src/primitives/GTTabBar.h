@@ -22,8 +22,9 @@
 #ifndef _HI_GT_TABBAR_H_
 #define _HI_GT_TABBAR_H_
 
-#include "GTGlobals.h"
 #include <QTabBar>
+
+#include "GTGlobals.h"
 
 namespace HI {
 
@@ -31,8 +32,8 @@ class HI_EXPORT GTTabBar {
 public:
     // fails if the tabbar is NULL, index is not in a tabbar's range
     // or a tabbar's index differs from a given index in the end of method's execution
-    static void setCurrentIndex(GUITestOpStatus& os, QTabBar *tabBar, int index);
+    static void setCurrentIndex(GUITestOpStatus &os, QTabBar *tabBar, int index);
 };
 
-}
-#endif // _HI_GT_TABBAR_H_
+}    // namespace HI
+#endif    // _HI_GT_TABBAR_H_

@@ -19,12 +19,12 @@
  * MA 02110-1301, USA.
  */
 
-
 #include "primitives/GTGroupBox.h"
-#include "primitives/GTWidget.h"
 
 #include <QStyle>
 #include <QStyleOption>
+
+#include "primitives/GTWidget.h"
 
 namespace HI {
 
@@ -40,7 +40,7 @@ bool GTGroupBox::getChecked(GUITestOpStatus &os, QGroupBox *groupBox) {
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getChecked"
-bool GTGroupBox::getChecked(GUITestOpStatus& os, const QString &groupBoxName, QWidget *parent) {
+bool GTGroupBox::getChecked(GUITestOpStatus &os, const QString &groupBoxName, QWidget *parent) {
     return GTGroupBox::getChecked(os, GTWidget::findExactWidget<QGroupBox *>(os, groupBoxName, parent));
 }
 #undef GT_METHOD_NAME
@@ -55,23 +55,38 @@ void GTGroupBox::setChecked(GUITestOpStatus &os, QGroupBox *groupBox, bool check
 
     GT_CHECK(groupBox->isEnabled(), "QGroupBox is disabled");
 
-    const QRect checkBoxRect = getCheckBoxRect(groupBox);
-    const QPoint offset(5, checkBoxRect.height() / 2);
-    GTWidget::click(os, groupBox, Qt::LeftButton, checkBoxRect.center() + offset);
-    GTGlobals::sleep();
+    QStyleOptionGroupBox options;
+    options.initFrom(groupBox);
+    if (groupBox->isFlat()) {
+        options.features |= QStyleOptionFrame::Flat;
+    }
+    options.lineWidth = 1;
+    options.midLineWidth = 0;
+    options.text = groupBox->title();
+    options.textAlignment = groupBox->alignment();
+    options.subControls = (QStyle::SC_GroupBoxFrame | QStyle::SC_GroupBoxCheckBox);
+    if (!groupBox->title().isEmpty()) {
+        options.subControls |= QStyle::SC_GroupBoxLabel;
+    }
+    options.state |= (groupBox->isChecked() ? QStyle::State_On : QStyle::State_Off);
+
+    const QRect checkboxRect = groupBox->style()->subControlRect(QStyle::CC_GroupBox, &options, QStyle::SC_GroupBoxCheckBox);
+
+    GTWidget::click(os, groupBox, Qt::LeftButton, checkboxRect.center());
+    GTGlobals::sleep(200);
 
     GT_CHECK(checked == groupBox->isChecked(), "Can't set a new state");
 }
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "setChecked"
-void GTGroupBox::setChecked(GUITestOpStatus& os, const QString &groupBoxName, bool checked, QWidget *parent) {
+void GTGroupBox::setChecked(GUITestOpStatus &os, const QString &groupBoxName, bool checked, QWidget *parent) {
     GTGroupBox::setChecked(os, GTWidget::findExactWidget<QGroupBox *>(os, groupBoxName, parent), checked);
 }
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "setChecked"
-void GTGroupBox::setChecked(GUITestOpStatus& os, const QString &groupBoxName, QWidget *parent) {
+void GTGroupBox::setChecked(GUITestOpStatus &os, const QString &groupBoxName, QWidget *parent) {
     GTGroupBox::setChecked(os, GTWidget::findExactWidget<QGroupBox *>(os, groupBoxName, parent));
 }
 #undef GT_METHOD_NAME
@@ -83,4 +98,4 @@ QRect GTGroupBox::getCheckBoxRect(QGroupBox *groupBox) {
 
 #undef GT_CLASS_NAME
 
-}   // namespace
+}    // namespace HI
