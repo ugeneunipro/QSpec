@@ -75,7 +75,7 @@ typedef QList<GUITest *> GUITests;
 #define TEST_CLASS_DECLARATION(className) \
     class className : public HI::GUITest { \
     public: \
-        className() : HI::GUITest(TESTNAME(className), SUITENAME(className)) { \
+        className() : HI::GUITest(TESTNAME(className), SUITENAME(className), 1800000) { \
         } \
 \
     protected: \

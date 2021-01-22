@@ -1,4 +1,27 @@
-include( ../../ugene_globals.pri )
+#Check minimal Qt version
+# Taken from Qt Creator project files
+defineTest(minQtVersion) {
+    maj = $$1
+    min = $$2
+    patch = $$3
+    isEqual(QT_MAJOR_VERSION, $$maj) {
+        isEqual(QT_MINOR_VERSION, $$min) {
+            isEqual(QT_PATCH_VERSION, $$patch) {
+                return(true)
+            }
+            greaterThan(QT_PATCH_VERSION, $$patch) {
+                return(true)
+            }
+        }
+        greaterThan(QT_MINOR_VERSION, $$min) {
+            return(true)
+        }
+    }
+    greaterThan(QT_MAJOR_VERSION, $$maj) {
+        return(true)
+    }
+    return(false)
+}
 
 TARGET = QSpec$$D
 QMAKE_PROJECT_NAME = QSpec
@@ -9,8 +32,6 @@ QT += testlib network xml svg sql widgets printsupport
 
 DEFINES += BUILDING_QSPEC_DLL
 DEFINES += QT_DLL
-
-DESTDIR = ../../$$out_dir()
 
 !debug_and_release|build_pass {
 

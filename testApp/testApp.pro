@@ -22,9 +22,9 @@ HEADERS  += mainwindow.h \
 INCLUDEPATH +=../src/
 
 CONFIG(debug, debug|release) {
-    LIBS += -L../_build/debug -lqspecd
+    LIBS += -L../debug -lqspec
 }
 
 CONFIG(release, debug|release) {
-    LIBS += -L../_build/release -lqspec
+    LIBS += -L../release -lqspec
 }
