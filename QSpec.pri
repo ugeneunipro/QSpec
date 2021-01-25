@@ -40,14 +40,17 @@ DEFINES += QT_DLL
         CONFIG +=console
         MOC_DIR=_tmp/moc/debug
         OBJECTS_DIR=_tmp/obj/debug
+        DESTDIR=debug
     }
 
     CONFIG(release, debug|release) {
         DEFINES+=NDEBUG
         MOC_DIR=_tmp/moc/release
         OBJECTS_DIR=_tmp/obj/release
+        DESTDIR=release
     }
 }
+
 
 
 unix {
@@ -61,7 +64,8 @@ unix {
         QMAKE_RPATHDIR += @executable_path
         QMAKE_LFLAGS_SONAME = -Wl,-dylib_install_name,@rpath/
     }
-    target.path = $$UGENE_INSTALL_DIR/
+    INSTALL_DIR = debug/
+    target.path = $$INSTALL_DIR/
     INSTALLS += target
 }
 
