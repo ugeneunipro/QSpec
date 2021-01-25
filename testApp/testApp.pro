@@ -23,7 +23,7 @@ INCLUDEPATH +=../src/
 
 CONFIG(debug, debug|release) {
     DEFINES += _DEBUG
-    win32:LIBS += ../debug/qspec.lib
+    win32:LIBS += -L../debug -lqspec
     else:LIBS += ../debug/libQSpec.so
     MOC_DIR=_tmp/moc/debug
     OBJECTS_DIR=_tmp/obj/debug
@@ -36,7 +36,7 @@ CONFIG(debug, debug|release) {
 
 CONFIG(release, debug|release) {
     DEFINES+=NDEBUG
-    win32:LIBS += ../release/qspec.lib
+    win32:LIBS += -L../release -lqspec
     else:LIBS += ../release/libQSpec.so
     MOC_DIR=_tmp/moc/release
     OBJECTS_DIR=_tmp/obj/release
