@@ -20,24 +20,24 @@
  */
 
 #include <cctype>
+
 #include "GTKeyboardDriver.h"
 
 #if defined __linux__
-    #define XK_LATIN1      // for latin symbol
-    #define XK_MISCELLANY  // for action keys
-    #include <X11/keysymdef.h>
-    #include <X11/extensions/XTest.h>
+#    define XK_LATIN1    // for latin symbol
+#    define XK_MISCELLANY    // for action keys
+#    include <X11/extensions/XTest.h>
+#    include <X11/keysymdef.h>
 #endif
 
 namespace HI {
 
 #if defined __linux__
 
-#define GT_CLASS_NAME "GTKeyboardDriverLinux"
+#    define GT_CLASS_NAME "GTKeyboardDriverLinux"
 
-#define GT_METHOD_NAME "keyPress"
-bool GTKeyboardDriver::keyPress(char key, Qt::KeyboardModifiers modifiers)
-{
+#    define GT_METHOD_NAME "keyPress"
+bool GTKeyboardDriver::keyPress(char key, Qt::KeyboardModifiers modifiers) {
     DRIVER_CHECK(key != 0, "key = 0");
 
     QByteArray display_name = qgetenv("DISPLAY");
@@ -51,7 +51,7 @@ bool GTKeyboardDriver::keyPress(char key, Qt::KeyboardModifiers modifiers)
         XTestFakeKeyEvent(display, XKeysymToKeycode(display, GTKeyboardDriver::key[mod]), 1, 0);
     }
 
-    switch(key) {
+    switch (key) {
     case '\n':
         XTestFakeKeyEvent(display, XKeysymToKeycode(display, GTKeyboardDriver::key[Qt::Key_Enter]), 1, 0);
         break;
@@ -144,11 +144,10 @@ bool GTKeyboardDriver::keyPress(char key, Qt::KeyboardModifiers modifiers)
 
     return true;
 }
-#undef GT_METHOD_NAME
+#    undef GT_METHOD_NAME
 
-#define GT_METHOD_NAME "keyRelease"
-bool GTKeyboardDriver::keyRelease(char key, Qt::KeyboardModifiers modifiers)
-{
+#    define GT_METHOD_NAME "keyRelease"
+bool GTKeyboardDriver::keyRelease(char key, Qt::KeyboardModifiers modifiers) {
     DRIVER_CHECK(key != 0, "key = ");
 
     QByteArray display_name = qgetenv("DISPLAY");
@@ -157,7 +156,7 @@ bool GTKeyboardDriver::keyRelease(char key, Qt::KeyboardModifiers modifiers)
     Display *display = XOpenDisplay(display_name.constData());
     DRIVER_CHECK(display != 0, "display is NULL");
 
-    switch(key) {
+    switch (key) {
     case '\n':
         XTestFakeKeyEvent(display, XKeysymToKeycode(display, GTKeyboardDriver::key[Qt::Key_Enter]), 0, 0);
         break;
@@ -286,9 +285,9 @@ bool GTKeyboardDriver::keyRelease(char key, Qt::KeyboardModifiers modifiers)
 
     return true;
 }
-#undef GT_METHOD_NAME
+#    undef GT_METHOD_NAME
 
-bool GTKeyboardDriver::keyPress(Qt::Key key, Qt::KeyboardModifiers modifiers){
+bool GTKeyboardDriver::keyPress(Qt::Key key, Qt::KeyboardModifiers modifiers) {
     modifiersToKeys(modifiers);
     QByteArray display_name = qgetenv("DISPLAY");
     DRIVER_CHECK(!display_name.isEmpty(), "Environment variable \"DISPLAY\" not found");
@@ -309,7 +308,7 @@ bool GTKeyboardDriver::keyPress(Qt::Key key, Qt::KeyboardModifiers modifiers){
     return true;
 }
 
-bool GTKeyboardDriver::keyRelease(Qt::Key key, Qt::KeyboardModifiers modifiers){
+bool GTKeyboardDriver::keyRelease(Qt::Key key, Qt::KeyboardModifiers modifiers) {
     QByteArray display_name = qgetenv("DISPLAY");
     DRIVER_CHECK(!display_name.isEmpty(), "Environment variable \"DISPLAY\" not found");
 
@@ -328,8 +327,7 @@ bool GTKeyboardDriver::keyRelease(Qt::Key key, Qt::KeyboardModifiers modifiers){
     return true;
 }
 
-GTKeyboardDriver::keys::keys()
-{
+GTKeyboardDriver::keys::keys() {
     ADD_KEY(Qt::Key_Backspace, XK_BackSpace);
     ADD_KEY(Qt::Key_Tab, XK_Tab);
     ADD_KEY(Qt::Key_Enter, XK_Return);
@@ -361,12 +359,12 @@ GTKeyboardDriver::keys::keys()
     ADD_KEY(Qt::Key_F11, XK_F11);
     ADD_KEY(Qt::Key_F12, XK_F12);
 
-// feel free to add other keys
-// macro XK_* defined in X11/keysymdef.h
+    // feel free to add other keys
+    // macro XK_* defined in X11/keysymdef.h
 }
 
-#undef GT_CLASS_NAME
+#    undef GT_CLASS_NAME
 
 #endif
 
-} //namespace
+}    // namespace HI

@@ -19,26 +19,26 @@
  * MA 02110-1301, USA.
  */
 
-#include "GTKeyboardDriver.h"
 #include "GTGlobals.h"
+#include "GTKeyboardDriver.h"
 
-#ifdef  Q_OS_MAC
-#include <ApplicationServices/ApplicationServices.h>
-#include <Carbon/Carbon.h>
+#ifdef Q_OS_MAC
+#    include <ApplicationServices/ApplicationServices.h>
+#    include <Carbon/Carbon.h>
 #endif
 
 namespace HI {
 
-#ifdef  Q_OS_MAC
+#ifdef Q_OS_MAC
 
 int asciiToVirtual(int);
 bool extractShiftModifier(char &key);
 bool keyPressMac(int key);
 bool keyReleaseMac(int key);
 
-#define GT_CLASS_NAME "GTKeyboardDriverMac"
-#define GT_METHOD_NAME "keyPress_char"
-bool  GTKeyboardDriver::keyPress(char key, Qt::KeyboardModifiers modifiers) {
+#    define GT_CLASS_NAME "GTKeyboardDriverMac"
+#    define GT_METHOD_NAME "keyPress_char"
+bool GTKeyboardDriver::keyPress(char key, Qt::KeyboardModifiers modifiers) {
     DRIVER_CHECK(key != 0, "key = 0");
 
     const bool isChanged = extractShiftModifier(key);
@@ -56,9 +56,9 @@ bool  GTKeyboardDriver::keyPress(char key, Qt::KeyboardModifiers modifiers) {
 
     return keyPressMac((int)key);
 }
-#undef GT_METHOD_NAME
+#    undef GT_METHOD_NAME
 
-#define GT_METHOD_NAME "keyRelease_char"
+#    define GT_METHOD_NAME "keyRelease_char"
 bool GTKeyboardDriver::keyRelease(char key, Qt::KeyboardModifiers modifiers) {
     DRIVER_CHECK(key != 0, "key = 0");
 
@@ -81,9 +81,9 @@ bool GTKeyboardDriver::keyRelease(char key, Qt::KeyboardModifiers modifiers) {
 
     return true;
 }
-#undef GT_METHOD_NAME
+#    undef GT_METHOD_NAME
 
-bool GTKeyboardDriver::keyPress(Qt::Key key, Qt::KeyboardModifiers modifiers){
+bool GTKeyboardDriver::keyPress(Qt::Key key, Qt::KeyboardModifiers modifiers) {
     QList<Qt::Key> modKeys = modifiersToKeys(modifiers);
     foreach (Qt::Key mod, modKeys) {
         keyPressMac(GTKeyboardDriver::key[mod]);
@@ -91,7 +91,7 @@ bool GTKeyboardDriver::keyPress(Qt::Key key, Qt::KeyboardModifiers modifiers){
     return keyPressMac(GTKeyboardDriver::key[key]);
 }
 
-bool GTKeyboardDriver::keyRelease(Qt::Key key, Qt::KeyboardModifiers modifiers){
+bool GTKeyboardDriver::keyRelease(Qt::Key key, Qt::KeyboardModifiers modifiers) {
     keyReleaseMac(GTKeyboardDriver::key[key]);
 
     QList<Qt::Key> modKeys = modifiersToKeys(modifiers);
@@ -102,8 +102,7 @@ bool GTKeyboardDriver::keyRelease(Qt::Key key, Qt::KeyboardModifiers modifiers){
     return true;
 }
 
-GTKeyboardDriver::keys::keys()
-{
+GTKeyboardDriver::keys::keys() {
     ADD_KEY(Qt::Key_Control, kVK_Command);
     ADD_KEY(Qt::Key_Tab, kVK_Tab);
     ADD_KEY(Qt::Key_Enter, kVK_Return);
@@ -135,19 +134,18 @@ GTKeyboardDriver::keys::keys()
     ADD_KEY(Qt::Key_PageUp, kVK_PageUp);
     ADD_KEY(Qt::Key_PageDown, kVK_PageDown);
 
-// feel free to add other keys
-// macro kVK_* defined in Carbon.framework/Frameworks/HIToolbox.framework/Headers/Events.h
+    // feel free to add other keys
+    // macro kVK_* defined in Carbon.framework/Frameworks/HIToolbox.framework/Headers/Events.h
 }
 
-#undef GT_CLASS_NAME
+#    undef GT_CLASS_NAME
 
-int asciiToVirtual(int key)
-{
+int asciiToVirtual(int key) {
     if (isalpha(key)) {
         key = tolower(key);
     }
 
-    switch(key) {
+    switch (key) {
     case ' ':
         key = kVK_Space;
         break;
@@ -298,7 +296,7 @@ int asciiToVirtual(int key)
 }
 
 bool extractShiftModifier(char &key) {
-    switch(key) {
+    switch (key) {
     case '_':
         key = asciiToVirtual('-');
         return true;
@@ -361,7 +359,7 @@ bool extractShiftModifier(char &key) {
     return false;
 }
 
-bool keyPressMac(int key){
+bool keyPressMac(int key) {
     CGEventRef event = CGEventCreateKeyboardEvent(NULL, key, true);
     DRIVER_CHECK(event != NULL, "Can't create event");
     CGEventSetFlags(event, CGEventGetFlags(event) & ~kCGEventFlagMaskNumericPad);
@@ -373,7 +371,7 @@ bool keyPressMac(int key){
     return true;
 }
 
-bool keyReleaseMac(int key){
+bool keyReleaseMac(int key) {
     CGEventRef event = CGEventCreateKeyboardEvent(NULL, key, false);
     DRIVER_CHECK(event != NULL, "Can't create event");
     CGEventSetFlags(event, CGEventGetFlags(event) & ~kCGEventFlagMaskNumericPad);
@@ -386,4 +384,4 @@ bool keyReleaseMac(int key){
 }
 
 #endif
-} //namespace
+}    // namespace HI

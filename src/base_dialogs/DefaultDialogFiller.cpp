@@ -19,14 +19,14 @@
  * MA 02110-1301, USA.
  */
 
-
 #include "DefaultDialogFiller.h"
 
 namespace HI {
 
-DefaultDialogFiller::DefaultDialogFiller(GUITestOpStatus &os, const QString &name, QDialogButtonBox::StandardButton _b, CustomScenario *scenario):
-    Filler(os, name, scenario),b(_b) {}
-void DefaultDialogFiller::commonScenario(){
+DefaultDialogFiller::DefaultDialogFiller(GUITestOpStatus &os, const QString &name, QDialogButtonBox::StandardButton _b, CustomScenario *scenario)
+    : Filler(os, name, scenario), b(_b) {
+}
+void DefaultDialogFiller::commonScenario() {
     GTUtilsDialog::clickButtonBox(os, b);
 }
-}
+}    // namespace HI

@@ -1,18 +1,18 @@
 #include "mainwindow.h"
-#include "EventRecorderWidget.h"
-#include "EventFilter.h"
 
 #include <QEvent>
+#include <QGridLayout>
 #include <QKeyEvent>
 #include <QLineEdit>
-#include <QGridLayout>
 
-MainWindow* MainWindow::instance;
+#include "EventFilter.h"
+#include "EventRecorderWidget.h"
+
+MainWindow *MainWindow::instance;
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
-{
-    QGridLayout* l = new QGridLayout(this);
+    : QMainWindow(parent) {
+    QGridLayout *l = new QGridLayout(this);
     setLayout(l);
 
     testLine = new QLineEdit(this);
@@ -27,13 +27,11 @@ MainWindow::MainWindow(QWidget *parent)
     l->addWidget(eventRecorderWidget, 1, 0, 5, 5);
 }
 
-MainWindow::~MainWindow()
-{
-
+MainWindow::~MainWindow() {
 }
 
-MainWindow* MainWindow::getInstance(){
-    if(instance == NULL){
+MainWindow *MainWindow::getInstance() {
+    if (instance == NULL) {
         instance = new MainWindow();
     }
     return instance;

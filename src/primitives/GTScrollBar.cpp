@@ -19,9 +19,10 @@
  * MA 02110-1301, USA.
  */
 
+#include "primitives/GTScrollBar.h"
+
 #include "drivers/GTKeyboardDriver.h"
 #include "drivers/GTMouseDriver.h"
-#include "primitives/GTScrollBar.h"
 #include "primitives/GTWidget.h"
 
 namespace HI {
@@ -37,19 +38,19 @@ QScrollBar *GTScrollBar::getScrollBar(GUITestOpStatus &os, const QString &scroll
 void GTScrollBar::pageUp(GUITestOpStatus &os, QScrollBar *scrollbar, GTGlobals::UseMethod useMethod) {
     GT_CHECK(scrollbar != NULL, "scrollbar is NULL");
     switch (useMethod) {
-        case GTGlobals::UseMouse:
-            GTMouseDriver::moveTo(GTScrollBar::getAreaOverSliderPosition(os, scrollbar));
-            GTMouseDriver::click();
-            break;
+    case GTGlobals::UseMouse:
+        GTMouseDriver::moveTo(GTScrollBar::getAreaOverSliderPosition(os, scrollbar));
+        GTMouseDriver::click();
+        break;
 
-        case GTGlobals::UseKey:
-            GTMouseDriver::moveTo(GTScrollBar::getSliderPosition(os, scrollbar));
-            GTMouseDriver::click();
-            GTKeyboardDriver::keyClick( Qt::Key_PageUp);
-            break;
+    case GTGlobals::UseKey:
+        GTMouseDriver::moveTo(GTScrollBar::getSliderPosition(os, scrollbar));
+        GTMouseDriver::click();
+        GTKeyboardDriver::keyClick(Qt::Key_PageUp);
+        break;
 
-        default:
-            break;
+    default:
+        break;
     }
 }
 #undef GT_METHOD_NAME
@@ -58,19 +59,19 @@ void GTScrollBar::pageUp(GUITestOpStatus &os, QScrollBar *scrollbar, GTGlobals::
 void GTScrollBar::pageDown(GUITestOpStatus &os, QScrollBar *scrollbar, GTGlobals::UseMethod useMethod) {
     GT_CHECK(scrollbar != NULL, "scrollbar is NULL");
     switch (useMethod) {
-        case GTGlobals::UseMouse:
-            GTMouseDriver::moveTo(GTScrollBar::getAreaUnderSliderPosition(os, scrollbar));
-            GTMouseDriver::click();
-            break;
+    case GTGlobals::UseMouse:
+        GTMouseDriver::moveTo(GTScrollBar::getAreaUnderSliderPosition(os, scrollbar));
+        GTMouseDriver::click();
+        break;
 
-        case GTGlobals::UseKey:
-            GTMouseDriver::moveTo(GTScrollBar::getSliderPosition(os, scrollbar));
-            GTMouseDriver::click();
-            GTKeyboardDriver::keyClick( Qt::Key_PageDown);
-            break;
+    case GTGlobals::UseKey:
+        GTMouseDriver::moveTo(GTScrollBar::getSliderPosition(os, scrollbar));
+        GTMouseDriver::click();
+        GTKeyboardDriver::keyClick(Qt::Key_PageDown);
+        break;
 
-        default:
-            break;
+    default:
+        break;
     }
 }
 #undef GT_METHOD_NAME
@@ -79,19 +80,19 @@ void GTScrollBar::pageDown(GUITestOpStatus &os, QScrollBar *scrollbar, GTGlobals
 void GTScrollBar::lineUp(GUITestOpStatus &os, QScrollBar *scrollbar, GTGlobals::UseMethod useMethod) {
     GT_CHECK(scrollbar != NULL, "scrollbar is NULL");
     switch (useMethod) {
-        case GTGlobals::UseMouse:
-            GTMouseDriver::moveTo(GTScrollBar::getUpArrowPosition(os, scrollbar));
-            GTMouseDriver::click();
-            break;
+    case GTGlobals::UseMouse:
+        GTMouseDriver::moveTo(GTScrollBar::getUpArrowPosition(os, scrollbar));
+        GTMouseDriver::click();
+        break;
 
-        case GTGlobals::UseKey:
-            GTMouseDriver::moveTo(GTScrollBar::getSliderPosition(os, scrollbar));
-            GTMouseDriver::click();
-            GTKeyboardDriver::keyClick( Qt::Key_Up);
-            break;
+    case GTGlobals::UseKey:
+        GTMouseDriver::moveTo(GTScrollBar::getSliderPosition(os, scrollbar));
+        GTMouseDriver::click();
+        GTKeyboardDriver::keyClick(Qt::Key_Up);
+        break;
 
-        default:
-            break;
+    default:
+        break;
     }
 }
 #undef GT_METHOD_NAME
@@ -100,19 +101,19 @@ void GTScrollBar::lineUp(GUITestOpStatus &os, QScrollBar *scrollbar, GTGlobals::
 void GTScrollBar::lineDown(GUITestOpStatus &os, QScrollBar *scrollbar, GTGlobals::UseMethod useMethod) {
     GT_CHECK(scrollbar != NULL, "scrollbar is NULL");
     switch (useMethod) {
-        case GTGlobals::UseMouse:
-            GTMouseDriver::moveTo(GTScrollBar::getDownArrowPosition(os, scrollbar));
-            GTMouseDriver::click();
-            break;
+    case GTGlobals::UseMouse:
+        GTMouseDriver::moveTo(GTScrollBar::getDownArrowPosition(os, scrollbar));
+        GTMouseDriver::click();
+        break;
 
-        case GTGlobals::UseKey:
-            GTMouseDriver::moveTo(GTScrollBar::getSliderPosition(os, scrollbar));
-            GTMouseDriver::click();
-            GTKeyboardDriver::keyClick( Qt::Key_Down);
-            break;
+    case GTGlobals::UseKey:
+        GTMouseDriver::moveTo(GTScrollBar::getSliderPosition(os, scrollbar));
+        GTMouseDriver::click();
+        GTKeyboardDriver::keyClick(Qt::Key_Down);
+        break;
 
-        default:
-            break;
+    default:
+        break;
     }
 }
 #undef GT_METHOD_NAME
@@ -124,8 +125,7 @@ void GTScrollBar::moveSliderWithMouseUp(GUITestOpStatus &os, QScrollBar *scrollb
     QPoint newPosition;
     if (Qt::Horizontal == scrollbar->orientation()) {
         newPosition = QPoint(QCursor::pos().x() + nPix, QCursor::pos().y());
-    }
-    else {
+    } else {
         newPosition = QPoint(QCursor::pos().x(), QCursor::pos().y() + nPix);
     }
     GTMouseDriver::press();
@@ -141,9 +141,8 @@ void GTScrollBar::moveSliderWithMouseDown(GUITestOpStatus &os, QScrollBar *scrol
     GTMouseDriver::press();
     QPoint newPosition;
     if (Qt::Horizontal == scrollbar->orientation()) {
-        newPosition = QPoint(QCursor::pos().x() - nPix , QCursor::pos().y());
-    }
-    else {
+        newPosition = QPoint(QCursor::pos().x() - nPix, QCursor::pos().y());
+    } else {
         newPosition = QPoint(QCursor::pos().x(), QCursor::pos().y() - nPix);
     }
     GTMouseDriver::moveTo(newPosition);
@@ -193,7 +192,7 @@ void GTScrollBar::moveSliderWithMouseWheelUp(GUITestOpStatus &os, QScrollBar *sc
 void GTScrollBar::moveSliderWithMouseWheelDown(GUITestOpStatus &os, QScrollBar *scrollbar, int nScrolls) {
     GTMouseDriver::moveTo(GTScrollBar::getSliderPosition(os, scrollbar));
     GTMouseDriver::click();
-    GTMouseDriver::scroll((-1 * nScrolls)); //since scrolling down means negative value for GTMouseDriver::scroll
+    GTMouseDriver::scroll((-1 * nScrolls));    //since scrolling down means negative value for GTMouseDriver::scroll
 }
 
 #define GT_METHOD_NAME "getSliderPosition"
@@ -237,8 +236,7 @@ QPoint GTScrollBar::getAreaUnderSliderPosition(GUITestOpStatus &os, QScrollBar *
         int underSliderRectWidth = grooveRect.right() - sliderRect.right();
         int underSliderRectHeight = grooveRect.height();
         underSliderRect = QRect(sliderRect.topRight() + QPoint(1, 0), QSize(underSliderRectWidth, underSliderRectHeight));
-    }
-    else {
+    } else {
         int underSliderRectWidth = grooveRect.width();
         int underSliderRectHeight = grooveRect.bottom() - sliderRect.bottom();
         underSliderRect = QRect(sliderRect.topRight() + QPoint(1, 1), QSize(underSliderRectWidth, underSliderRectHeight));
@@ -263,8 +261,7 @@ QPoint GTScrollBar::getAreaOverSliderPosition(GUITestOpStatus &os, QScrollBar *s
         int overSliderRectWidth = sliderRect.left() - grooveRect.left();
         int overSliderRectHeight = grooveRect.height();
         overSliderRect = QRect(grooveRect.topLeft(), QSize(overSliderRectWidth, overSliderRectHeight));
-    }
-    else {
+    } else {
         int overSliderRectWidth = grooveRect.width();
         int overSliderRectHeight = sliderRect.top() - grooveRect.top();
         overSliderRect = QRect(grooveRect.topLeft(), QSize(overSliderRectWidth, overSliderRectHeight));
@@ -273,7 +270,7 @@ QPoint GTScrollBar::getAreaOverSliderPosition(GUITestOpStatus &os, QScrollBar *s
     if (overSliderRect.contains(scrollbar->mapFromGlobal(QCursor::pos()))) {
         return QCursor::pos();
     }
-    return scrollbar->mapToGlobal(overSliderRect.center() + QPoint(1,0));
+    return scrollbar->mapToGlobal(overSliderRect.center() + QPoint(1, 0));
 }
 #undef GT_METHOD_NAME
 
@@ -298,5 +295,5 @@ QStyleOptionSlider GTScrollBar::initScrollbarOptions(GUITestOpStatus &os, QScrol
 
 #undef GT_CLASS_NAME
 
-}
+}    // namespace HI
 // namespace

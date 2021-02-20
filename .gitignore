@@ -38,3 +38,8 @@ custom.pri
 
 # Jetbrains tools (CLion, etc..)
 .idea
+
+#build files
+_tmp/
+debug/
+release/

@@ -19,19 +19,18 @@
  * MA 02110-1301, USA.
  */
 
-
 #ifndef _HI_GT_LISTWIDGET_H_
 #define _HI_GT_LISTWIDGET_H_
 
-#include "GTGlobals.h"
 #include <QListWidget>
 
-namespace HI{
+#include "GTGlobals.h"
 
-class HI_EXPORT GTListWidget
-{
+namespace HI {
+
+class HI_EXPORT GTListWidget {
 public:
-    static void click(GUITestOpStatus &os, QListWidget *listWidget, const QString &text, Qt::MouseButton button = Qt::LeftButton);
+    static void click(GUITestOpStatus &os, QListWidget *listWidget, const QString &text, Qt::MouseButton button = Qt::LeftButton, int foundItemsNum = 0);
     static bool isItemChecked(GUITestOpStatus &os, QListWidget *listWidget, const QString &text);
     static void checkItem(GUITestOpStatus &os, QListWidget *listWidget, const QString &text, bool newState);
     static void checkAllItems(GUITestOpStatus &os, QListWidget *listWidget, bool newState);
@@ -39,6 +38,6 @@ public:
     static QStringList getItems(GUITestOpStatus &os, QListWidget *listWidget);
 };
 
-}
+}    // namespace HI
 
-#endif // _HI_GT_LISTWIDGET_H_
+#endif    // _HI_GT_LISTWIDGET_H_

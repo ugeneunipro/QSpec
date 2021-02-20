@@ -19,18 +19,17 @@
  * MA 02110-1301, USA.
  */
 
+#include "MainThreadRunnable.h"
+
 #include <QApplication>
 #include <QThread>
 
-#include "MainThreadRunnable.h"
-
 namespace HI {
 
-MainThreadRunnable::MainThreadRunnable(GUITestOpStatus &os, CustomScenario *scenario) :
-    QObject(NULL),
-    os(os),
-    scenario(scenario)
-{
+MainThreadRunnable::MainThreadRunnable(GUITestOpStatus &os, CustomScenario *scenario)
+    : QObject(NULL),
+      os(os),
+      scenario(scenario) {
     if (Q_UNLIKELY(NULL == scenario)) {
         os.setError("Scenario is NULL");
         return;
@@ -59,7 +58,6 @@ void MainThreadRunnable::doRequest() {
 
     emit si_request(this);
     disconnect(connection);
-
 }
 
 void MainThreadRunnable::run() {
@@ -79,13 +77,12 @@ void MainThreadRunnable::runInMainThread(GUITestOpStatus &os, CustomScenario *sc
     mainThreadRunnable.doRequest();
 }
 
-MainThreadRunnableObject::MainThreadRunnableObject() :
-    QObject(NULL)
-{
+MainThreadRunnableObject::MainThreadRunnableObject()
+    : QObject(NULL) {
 }
 
-void MainThreadRunnableObject::sl_requestAsked(MainThreadRunnable *runnable){
+void MainThreadRunnableObject::sl_requestAsked(MainThreadRunnable *runnable) {
     runnable->run();
 }
 
-}   // namespace
+}    // namespace HI

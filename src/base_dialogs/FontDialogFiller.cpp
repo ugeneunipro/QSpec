@@ -20,23 +20,23 @@
  */
 
 #include "FontDialogFiller.h"
-#include <primitives/GTWidget.h>
 #include <drivers/GTKeyboardDriver.h>
+#include <primitives/GTWidget.h>
 
-#include <QApplication>
 #include <QAbstractButton>
+#include <QApplication>
 
 namespace HI {
 
 #define GT_CLASS_NAME "GTUtilsDialog::FontDialogFiller"
 #define GT_METHOD_NAME "commonScenario"
 void FontDialogFiller::commonScenario() {
-    QWidget* dialog = QApplication::activeModalWidget();
+    QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog != NULL, "dialog is NULL");
     GTGlobals::sleep();
 
-    GTKeyboardDriver::keyClick( Qt::Key_Enter);
+    GTKeyboardDriver::keyClick(Qt::Key_Enter);
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
-}
+}    // namespace HI

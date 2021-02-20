@@ -22,10 +22,10 @@
 #ifndef _HI_GT_MAIN_WINDOW_H_
 #define _HI_GT_MAIN_WINDOW_H_
 
-#include "GTGlobals.h"
-
 #include <QMainWindow>
 #include <QWidget>
+
+#include "GTGlobals.h"
 
 namespace HI {
 
@@ -35,6 +35,6 @@ public:
     static QList<QWidget *> getMainWindowsAsWidget(GUITestOpStatus &os);
 };
 
-} // namespace
+}    // namespace HI
 
 #endif

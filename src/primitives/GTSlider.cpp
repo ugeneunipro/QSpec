@@ -21,11 +21,11 @@
 
 #include "GTSlider.h"
 
-namespace HI{
+namespace HI {
 #define GT_CLASS_NAME "GTSlider"
 
 #define GT_METHOD_NAME "setValue"
-void GTSlider::setValue(GUITestOpStatus &os, QSlider *slider, int value){
+void GTSlider::setValue(GUITestOpStatus &os, QSlider *slider, int value) {
     Q_UNUSED(os);
     GT_CHECK(slider != NULL, "slider not found");
     int min = slider->minimum();
@@ -35,9 +35,8 @@ void GTSlider::setValue(GUITestOpStatus &os, QSlider *slider, int value){
     GT_CHECK(value <= max, QString("can not set value %1, maximum is %2").arg(value).arg(max));
 
     slider->setValue(value);
-
 }
 #undef GT_CLASS_NAME
 
 #undef GT_METHOD_NAME
-}
+}    // namespace HI

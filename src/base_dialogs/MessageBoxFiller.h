@@ -22,8 +22,9 @@
 #ifndef _HI_GT_RUNNABLES_MESSAGE_BOX_FILLER_H_
 #define _HI_GT_RUNNABLES_MESSAGE_BOX_FILLER_H_
 
-#include "utils/GTUtilsDialog.h"
 #include <QMessageBox>
+
+#include "utils/GTUtilsDialog.h"
 
 namespace HI {
 
@@ -62,10 +63,11 @@ class HI_EXPORT InputIntFiller : public Filler {
 public:
     InputIntFiller(GUITestOpStatus &os, int value);
     void commonScenario();
+
 private:
     int value;
 };
 
-}   // namespace
+}    // namespace HI
 
 #endif

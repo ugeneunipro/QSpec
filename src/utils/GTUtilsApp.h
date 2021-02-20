@@ -28,10 +28,10 @@ namespace HI {
 
 class HI_EXPORT GTUtilsApp {
 public:
-    static void checkUGENETitle(GUITestOpStatus &os, const QString& title);
-    static void checkUGENETitleContains(GUITestOpStatus &os, const QString& string);
+    static void checkUGENETitle(GUITestOpStatus &os, const QString &title);
+    static void checkUGENETitleContains(GUITestOpStatus &os, const QString &string);
 };
 
-} // namespace
+}    // namespace HI
 
 #endif

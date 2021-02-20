@@ -3,10 +3,9 @@
 #include <QEvent>
 #include <QKeyEvent>
 
-EventRecorderWidget::EventRecorderWidget(QWidget *parent) :
-    QWidget(parent)
-{
-    setGeometry(0,50,50,50);
+EventRecorderWidget::EventRecorderWidget(QWidget *parent)
+    : QWidget(parent) {
+    setGeometry(0, 50, 50, 50);
     setFocusPolicy(Qt::ClickFocus);
 
     QPalette Pal(palette());
@@ -14,5 +13,3 @@ EventRecorderWidget::EventRecorderWidget(QWidget *parent) :
     setAutoFillBackground(true);
     setPalette(Pal);
 }
-
-

@@ -19,27 +19,27 @@
  * MA 02110-1301, USA.
  */
 
-#include "drivers/GTMouseDriver.h"
 #include "primitives/GTMenuBar.h"
+
+#include "drivers/GTMouseDriver.h"
 
 namespace HI {
 #define GT_CLASS_NAME "GTMenuBar"
 
 #define GT_METHOD_NAME "clickCornerMenu"
-void GTMenuBar::clickCornerMenu(GUITestOpStatus &os, QMenuBar* mBar, GTGlobals::WindowAction action) {
-
+void GTMenuBar::clickCornerMenu(GUITestOpStatus &os, QMenuBar *mBar, GTGlobals::WindowAction action) {
     GT_CHECK(mBar != NULL, "QMenuBar is NULL");
-    QWidget* cWidget = mBar->cornerWidget();
+    QWidget *cWidget = mBar->cornerWidget();
     GT_CHECK(cWidget != NULL, "Corner widget is NULL");
     QRect r = cWidget->rect();
 
     int num = (int)action;
-    GT_CHECK(num>=0 && num<(int)GTGlobals::WindowActionCount, "action is not GTGlobals::WindowAction");
+    GT_CHECK(num >= 0 && num < (int)GTGlobals::WindowActionCount, "action is not GTGlobals::WindowAction");
 
     GT_CHECK((int)GTGlobals::WindowActionCount != 0, "GTGlobals::WindowActionCount == 0");
-    int oneWidth = r.width()/(int)GTGlobals::WindowActionCount;
+    int oneWidth = r.width() / (int)GTGlobals::WindowActionCount;
 
-    QPoint need((num+1)*oneWidth - oneWidth/2, r.height()/2);
+    QPoint need((num + 1) * oneWidth - oneWidth / 2, r.height() / 2);
     QPoint p = cWidget->mapToGlobal(need);
 
     GTMouseDriver::moveTo(p);
@@ -51,4 +51,4 @@ void GTMenuBar::clickCornerMenu(GUITestOpStatus &os, QMenuBar* mBar, GTGlobals::
 
 #undef GT_CLASS_NAME
 
-}
+}    // namespace HI

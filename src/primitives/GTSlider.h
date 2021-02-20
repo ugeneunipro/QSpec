@@ -22,16 +22,17 @@
 #ifndef _HI_GT_SLIDER_H_
 #define _HI_GT_SLIDER_H_
 
-#include "GTGlobals.h"
 #include <QSlider>
+
+#include "GTGlobals.h"
 
 namespace HI {
 
 class HI_EXPORT GTSlider {
 public:
-    static void setValue(GUITestOpStatus &os, QSlider* slider, int value);
+    static void setValue(GUITestOpStatus &os, QSlider *slider, int value);
 };
 
-}
+}    // namespace HI
 
-#endif // _HI_GT_SLIDER_H
+#endif    // _HI_GT_SLIDER_H

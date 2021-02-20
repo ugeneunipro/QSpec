@@ -23,18 +23,20 @@
 #define COLORDIALOGFILLER_H
 
 #include "utils/GTUtilsDialog.h"
-namespace HI{
+namespace HI {
 
-class HI_EXPORT ColorDialogFiller : public Filler
-{
+class HI_EXPORT ColorDialogFiller : public Filler {
 public:
-    ColorDialogFiller(GUITestOpStatus &os,int _r, int _g, int _b, bool _setWithQt = false) : Filler(os, ""),
-        r(_r),g(_g),b(_b),setWithQt(_setWithQt){}
+    ColorDialogFiller(GUITestOpStatus &os, int _r, int _g, int _b, bool _setWithQt = false)
+        : Filler(os, ""),
+          r(_r), g(_g), b(_b), setWithQt(_setWithQt) {
+    }
     void commonScenario();
+
 private:
-    int r,g,b;
+    int r, g, b;
     bool setWithQt;
 };
 
-}
-#endif // COLORDIALOGFILLER_H
+}    // namespace HI
+#endif    // COLORDIALOGFILLER_H

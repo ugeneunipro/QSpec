@@ -19,20 +19,20 @@
  * MA 02110-1301, USA.
  */
 
-
 #include <drivers/GTKeyboardDriver.h>
 #include <drivers/GTMouseDriver.h>
-#include "primitives/GTTreeWidget.h"
 #include <primitives/GTWidget.h>
 
 #include <QHeaderView>
+
+#include "primitives/GTTreeWidget.h"
 
 namespace HI {
 
 #define GT_CLASS_NAME "GTUtilsTreeView"
 
 #define GT_METHOD_NAME "expand"
-void GTTreeWidget::expand(GUITestOpStatus &os, QTreeWidgetItem* item) {
+void GTTreeWidget::expand(GUITestOpStatus &os, QTreeWidgetItem *item) {
     if (item == NULL) {
         return;
     }
@@ -74,7 +74,7 @@ void GTTreeWidget::checkItem(GUITestOpStatus &os, QTreeWidgetItem *item, int col
         const QPoint cellCenterOffset(tree->columnWidth(column) / 2, itemRect.height() / 2);
         GTMouseDriver::moveTo(itemStartPos + itemLevelOffset + columnOffset + cellCenterOffset);
         GTMouseDriver::click();
-        GTKeyboardDriver::keyClick( Qt::Key_Space);
+        GTKeyboardDriver::keyClick(Qt::Key_Space);
         break;
     }
     case GTGlobals::UseMouse: {
@@ -90,7 +90,7 @@ void GTTreeWidget::checkItem(GUITestOpStatus &os, QTreeWidgetItem *item, int col
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getItemRect"
-QRect GTTreeWidget::getItemRect(GUITestOpStatus &os, QTreeWidgetItem* item) {
+QRect GTTreeWidget::getItemRect(GUITestOpStatus &os, QTreeWidgetItem *item) {
     GT_CHECK_RESULT(item != NULL, "treeWidgetItem is NULL", QRect());
 
     QTreeWidget *treeWidget = item->treeWidget();
@@ -106,8 +106,7 @@ QRect GTTreeWidget::getItemRect(GUITestOpStatus &os, QTreeWidgetItem* item) {
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getItemCenter"
-QPoint GTTreeWidget::getItemCenter(GUITestOpStatus &os, QTreeWidgetItem* item) {
-
+QPoint GTTreeWidget::getItemCenter(GUITestOpStatus &os, QTreeWidgetItem *item) {
     GT_CHECK_RESULT(item != NULL, "item is NULL", QPoint());
 
     QTreeWidget *treeWidget = item->treeWidget();
@@ -120,23 +119,20 @@ QPoint GTTreeWidget::getItemCenter(GUITestOpStatus &os, QTreeWidgetItem* item) {
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getItems"
-QList<QTreeWidgetItem*> GTTreeWidget::getItems(QTreeWidgetItem* root) {
-
-    QList<QTreeWidgetItem*> treeItems;
-
-    for (int i=0; i<root->childCount(); i++) {
-        treeItems.append(root->child(i));
-        treeItems.append(getItems(root->child(i)));
+QList<QTreeWidgetItem *> GTTreeWidget::getItems(QTreeWidgetItem *root) {
+    QList<QTreeWidgetItem *> treeItems;
+    for (int i = 0; i < root->childCount(); i++) {
+        QTreeWidgetItem *childItem = root->child(i);
+        treeItems.append(childItem);
+        treeItems.append(getItems(childItem));
     }
-
     return treeItems;
 }
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getItems"
 QList<QTreeWidgetItem *> GTTreeWidget::getItems(GUITestOpStatus &os, QTreeWidget *treeWidget) {
-    Q_UNUSED(os);
-    GT_CHECK_RESULT(NULL != treeWidget, "Tree widget is NULL", QList<QTreeWidgetItem *>());
+    GT_CHECK_RESULT(treeWidget != nullptr, "Tree widget is NULL", QList<QTreeWidgetItem *>());
     return getItems(treeWidget->invisibleRootItem());
 }
 #undef GT_METHOD_NAME
@@ -153,7 +149,7 @@ QStringList GTTreeWidget::getItemNames(GUITestOpStatus &os, QTreeWidget *treeWid
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "findItemPrivate"
-QTreeWidgetItem * GTTreeWidget::findItemPrivate(GUITestOpStatus &os, QTreeWidget *tree, const QString &text, QTreeWidgetItem *parent, int column, const GTGlobals::FindOptions &options) {
+QTreeWidgetItem *GTTreeWidget::findItemPrivate(GUITestOpStatus &os, QTreeWidget *tree, const QString &text, QTreeWidgetItem *parent, int column, const GTGlobals::FindOptions &options) {
     Q_UNUSED(os);
     GT_CHECK_RESULT(tree != NULL, "tree widget is NULL", NULL);
 
@@ -167,7 +163,7 @@ QTreeWidgetItem * GTTreeWidget::findItemPrivate(GUITestOpStatus &os, QTreeWidget
     }
 
     const QList<QTreeWidgetItem *> list = getItems(parent);
-    foreach (QTreeWidgetItem *item, list){
+    foreach (QTreeWidgetItem *item, list) {
         const QString itemText = item->text(column);
         if (options.matchPolicy.testFlag(Qt::MatchExactly) && itemText == text) {
             return item;
@@ -176,8 +172,8 @@ QTreeWidgetItem * GTTreeWidget::findItemPrivate(GUITestOpStatus &os, QTreeWidget
         }
 
         if (options.depth == GTGlobals::FindOptions::INFINITE_DEPTH ||
-                innerOptions.depth > 0) {
-            QTreeWidgetItem * childItem = findItemPrivate(os, tree, text, item, column, innerOptions);
+            innerOptions.depth > 0) {
+            QTreeWidgetItem *childItem = findItemPrivate(os, tree, text, item, column, innerOptions);
             if (NULL != childItem) {
                 return childItem;
             }
@@ -188,9 +184,9 @@ QTreeWidgetItem * GTTreeWidget::findItemPrivate(GUITestOpStatus &os, QTreeWidget
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "findItem"
-QTreeWidgetItem * GTTreeWidget::findItem(GUITestOpStatus &os, QTreeWidget *tree, const QString &text, QTreeWidgetItem *parent, int column, const GTGlobals::FindOptions &options) {
-    QTreeWidgetItem* result = findItemPrivate(os, tree, text, parent, column, options);
-    if(options.failIfNotFound){
+QTreeWidgetItem *GTTreeWidget::findItem(GUITestOpStatus &os, QTreeWidget *tree, const QString &text, QTreeWidgetItem *parent, int column, const GTGlobals::FindOptions &options) {
+    QTreeWidgetItem *result = findItemPrivate(os, tree, text, parent, column, options);
+    if (options.failIfNotFound) {
         CHECK_SET_ERR_RESULT(result != NULL, QString("Item '%1' not found").arg(text), NULL);
     }
     return result;
@@ -222,7 +218,7 @@ QList<QTreeWidgetItem *> GTTreeWidget::findItems(GUITestOpStatus &os, QTreeWidge
         }
 
         if (options.depth == GTGlobals::FindOptions::INFINITE_DEPTH ||
-                innerOptions.depth > 0) {
+            innerOptions.depth > 0) {
             items << findItems(os, tree, text, item, column, innerOptions);
         }
     }
@@ -234,7 +230,7 @@ QList<QTreeWidgetItem *> GTTreeWidget::findItems(GUITestOpStatus &os, QTreeWidge
 #define GT_METHOD_NAME "click"
 void GTTreeWidget::click(GUITestOpStatus &os, QTreeWidgetItem *item, int column) {
     GT_CHECK(item != NULL, "item is NULL");
-    QTreeWidget* tree = item->treeWidget();
+    QTreeWidget *tree = item->treeWidget();
     tree->scrollToItem(item);
 
     QPoint point;
@@ -268,4 +264,4 @@ int GTTreeWidget::getItemLevel(GUITestOpStatus &os, QTreeWidgetItem *item) {
 
 #undef GT_CLASS_NAME
 
-}
+}    // namespace HI

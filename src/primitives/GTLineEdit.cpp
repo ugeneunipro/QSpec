@@ -19,9 +19,10 @@
  * MA 02110-1301, USA.
  */
 
+#include "primitives/GTLineEdit.h"
+
 #include "drivers/GTKeyboardDriver.h"
 #include "drivers/GTMouseDriver.h"
-#include "primitives/GTLineEdit.h"
 #include "primitives/GTWidget.h"
 #include "system/GTClipboard.h"
 #include "utils/GTKeyboardUtils.h"
@@ -31,10 +32,9 @@ namespace HI {
 #define GT_CLASS_NAME "GTLineEdit"
 
 #define GT_METHOD_NAME "setText"
-void GTLineEdit::setText(GUITestOpStatus& os, QLineEdit* lineEdit, const QString &str, bool noCheck /* = false*/, bool useCopyPaste) {
-
+void GTLineEdit::setText(GUITestOpStatus &os, QLineEdit *lineEdit, const QString &str, bool noCheck /* = false*/, bool useCopyPaste) {
     GT_CHECK(lineEdit != NULL, "lineEdit is NULL");
-    if(lineEdit->text() == str){
+    if (lineEdit->text() == str) {
         return;
     }
 
@@ -46,15 +46,15 @@ void GTLineEdit::setText(GUITestOpStatus& os, QLineEdit* lineEdit, const QString
         clear(os, lineEdit);
     }
 
-    if(useCopyPaste){
+    if (useCopyPaste) {
         GTClipboard::setText(os, str);
-        GTKeyboardDriver::keyClick( 'v', Qt::ControlModifier);
-    }else{
+        GTKeyboardDriver::keyClick('v', Qt::ControlModifier);
+    } else {
         GTKeyboardDriver::keySequence(str);
     }
     GTGlobals::sleep(500);
 
-    if(noCheck){
+    if (noCheck) {
         return;
     }
 
@@ -64,12 +64,15 @@ void GTLineEdit::setText(GUITestOpStatus& os, QLineEdit* lineEdit, const QString
         s = lineEdit->text();
     }
     GT_CHECK(s == str, QString("Can't set text, set text differs from a given string in lineEdit '%1'. "
-                               "Expected '%2', got '%3'").arg(lineEdit->objectName()).arg(str).arg(s));
+                               "Expected '%2', got '%3'")
+                           .arg(lineEdit->objectName())
+                           .arg(str)
+                           .arg(s));
 }
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "setText"
-void GTLineEdit::setText(GUITestOpStatus &os, const QString &lineEditName, const QString &text, QWidget const * const parent, bool noCheck, bool useCopyPaste) {
+void GTLineEdit::setText(GUITestOpStatus &os, const QString &lineEditName, const QString &text, QWidget const *const parent, bool noCheck, bool useCopyPaste) {
     setText(os, GTWidget::findExactWidget<QLineEdit *>(os, lineEditName, parent), text, noCheck, useCopyPaste);
 }
 #undef GT_METHOD_NAME
@@ -89,15 +92,14 @@ QString GTLineEdit::getText(GUITestOpStatus &os, const QString &lineEditName, QW
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "clear"
-void GTLineEdit::clear(GUITestOpStatus& os, QLineEdit* lineEdit) {
-
+void GTLineEdit::clear(GUITestOpStatus &os, QLineEdit *lineEdit) {
     GT_CHECK(lineEdit != NULL, "lineEdit is NULL");
 
     GTWidget::setFocus(os, lineEdit);
 
     GTKeyboardUtils::selectAll(os);
     GTGlobals::sleep(100);
-    GTKeyboardDriver::keyClick( Qt::Key_Delete);
+    GTKeyboardDriver::keyClick(Qt::Key_Delete);
     GTGlobals::sleep(100);
     GTThread::waitForMainThread();
 
@@ -107,20 +109,19 @@ void GTLineEdit::clear(GUITestOpStatus& os, QLineEdit* lineEdit) {
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "pasteClipboard"
-void GTLineEdit::pasteClipboard(GUITestOpStatus& os, QLineEdit* lineEdit, PasteMethod pasteMethod) {
-
+void GTLineEdit::pasteClipboard(GUITestOpStatus &os, QLineEdit *lineEdit, PasteMethod pasteMethod) {
     GT_CHECK(lineEdit != NULL, "lineEdit is NULL");
 
     clear(os, lineEdit);
-    switch(pasteMethod) {
-        case Mouse:
-            os.setError("GTLineEdit::pasteClipboard: Not implemented: Paste by mouse");
-            break;
+    switch (pasteMethod) {
+    case Mouse:
+        os.setError("GTLineEdit::pasteClipboard: Not implemented: Paste by mouse");
+        break;
 
-        default:
-        case Shortcut:
-            GTKeyboardUtils::paste(os);
-            break;
+    default:
+    case Shortcut:
+        GTKeyboardUtils::paste(os);
+        break;
     }
 
     GTGlobals::sleep(500);
@@ -128,8 +129,7 @@ void GTLineEdit::pasteClipboard(GUITestOpStatus& os, QLineEdit* lineEdit, PasteM
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "checkTextSize"
-void GTLineEdit::checkTextSize(GUITestOpStatus& os, QLineEdit* lineEdit) {
-
+void GTLineEdit::checkTextSize(GUITestOpStatus &os, QLineEdit *lineEdit) {
     GT_CHECK(lineEdit != NULL, "lineEdit is NULL");
 
     QMargins lineEditMargins = lineEdit->textMargins();
@@ -150,13 +150,13 @@ void GTLineEdit::checkText(GUITestOpStatus &os, QLineEdit *lineEdit, const QStri
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "checkText"
-void GTLineEdit::checkText(GUITestOpStatus &os, const QString &lineEditName, const QWidget * const parent, const QString &expectedText) {
+void GTLineEdit::checkText(GUITestOpStatus &os, const QString &lineEditName, const QWidget *const parent, const QString &expectedText) {
     checkText(os, GTWidget::findExactWidget<QLineEdit *>(os, lineEditName, parent), expectedText);
 }
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "copyText"
-QString GTLineEdit::copyText(GUITestOpStatus& os, QLineEdit* lineEdit) {
+QString GTLineEdit::copyText(GUITestOpStatus &os, QLineEdit *lineEdit) {
     GT_CHECK_RESULT(lineEdit != NULL, "lineEdit is NULL", QString());
     return lineEdit->text();
 }
@@ -184,4 +184,4 @@ bool GTLineEdit::tryToSetText(GUITestOpStatus &os, QLineEdit *lineEdit, const QS
 
 #undef GT_CLASS_NAME
 
-}   // namespace
+}    // namespace HI

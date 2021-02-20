@@ -19,9 +19,10 @@
  * MA 02110-1301, USA.
  */
 
+#include "primitives/GTPlainTextEdit.h"
+
 #include "drivers/GTKeyboardDriver.h"
 #include "drivers/GTMouseDriver.h"
-#include "primitives/GTPlainTextEdit.h"
 #include "primitives/GTWidget.h"
 #include "utils/GTKeyboardUtils.h"
 
@@ -30,10 +31,9 @@ namespace HI {
 #define GT_CLASS_NAME "GTPlainTextEdit"
 
 #define GT_METHOD_NAME "setPlainText"
-void GTPlainTextEdit::setPlainText(GUITestOpStatus& os, QPlainTextEdit* plainTextEdit, const QString &text) {
-
+void GTPlainTextEdit::setPlainText(GUITestOpStatus &os, QPlainTextEdit *plainTextEdit, const QString &text) {
     GT_CHECK(plainTextEdit != NULL, "plainTextEdit is NULL");
-    if(plainTextEdit->toPlainText() == text){
+    if (plainTextEdit->toPlainText() == text) {
         return;
     }
 
@@ -41,7 +41,6 @@ void GTPlainTextEdit::setPlainText(GUITestOpStatus& os, QPlainTextEdit* plainTex
 
     GTKeyboardDriver::keySequence(text);
     GTGlobals::sleep(500);
-
 }
 #undef GT_METHOD_NAME
 
@@ -62,6 +61,4 @@ void GTPlainTextEdit::setPlainText(GUITestOpStatus& os, QPlainTextEdit* plainTex
 //}
 //#undef GT_METHOD_NAME
 
-
-
-}
+}    // namespace HI

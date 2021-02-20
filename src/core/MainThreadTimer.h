@@ -22,8 +22,8 @@
 #ifndef _HI_MAIN_THREAD_TIMER_H_
 #define _HI_MAIN_THREAD_TIMER_H_
 
-#include <QTimer>
 #include <QMutex>
+#include <QTimer>
 
 namespace HI {
 
@@ -43,6 +43,6 @@ private:
     qint64 counter;
 };
 
-}   // namespace
+}    // namespace HI
 
 #endif

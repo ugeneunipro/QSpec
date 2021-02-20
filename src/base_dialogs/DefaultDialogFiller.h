@@ -26,16 +26,15 @@
 
 namespace HI {
 
-class HI_EXPORT DefaultDialogFiller: public Filler
-{
+class HI_EXPORT DefaultDialogFiller : public Filler {
 public:
-    DefaultDialogFiller(GUITestOpStatus &os, const QString &name = "", QDialogButtonBox::StandardButton _b =
-            QDialogButtonBox::Ok, CustomScenario *scenario = NULL);
+    DefaultDialogFiller(GUITestOpStatus &os, const QString &name = "", QDialogButtonBox::StandardButton _b = QDialogButtonBox::Ok, CustomScenario *scenario = NULL);
     void commonScenario();
+
 private:
     QDialogButtonBox::StandardButton b;
 };
 
-}
+}    // namespace HI
 
-#endif // _HI_DEFAULT_DIALOG_FILLER_H_
+#endif    // _HI_DEFAULT_DIALOG_FILLER_H_

@@ -1,31 +1,31 @@
 #include "driversGuiTests.h"
-#include "mainwindow.h"
-#include "EventFilter.h"
-#include "systemTests.h"
-
 #include <drivers/GTKeyboardDriver.h>
 #include <drivers/GTMouseDriver.h>
 
 #include <QApplication>
 #include <QLineEdit>
 
+#include "EventFilter.h"
+#include "mainwindow.h"
+#include "systemTests.h"
+
 namespace {
-QLineEdit* getTestLine(){
-    return MainWindow::getInstance()->findChild<QLineEdit*>("testLine");
+QLineEdit *getTestLine() {
+    return MainWindow::getInstance()->findChild<QLineEdit *>("testLine");
 }
 
-QWidget* getRecorder(){
-    return MainWindow::getInstance()->findChild<QWidget*>("eventRecorder");
+QWidget *getRecorder() {
+    return MainWindow::getInstance()->findChild<QWidget *>("eventRecorder");
 }
 
-QPoint getWidgetCenter(QWidget* w){
+QPoint getWidgetCenter(QWidget *w) {
     return w->mapToGlobal(w->rect().center());
 }
-}
+}    // namespace
 
 using namespace HI;
-driversGuiTestsLauncher::driversGuiTestsLauncher(): GUITestsLauncher()
-{
+driversGuiTestsLauncher::driversGuiTestsLauncher()
+    : GUITestsLauncher() {
     guiTestBase.registerTest(new Test1());
     guiTestBase.registerTest(new Test2());
     guiTestBase.registerTest(new Test3());
@@ -37,32 +37,32 @@ driversGuiTestsLauncher::driversGuiTestsLauncher(): GUITestsLauncher()
     guiTestBase.registerTest(new DirPermissionTest());
 }
 
-TEST_CLASS_DEFINITION(Test1){
-    QLineEdit* line = getTestLine();
+TEST_CLASS_DEFINITION(Test1) {
+    QLineEdit *line = getTestLine();
     GTMouseDriver::moveTo(getWidgetCenter(line));
     GTMouseDriver::click();
     GTGlobals::sleep();
     GTKeyboardDriver::keySequence("abcdefghigklmnopqrstuvwxy z");
-	CHECK_SET_ERR(line->text() == "abcdefghigklmnopqrstuvwxy z", "expected: abcdefghigklmnopqrstuvwxy z, actual: " + line->text())
-	GTGlobals::sleep(500);
+    CHECK_SET_ERR(line->text() == "abcdefghigklmnopqrstuvwxy z", "expected: abcdefghigklmnopqrstuvwxy z, actual: " + line->text())
+    GTGlobals::sleep(500);
 }
 
-TEST_CLASS_DEFINITION(Test2){
-    QLineEdit* line = getTestLine();
+TEST_CLASS_DEFINITION(Test2) {
+    QLineEdit *line = getTestLine();
     GTMouseDriver::moveTo(getWidgetCenter(line));
     GTMouseDriver::click();
     //GTGlobals::sleep();
     GTKeyboardDriver::keySequence("0123456789,<.>!@#$%^&*()-_=+[{]};:\'\"/\\|");
     CHECK_SET_ERR(line->text() == "0123456789,<.>!@#$%^&*()-_=+[{]};:\'\"/\\|", "expected: 0123456789,<.>!@#$%^&*()-_=+[{]};:\'\"/\\|, actual: " + line->text())
-	GTGlobals::sleep(500);
+    GTGlobals::sleep(500);
 }
 
-TEST_CLASS_DEFINITION(Test3){
-    QWidget* recorder = getRecorder();
+TEST_CLASS_DEFINITION(Test3) {
+    QWidget *recorder = getRecorder();
     GTMouseDriver::moveTo(getWidgetCenter(recorder));
     GTMouseDriver::click();
 
-    GTKeyboardDriver::keyClick( Qt::Key_Up);
+    GTKeyboardDriver::keyClick(Qt::Key_Up);
     GTGlobals::sleep(500);
 
     QList<KeyEvent> list = MainWindow::getInstance()->eventFilter->keyEvents;
@@ -74,11 +74,11 @@ TEST_CLASS_DEFINITION(Test3){
     CHECK_SET_ERR(list.last().getType() == QEvent::KeyRelease, QString("unexpected second type: %1").arg(list.last().getType()));
 }
 
-TEST_CLASS_DEFINITION(Test4){
-    QWidget* recorder = getRecorder();
+TEST_CLASS_DEFINITION(Test4) {
+    QWidget *recorder = getRecorder();
     GTMouseDriver::moveTo(getWidgetCenter(recorder));
     GTMouseDriver::click();
-    GTKeyboardDriver::keyClick( Qt::Key_Enter, Qt::ControlModifier);
+    GTKeyboardDriver::keyClick(Qt::Key_Enter, Qt::ControlModifier);
     GTGlobals::sleep(500);
 
     QList<KeyEvent> list = MainWindow::getInstance()->eventFilter->keyEvents;
@@ -99,8 +99,8 @@ TEST_CLASS_DEFINITION(Test4){
     CHECK_SET_ERR(list[3].getType() == QEvent::KeyRelease, QString("unexpected 4 type: %1").arg(list[3].getType()));
 }
 
-TEST_CLASS_DEFINITION(Test5){
-    QWidget* recorder = getRecorder();
+TEST_CLASS_DEFINITION(Test5) {
+    QWidget *recorder = getRecorder();
     GTMouseDriver::moveTo(getWidgetCenter(recorder));
     GTMouseDriver::click();
     GTGlobals::sleep(500);
@@ -117,8 +117,8 @@ TEST_CLASS_DEFINITION(Test5){
     CHECK_SET_ERR(list[1].getType() == QEvent::MouseButtonRelease, QString("unexpected 2 type: %1").arg(list[1].getType()));
 }
 
-TEST_CLASS_DEFINITION(Test6){
-    QWidget* recorder = getRecorder();
+TEST_CLASS_DEFINITION(Test6) {
+    QWidget *recorder = getRecorder();
     GTMouseDriver::moveTo(getWidgetCenter(recorder));
     GTMouseDriver::click(Qt::RightButton);
     GTGlobals::sleep(500);
@@ -135,8 +135,8 @@ TEST_CLASS_DEFINITION(Test6){
     CHECK_SET_ERR(list[1].getType() == QEvent::MouseButtonRelease, QString("unexpected 2 type: %1").arg(list[1].getType()));
 }
 
-TEST_CLASS_DEFINITION(Test7){
-    QWidget* recorder = getRecorder();
+TEST_CLASS_DEFINITION(Test7) {
+    QWidget *recorder = getRecorder();
     GTMouseDriver::moveTo(getWidgetCenter(recorder));
     GTMouseDriver::doubleClick();
     GTGlobals::sleep(500);

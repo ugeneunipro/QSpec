@@ -44,8 +44,7 @@
 #include <QToolButton>
 
 //! [0]
-class Button : public QToolButton
-{
+class Button : public QToolButton {
     Q_OBJECT
 
 public:

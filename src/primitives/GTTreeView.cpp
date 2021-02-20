@@ -23,26 +23,22 @@
 
 #include <QAbstractItemModel>
 
-
-namespace HI{
+namespace HI {
 
 #define GT_CLASS_NAME "GTTreeView"
 #define GT_METHOD_NAME "findIndex"
-QModelIndex GTTreeView::findIndex(GUITestOpStatus &os, QTreeView* treeView, QVariant data, Qt::ItemDataRole role,
-                                  const GTGlobals::FindOptions& options){
+QModelIndex GTTreeView::findIndex(GUITestOpStatus &os, QTreeView *treeView, QVariant data, Qt::ItemDataRole role, const GTGlobals::FindOptions &options) {
     return findIndex(os, treeView, data, QModelIndex(), role, options);
 }
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "findIndex"
-QModelIndex GTTreeView::findIndex(GUITestOpStatus &os, QTreeView* treeView, QVariant data, QModelIndex parent, Qt::ItemDataRole role,
-                                 const GTGlobals::FindOptions& options){
-
+QModelIndex GTTreeView::findIndex(GUITestOpStatus &os, QTreeView *treeView, QVariant data, QModelIndex parent, Qt::ItemDataRole role, const GTGlobals::FindOptions &options) {
     GT_CHECK_RESULT(treeView != NULL, "Tree widget is NULL", QModelIndex());
 
-    QModelIndexList foundIndexes = findIndexes(os, treeView, data, role,parent, 0, options);
+    QModelIndexList foundIndexes = findIndexes(os, treeView, data, role, parent, 0, options);
     if (foundIndexes.isEmpty()) {
-        if(options.failIfNotFound){
+        if (options.failIfNotFound) {
             GT_CHECK_RESULT(foundIndexes.size() != 0, QString("Item whith name %1 not found").arg(data.toString()), QModelIndex());
         } else {
             return QModelIndex();
@@ -53,13 +49,11 @@ QModelIndex GTTreeView::findIndex(GUITestOpStatus &os, QTreeView* treeView, QVar
 
     treeView->scrollTo(foundIndexes.at(0));
     return foundIndexes.at(0);
-
 }
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "findIndexes"
-QModelIndexList GTTreeView::findIndexes(GUITestOpStatus &os, QTreeView* treeView, QVariant data, Qt::ItemDataRole role,
-                                        QModelIndex parent, int depth, const GTGlobals::FindOptions& options){
+QModelIndexList GTTreeView::findIndexes(GUITestOpStatus &os, QTreeView *treeView, QVariant data, Qt::ItemDataRole role, QModelIndex parent, int depth, const GTGlobals::FindOptions &options) {
     QModelIndexList foundIndexes;
     if (!(GTGlobals::FindOptions::INFINITE_DEPTH == options.depth || depth < options.depth)) {
         return foundIndexes;
@@ -76,7 +70,7 @@ QModelIndexList GTTreeView::findIndexes(GUITestOpStatus &os, QTreeView* treeView
         if (data == indexData) {
             foundIndexes << index;
         } else {
-            foundIndexes <<  findIndexes(os, treeView, data, role, index, depth + 1, options);
+            foundIndexes << findIndexes(os, treeView, data, role, index, depth + 1, options);
         }
     }
 
@@ -93,4 +87,4 @@ QPoint GTTreeView::getItemCenter(GUITestOpStatus &, QTreeView *treeView, const Q
 #undef GT_METHOD_NAME
 
 #undef GT_CLASS_NAME
-}
+}    // namespace HI

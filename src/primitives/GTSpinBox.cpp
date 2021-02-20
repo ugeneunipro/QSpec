@@ -19,12 +19,12 @@
  * MA 02110-1301, USA.
  */
 
+#include "primitives/GTSpinBox.h"
+#include <utils/GTThread.h>
+
 #include "drivers/GTKeyboardDriver.h"
 #include "drivers/GTMouseDriver.h"
-#include "primitives/GTSpinBox.h"
 #include "primitives/GTWidget.h"
-
-#include <utils/GTThread.h>
 
 namespace HI {
 
@@ -45,9 +45,9 @@ int GTSpinBox::getValue(GUITestOpStatus &os, const QString &spinBoxName, QWidget
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "setValue"
-void GTSpinBox::setValue(GUITestOpStatus& os, QSpinBox *spinBox, int v, GTGlobals::UseMethod useMethod) {
+void GTSpinBox::setValue(GUITestOpStatus &os, QSpinBox *spinBox, int v, GTGlobals::UseMethod useMethod) {
     GT_CHECK(spinBox != NULL, "spinBox is NULL");
-    if(spinBox->value() == v){
+    if (spinBox->value() == v) {
         return;
     }
 
@@ -60,11 +60,11 @@ void GTSpinBox::setValue(GUITestOpStatus& os, QSpinBox *spinBox, int v, GTGlobal
     GT_CHECK(spinBox->isEnabled(), "SpinBox is not enabled");
 
     if (spinBox->value() != v) {
-        switch(useMethod) {
+        switch (useMethod) {
         case GTGlobals::UseMouse:
             spinBoxRect = spinBox->rect();
             if (v > spinBox->value()) {
-                arrowPos = QPoint(spinBoxRect.right() - 5, spinBoxRect.height() / 4); // -5 it's needed that area under cursor was clickable
+                arrowPos = QPoint(spinBoxRect.right() - 5, spinBoxRect.height() / 4);    // -5 it's needed that area under cursor was clickable
             } else {
                 arrowPos = QPoint(spinBoxRect.right() - 5, spinBoxRect.height() * 3 / 4);
             }
@@ -86,7 +86,7 @@ void GTSpinBox::setValue(GUITestOpStatus& os, QSpinBox *spinBox, int v, GTGlobal
 
             GTWidget::setFocus(os, spinBox);
             while (spinBox->value() != v) {
-                GTKeyboardDriver::keyClick( key);
+                GTKeyboardDriver::keyClick(key);
                 GTGlobals::sleep(100);
             }
             break;
@@ -95,9 +95,9 @@ void GTSpinBox::setValue(GUITestOpStatus& os, QSpinBox *spinBox, int v, GTGlobal
             QString s = QString::number(v);
             GTWidget::setFocus(os, spinBox);
             GTGlobals::sleep(100);
-            GTKeyboardDriver::keyClick( 'a', Qt::ControlModifier);
+            GTKeyboardDriver::keyClick('a', Qt::ControlModifier);
             GTGlobals::sleep(100);
-            GTKeyboardDriver::keyClick( Qt::Key_Delete);
+            GTKeyboardDriver::keyClick(Qt::Key_Delete);
             GTGlobals::sleep(100);
             GTKeyboardDriver::keySequence(s);
             GTGlobals::sleep(100);
@@ -123,7 +123,7 @@ void GTSpinBox::setValue(GUITestOpStatus &os, const QString &spinBoxName, int v,
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "checkLimits"
-void GTSpinBox::checkLimits(GUITestOpStatus &os, QSpinBox *spinBox, int min, int max){
+void GTSpinBox::checkLimits(GUITestOpStatus &os, QSpinBox *spinBox, int min, int max) {
     GT_CHECK(spinBox != NULL, "spinbox is NULL");
     int actualMin = spinBox->minimum();
     int actualMax = spinBox->maximum();
@@ -133,11 +133,11 @@ void GTSpinBox::checkLimits(GUITestOpStatus &os, QSpinBox *spinBox, int min, int
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "checkLimits"
-void GTSpinBox::checkLimits(GUITestOpStatus &os, const QString &spinBoxName, int min, int max, QWidget *parent){
+void GTSpinBox::checkLimits(GUITestOpStatus &os, const QString &spinBoxName, int min, int max, QWidget *parent) {
     GTSpinBox::checkLimits(os, GTWidget::findExactWidget<QSpinBox *>(os, spinBoxName, parent), min, max);
 }
 #undef GT_METHOD_NAME
 
 #undef GT_CLASS_NAME
 
-}
+}    // namespace HI

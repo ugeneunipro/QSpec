@@ -22,10 +22,9 @@
 #ifndef _U2_GT_MENU_PRIVATE_MAC_H_
 #define _U2_GT_MENU_PRIVATE_MAC_H_
 
-
 #ifdef __OBJC__
-#import <AppKit/AppKit.h>
-#endif // __OBJC__
+#    import <AppKit/AppKit.h>
+#endif    // __OBJC__
 
 #include "GTGlobals.h"
 #include "primitives/PopupChooser.h"
@@ -46,9 +45,9 @@ private:
     static NSMenu *clickMenuItem(GUITestOpStatus &os, NSMenu *menu, const QString &itemTitle, Qt::MatchFlag matchFlag);
     static NSMenuItem *getMenuItem(GUITestOpStatus &os, NSMenu *menu, const QString &itemTitle, Qt::MatchFlag matchFlag);
     static void checkMenuItemState(GUITestOpStatus &os, NSMenu *containerMenu, const QString &itemTitle, PopupChecker::CheckOption expectedState);
-#endif // __OBJC__NSMenuItem
+#endif    // __OBJC__NSMenuItem
 };
 
-}   // namespace U2
+}    // namespace HI
 
-#endif // _U2_GT_MENU_PRIVATE_MAC_H_
+#endif    // _U2_GT_MENU_PRIVATE_MAC_H_

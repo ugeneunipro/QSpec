@@ -1,6 +1,6 @@
 /**
  * UGENE - Integrated Bioinformatics Tools.
- * Copyright (C) 2008-2017 UniPro <ugene@unipro.ru>
+ * Copyright (C) 2008-2020 UniPro <ugene@unipro.ru>
  * http://ugene.net
  *
  * This program is free software; you can redistribute it and/or
@@ -19,23 +19,24 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef HI_GUI_GTMOUSE_H_
-#define HI_GUI_GTMOUSE_H_
+#ifndef _HI_GT_SPLITTER_H_
+#define _HI_GT_SPLITTER_H_
+
+#include <QSplitter>
 
 #include "GTGlobals.h"
-#if (QT_VERSION < 0x050000)    //Qt 5
-#    include <QtGui/QWidget>
-#else
-#    include <QtWidgets/QWidget>
-#endif
 
 namespace HI {
 
-class HI_EXPORT GTMouseUtils {
+/*!
+ * \brief The class for working with QSplitter primitive
+ */
+class HI_EXPORT GTSplitter {
 public:
-    static void moveCursorToWidget(GUITestOpStatus &os, QWidget *widget);
-    static void moveCursorOutOfWidget(GUITestOpStatus &os, QWidget *widget);
+    static QRect getHandleRect(GUITestOpStatus &os, QSplitter *splitter, int handleNumber = 0);
+    static void moveHandle(GUITestOpStatus &os, QSplitter *splitter, int pixels, int handleNumber = 0);
 };
 
 }    // namespace HI
-#endif
+
+#endif    // _HI_GT_SPLITTER_H_

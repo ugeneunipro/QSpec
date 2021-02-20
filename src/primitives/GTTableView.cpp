@@ -21,24 +21,44 @@
 
 #include "primitives/GTTableView.h"
 #include <primitives/GTWidget.h>
+#include <utils/GTThread.h>
 
-namespace HI{
+namespace HI {
 
 #define GT_CLASS_NAME "GTSpinBox"
 #define GT_METHOD_NAME "getCellPosition"
-QPoint GTTableView::getCellPosition(GUITestOpStatus &os, QTableView *table, int column, int row){
-    GT_CHECK_RESULT(table,"table view is NULL",QPoint());
-    QPoint p(table->columnViewportPosition(column)+table->columnWidth(column)/2,
-             table->rowViewportPosition(row)+table->rowHeight(row)*1.5);
+QPoint GTTableView::getCellPosition(GUITestOpStatus &os, QTableView *table, int column, int row) {
+    GT_CHECK_RESULT(table, "table view is NULL", QPoint());
+    QPoint p(table->columnViewportPosition(column) + table->columnWidth(column) / 2,
+             table->rowViewportPosition(row) + table->rowHeight(row) * 1.5);
     QPoint pGlob = table->mapToGlobal(p);
     return pGlob;
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "scrollTo"
+void GTTableView::scrollTo(GUITestOpStatus &os, QTableView *table, const QModelIndex &index) {
+    // TODO: set index by mouse/keyboard
+    class MainThreadAction : public CustomScenario {
+    public:
+        MainThreadAction(QTableView *table, const QModelIndex &index)
+            : CustomScenario(), table(table), index(index) {
+        }
+        void run(HI::GUITestOpStatus &os) {
+            Q_UNUSED(os);
+            table->scrollTo(index);
+        }
+        QTableView *table;
+        QModelIndex index;
+    };
+    GTThread::runInMainThread(os, new MainThreadAction(table, index));
 }
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getCellPoint"
 QPoint GTTableView::getCellPoint(GUITestOpStatus &os, QTableView *table, int row, int column) {
     QModelIndex idx = table->model()->index(row, column);
-    table->scrollTo(idx);
+    scrollTo(os, table, idx);
     QRect rect = table->visualRect(idx);
     QWidget *content = GTWidget::findWidget(os, "qt_scrollarea_viewport", table);
     return content->mapToGlobal(rect.center());
@@ -47,16 +67,14 @@ QPoint GTTableView::getCellPoint(GUITestOpStatus &os, QTableView *table, int row
 
 #define GT_METHOD_NAME "rowCount"
 int GTTableView::rowCount(GUITestOpStatus &os, QTableView *table) {
-    Q_UNUSED(os);
-    GT_CHECK_RESULT(NULL != table, "Table view is NULL", -1);
-    GT_CHECK_RESULT(NULL != table->model(), "Table view model is NULL", -1);
+    GT_CHECK_RESULT(table != NULL, "Table view is NULL", -1);
+    GT_CHECK_RESULT(table->model() != NULL, "Table view model is NULL", -1);
     return table->model()->rowCount(QModelIndex());
 }
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "data"
 QString GTTableView::data(GUITestOpStatus &os, QTableView *table, int row, int column) {
-    Q_UNUSED(os);
     GT_CHECK_RESULT(NULL != table, "Table view is NULL", "");
     GT_CHECK_RESULT(NULL != table->model(), "Table view model is NULL", "");
 
@@ -67,4 +85,4 @@ QString GTTableView::data(GUITestOpStatus &os, QTableView *table, int row, int c
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
 
-}
+}    // namespace HI

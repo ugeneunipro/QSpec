@@ -22,29 +22,26 @@
 #ifndef GTTREEVIEW_H
 #define GTTREEVIEW_H
 
-#include "GTGlobals.h"
 #include <QTreeView>
 
-namespace HI{
+#include "GTGlobals.h"
 
-class HI_EXPORT GTTreeView
-{
+namespace HI {
+
+class HI_EXPORT GTTreeView {
 public:
     //find index with data and role in the tree view
-    static QModelIndex findIndex(GUITestOpStatus &os, QTreeView* treeView, QVariant data, Qt::ItemDataRole role = Qt::DisplayRole,
-                                 const GTGlobals::FindOptions& = GTGlobals::FindOptions());
+    static QModelIndex findIndex(GUITestOpStatus &os, QTreeView *treeView, QVariant data, Qt::ItemDataRole role = Qt::DisplayRole, const GTGlobals::FindOptions & = GTGlobals::FindOptions());
 
     //find index with data and role for current parent index
-    static QModelIndex findIndex(GUITestOpStatus &os, QTreeView* treeView, QVariant data, QModelIndex parent, Qt::ItemDataRole role = Qt::DisplayRole,
-                                 const GTGlobals::FindOptions& = GTGlobals::FindOptions());
+    static QModelIndex findIndex(GUITestOpStatus &os, QTreeView *treeView, QVariant data, QModelIndex parent, Qt::ItemDataRole role = Qt::DisplayRole, const GTGlobals::FindOptions & = GTGlobals::FindOptions());
 
-    static QPoint getItemCenter(GUITestOpStatus &os, QTreeView* treeView, const QModelIndex &itemIndex);
+    static QPoint getItemCenter(GUITestOpStatus &os, QTreeView *treeView, const QModelIndex &itemIndex);
 
 private:
-    static QModelIndexList findIndexes(GUITestOpStatus &os, QTreeView* treeView, QVariant data, Qt::ItemDataRole role = Qt::DisplayRole,
-                                       QModelIndex parent = QModelIndex(), int depth = 0, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
+    static QModelIndexList findIndexes(GUITestOpStatus &os, QTreeView *treeView, QVariant data, Qt::ItemDataRole role = Qt::DisplayRole, QModelIndex parent = QModelIndex(), int depth = 0, const GTGlobals::FindOptions & = GTGlobals::FindOptions());
 };
 
-}
+}    // namespace HI
 
-#endif // GTTREEVIEW_H
+#endif    // GTTREEVIEW_H

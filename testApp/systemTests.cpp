@@ -1,18 +1,16 @@
 #include "systemTests.h"
-
 #include <system/GTFile.h>
 
 using namespace HI;
 
-TEST_CLASS_DEFINITION(FilePermissionTest)
-{
+TEST_CLASS_DEFINITION(FilePermissionTest) {
     QDir dir("TestFile.dir");
     bool mk = dir.mkdir(".");
     qDebug() << "created dir: " << mk;
     QString testDir = dir.path();
 
     // create a file and check we can write to it
-    QString f1(testDir+"/" + "testfile1");
+    QString f1(testDir + "/" + "testfile1");
     GTFile::create(os, f1);
     qint64 f1_size = GTFile::readAll(os, f1).size();
     QFile ff1(f1);
@@ -50,20 +48,19 @@ TEST_CLASS_DEFINITION(FilePermissionTest)
 
     // set the file RO and check we can remove it
     // TODO this does not work on Windows due to RO attr set
-//    GTFile::setReadOnly(os, f1);
-//    res = ff1.remove();
-//    CHECK_SET_ERR(res, "failed to delete RO testfile1");
+    //    GTFile::setReadOnly(os, f1);
+    //    res = ff1.remove();
+    //    CHECK_SET_ERR(res, "failed to delete RO testfile1");
 }
 
-TEST_CLASS_DEFINITION(DirPermissionTest)
-{
+TEST_CLASS_DEFINITION(DirPermissionTest) {
     QDir dir("TestDir.dir");
     bool mk = dir.mkdir(".");
     qDebug() << "created dir: " << mk;
     QString testDir = dir.path();
 
     // check we can create a file in it
-    QString f1(testDir+"/" + "testfile1");
+    QString f1(testDir + "/" + "testfile1");
     GTFile::create(os, f1);
 
     // set the dir RO and check we can read the file
@@ -74,15 +71,14 @@ TEST_CLASS_DEFINITION(DirPermissionTest)
     CHECK_SET_ERR(f1_size == 0, "cannot access testfile1");
 
     // but cannot create a new file
-    QString f2(testDir+"/" + "testfile2");
+    QString f2(testDir + "/" + "testfile2");
     bool res = QFile(f2).open(QIODevice::WriteOnly);
     CHECK_SET_ERR(!res, "should not create new file");
 
     // set the dir RW and check we can create the new file again
     GTFile::setReadWrite(os, testDir);
-    GTFile::create( os, f2 );
+    GTFile::create(os, f2);
 
-//    // set the dir RO and check we can delete it
-//    GTFile::setReadOnly(os, testDir);
-
+    //    // set the dir RO and check we can delete it
+    //    GTFile::setReadOnly(os, testDir);
 }

@@ -22,8 +22,9 @@
 #ifndef _HI_GT_MENU_BAR_H_
 #define _HI_GT_MENU_BAR_H_
 
-#include "GTGlobals.h"
 #include <QMenuBar>
+
+#include "GTGlobals.h"
 
 namespace HI {
 
@@ -34,6 +35,6 @@ public:
     static void clickCornerMenu(GUITestOpStatus &os, QMenuBar *mBar, GTGlobals::WindowAction action);
 };
 
-} // namespace
+}    // namespace HI
 
 #endif

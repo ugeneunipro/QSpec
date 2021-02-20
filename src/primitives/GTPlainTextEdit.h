@@ -22,30 +22,32 @@
 #ifndef _HI_GT_PLAINTEXTEDIT_H_
 #define _HI_GT_PLAINTEXTEDIT_H_
 
-#include "GTGlobals.h"
 #include <QPlainTextEdit>
+
+#include "GTGlobals.h"
 
 namespace HI {
 
 class HI_EXPORT GTPlainTextEdit {
 public:
-    enum PasteMethod {Shortcut, Mouse};
+    enum PasteMethod { Shortcut,
+                       Mouse };
 
     // fails if lineEdit is NULL, GTLineEdit::clear fails
     // or a set text differs from a given string
-    static void setPlainText(GUITestOpStatus& os, QPlainTextEdit* plainTextEdit, const QString &text);
+    static void setPlainText(GUITestOpStatus &os, QPlainTextEdit *plainTextEdit, const QString &text);
 
     // fails if lineEdit is NULL, or lineEdit's text wasn't cleared
-    static void clear(GUITestOpStatus& os, QPlainTextEdit* plainTextEdit);
+    static void clear(GUITestOpStatus &os, QPlainTextEdit *plainTextEdit);
 
     // fails if GTLineEdit::clear fails
-   // static void pasteClipboard(GUITestOpStatus& os, QPlainTextEdit* plainTextEdit, PasteMethod pasteMethod = Shortcut);
+    // static void pasteClipboard(GUITestOpStatus& os, QPlainTextEdit* plainTextEdit, PasteMethod pasteMethod = Shortcut);
 
     // fails if lineEdit is NULL or lineEdit text is not in lineEdit's rect
     // considering lineEdit's fontMetrics and textMargins
     //static void checkTextSize(GUITestOpStatus& os, QPlainTextEdit* plainTextEdit);
 };
 
-}
+}    // namespace HI
 
-#endif // _HI_GT_PLAINTEXTEDIT_H_
+#endif    // _HI_GT_PLAINTEXTEDIT_H_

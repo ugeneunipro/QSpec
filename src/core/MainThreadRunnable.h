@@ -22,9 +22,9 @@
 #ifndef _HI_MAIN_THREAD_RUNNABLE_H_
 #define _HI_MAIN_THREAD_RUNNABLE_H_
 
-#include "GTGlobals.h"
-
 #include <core/CustomScenario.h>
+
+#include "GTGlobals.h"
 
 namespace HI {
 
@@ -57,10 +57,8 @@ public:
 
 public slots:
     void sl_requestAsked(MainThreadRunnable *mainThreadRunnable);
-
 };
 
-
-}   // namespace
+}    // namespace HI
 
 #endif

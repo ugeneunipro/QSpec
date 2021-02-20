@@ -20,31 +20,25 @@
  */
 
 #include "utils/GTKeyboardUtils.h"
+#include <utils/GTThread.h>
 
 namespace HI {
 
-void GTKeyboardUtils::selectAll(GUITestOpStatus &os)
-{
-    Q_UNUSED(os)
-    GTKeyboardDriver::keyClick( 'a', Qt::ControlModifier);
+void GTKeyboardUtils::selectAll(GUITestOpStatus &os) {
+    GTKeyboardDriver::keyClick('a', Qt::ControlModifier);
 }
 
-void GTKeyboardUtils::copy(GUITestOpStatus &os)
-{
-    Q_UNUSED(os)
-    GTKeyboardDriver::keyClick( 'c', Qt::ControlModifier);
+void GTKeyboardUtils::copy(GUITestOpStatus &os) {
+    GTKeyboardDriver::keyClick('c', Qt::ControlModifier);
 }
 
-void GTKeyboardUtils::paste(GUITestOpStatus &os)
-{
-    Q_UNUSED(os)
-    GTKeyboardDriver::keyClick( 'v', Qt::ControlModifier);
+void GTKeyboardUtils::paste(GUITestOpStatus &os) {
+    GTKeyboardDriver::keyClick('v', Qt::ControlModifier);
+    GTThread::waitForMainThread();
 }
 
-void GTKeyboardUtils::cut(GUITestOpStatus &os)
-{
-    Q_UNUSED(os)
-    GTKeyboardDriver::keyClick( 'x', Qt::ControlModifier);
+void GTKeyboardUtils::cut(GUITestOpStatus &os) {
+    GTKeyboardDriver::keyClick('x', Qt::ControlModifier);
 }
 
-} // namespace
+}    // namespace HI

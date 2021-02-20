@@ -20,14 +20,14 @@
  */
 
 #include "MainThreadTimer.h"
+
 #include <QApplication>
 
 namespace HI {
 
-MainThreadTimer::MainThreadTimer(int interval) :
-    QObject(NULL),
-    counter(0)
-{
+MainThreadTimer::MainThreadTimer(int interval)
+    : QObject(NULL),
+      counter(0) {
     timer.setInterval(interval);
     connect(&timer, SIGNAL(timeout()), SLOT(sl_timerTick()));
     timer.start();
@@ -46,4 +46,4 @@ void MainThreadTimer::sl_timerTick() {
     counter++;
 }
 
-}   // namespace
+}    // namespace HI
